@@ -253,6 +253,29 @@ def health():
     return jsonify({'status': 'ok', 'service': 'prompter'})
 
 
+@app.route('/api/summarise', methods=['POST'])
+def summarise():
+    data = request.get_json() or {}
+    text = (data.get('text') or '').strip()[:500]
+    if not text:
+        return jsonify({'success': True, 'label': 'Notes'})
+    if not ANTHROPIC_API_KEY:
+        return jsonify({'success': True, 'label': 'Notes'})
+    try:
+        client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
+        message = client.messages.create(
+            model="claude-sonnet-4-20250514",
+            max_tokens=20,
+            system="Give a two-word label for this brand material. Two words only. No punctuation. Capitalise both words. Examples: Campaign Copy, Voice Guide, Brand Rules, Email Examples, Tone Notes.",
+            messages=[{'role': 'user', 'content': text}]
+        )
+        label = message.content[0].text.strip()
+        return jsonify({'success': True, 'label': label})
+    except Exception as e:
+        print(f'[Prompter] Summarise error: {e}')
+        return jsonify({'success': True, 'label': 'Notes'})
+
+
 @app.route('/api/opening', methods=['GET'])
 def opening():
     return jsonify({

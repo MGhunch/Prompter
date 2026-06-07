@@ -77,12 +77,15 @@ body { font-family: 'Inter', sans-serif; background: var(--red); min-height: 100
 .notes-textarea:focus { border-color: var(--red); }
 .notes-add-btn { background: var(--red); color: white; border: none; border-radius: 8px; padding: 7px 16px; font-size: 11px; font-weight: 700; cursor: pointer; font-family: 'Inter', sans-serif; align-self: flex-end; }
 
-.file-list { display: flex; flex-direction: column; gap: 5px; }
-.file-row { display: flex; align-items: center; gap: 8px; background: var(--card-bg); border-radius: 8px; padding: 7px 10px; border: 0.5px solid var(--card-border); }
-.file-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; background: var(--card-border); transition: background 0.3s; }
-.file-name { font-size: 12px; font-weight: 500; color: var(--ink); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.file-size { font-size: 10px; color: var(--mid); flex-shrink: 0; }
-.file-x { font-size: 14px; color: var(--mid); cursor: pointer; background: none; border: none; padding: 0; line-height: 1; font-family: inherit; transition: color 0.15s; }
+.file-list { display: flex; flex-direction: column; gap: 4px; }
+.file-row { display: flex; align-items: center; gap: 10px; background: var(--card-bg); border-radius: 8px; padding: 8px 12px; border: 0.5px solid var(--card-border); font-family: 'Inter', sans-serif; }
+.file-tick { font-size: 11px; font-weight: 700; color: var(--red); flex-shrink: 0; width: 16px; text-align: center; opacity: 0; transition: opacity 0.4s; }
+.file-tick.show { opacity: 1; }
+.file-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.file-name { font-size: 12px; font-weight: 500; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-family: 'Inter', sans-serif; }
+.file-label { font-size: 10px; color: var(--mid); font-weight: 300; font-family: 'Inter', sans-serif; }
+.file-size { font-size: 10px; color: var(--mid); flex-shrink: 0; font-family: 'Inter', sans-serif; }
+.file-x { font-size: 15px; color: var(--card-border); cursor: pointer; background: none; border: none; padding: 0; line-height: 1; font-family: inherit; transition: color 0.15s; flex-shrink: 0; }
 .file-x:hover { color: var(--red); }
 
 /* CONSULTATION */
@@ -124,6 +127,10 @@ body { font-family: 'Inter', sans-serif; background: var(--red); min-height: 100
 .dot-thinking span:nth-child(2) { animation-delay: 0.2s; }
 .dot-thinking span:nth-child(3) { animation-delay: 0.4s; }
 @keyframes blink { 0%,80%,100% { opacity: 0.25; } 40% { opacity: 1; } }
+.inline-dots { display: inline-flex; gap: 3px; vertical-align: middle; margin-left: 4px; }
+.inline-dots span { width: 5px; height: 5px; border-radius: 50%; background: var(--red); animation: blink 1.2s ease-in-out infinite; display: inline-block; }
+.inline-dots span:nth-child(2) { animation-delay: 0.2s; }
+.inline-dots span:nth-child(3) { animation-delay: 0.4s; }
 
 /* Options */
 .options-block { background: white; border-radius: 12px; padding: 10px; display: flex; flex-direction: column; gap: 6px; animation: fadeUp 0.3s ease; }
@@ -420,13 +427,29 @@ async function fetchWeblink() {
   btn.disabled = false; btn.textContent = 'Fetch';
 }
 
-function addNotes() {
+async function addNotes() {
   const textarea = document.getElementById('notesInput');
   const text = textarea.value.trim();
   if (!text) return;
   notesCounter++;
-  uploadedFiles.push({ filename: `Notes ${notesCounter}`, text, size: text.length });
+  const btn = document.querySelector('.notes-add-btn');
+  if (btn) { btn.disabled = true; btn.textContent = '...'; }
+
+  // Get a two-word label from Claude
+  let label = 'Your notes';
+  try {
+    const res = await fetch('/api/summarise', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ text })
+    });
+    const data = await res.json();
+    if (data.success && data.label) label = data.label;
+  } catch { /* fallback label is fine */ }
+
+  uploadedFiles.push({ filename: `Notes ${notesCounter}`, text, size: text.length, label });
   textarea.value = '';
+  if (btn) { btn.disabled = false; btn.textContent = 'Add these notes'; }
   afterFilesChanged();
 }
 
@@ -448,7 +471,29 @@ function afterFilesChanged() {
     startConsultation();
   } else if (uploadedFiles.length > 0) {
     updateGoBtn();
+    // New file added mid-conversation — show soaking state then re-consult
+    showSoaking();
+    // Small delay so user sees the soaking message before API call
+    setTimeout(async () => {
+      await runConsult();
+    }, 1200);
   }
+}
+
+function showSoaking() {
+  document.getElementById('consultZone').style.display = 'flex';
+  document.getElementById('dotOpening').style.display = 'none';
+  document.getElementById('responseArea').innerHTML = '';
+  // Show soaking bubble
+  document.getElementById('dotThinking').style.display = 'none';
+  const el = document.getElementById('dotMsgText');
+  el.style.display = 'block';
+  el.innerHTML = '<span style="color:var(--mid);font-style:italic;">Soaking up your stuff</span> <span class="inline-dots"><span></span><span></span><span></span></span>';
+  // Re-trigger animation
+  const bubble = document.getElementById('dotBubble');
+  bubble.style.animation = 'none';
+  bubble.offsetHeight;
+  bubble.style.animation = 'fadeUp 0.3s ease';
 }
 
 function renderFileList() {
@@ -456,17 +501,22 @@ function renderFileList() {
   if (!uploadedFiles.length) { list.innerHTML = ''; return; }
   list.innerHTML = uploadedFiles.map(f => {
     const size = f.size < 1024*1024 ? Math.round(f.size/1024) + ' KB' : (f.size/1024/1024).toFixed(1) + ' MB';
+    const label = f.label ? `<div class="file-label">${escHtml(f.label)}</div>` : '';
+    const safeName = f.filename.replace(/'/g, "\\'");
     return `<div class="file-row">
-      <div class="file-dot" id="fdot-${CSS.escape(f.filename)}"></div>
-      <span class="file-name">${escHtml(f.filename)}</span>
+      <span class="file-tick" id="ftick-${CSS.escape(f.filename)}">✓</span>
+      <div class="file-info">
+        <span class="file-name">${escHtml(f.filename)}</span>
+        ${label}
+      </div>
       <span class="file-size">${size}</span>
-      <button class="file-x" onclick="removeFile('${escHtml(f.filename)}')">&times;</button>
+      <button class="file-x" onclick="removeFile('${safeName}')">&times;</button>
     </div>`;
   }).join('');
   setTimeout(() => {
     uploadedFiles.forEach(f => {
-      const dot = document.getElementById('fdot-' + CSS.escape(f.filename));
-      if (dot) dot.style.background = '#4ADE80';
+      const tick = document.getElementById('ftick-' + CSS.escape(f.filename));
+      if (tick) tick.classList.add('show');
     });
   }, 400);
 }
@@ -536,32 +586,58 @@ function showDotMessage(text) {
   bubble.style.animation = 'fadeUp 0.3s ease';
 }
 
+// Store current options for safe access
+let currentOptions = [];
+
 function renderResponseArea(options) {
   const area = document.getElementById('responseArea');
   selectedOption = null;
+  currentOptions = options;
 
   if (options.length > 0) {
-    area.innerHTML = `<div class="options-block">
-      ${options.map((opt, i) => `
-        <div class="option-item" onclick="selectOption(${i}, '${escHtml(opt)}')" id="opt-${i}">
-          <div class="option-radio" id="radio-${i}"></div>
-          ${escHtml(opt)}
-        </div>`).join('')}
-      <button class="confirm-btn" id="confirmBtn" onclick="submitResponse()" disabled>That's right</button>
-    </div>`;
+    const block = document.createElement('div');
+    block.className = 'options-block';
+    block.id = 'optionsBlock';
+
+    options.forEach((opt, i) => {
+      const item = document.createElement('div');
+      item.className = 'option-item';
+      item.dataset.idx = i;
+      item.innerHTML = `<div class="option-radio"></div>${escHtml(opt)}`;
+      item.addEventListener('click', () => selectOption(i, opt, block));
+      block.appendChild(item);
+    });
+
+    const btn = document.createElement('button');
+    btn.className = 'confirm-btn';
+    btn.id = 'confirmBtn';
+    btn.disabled = true;
+    btn.textContent = "That's right";
+    btn.addEventListener('click', submitResponse);
+    block.appendChild(btn);
+
+    area.innerHTML = '';
+    area.appendChild(block);
   } else {
     area.innerHTML = `<div class="reply-row">
-      <input class="reply-input" type="text" id="replyInput" placeholder="Type your reply..." onkeydown="if(event.key==='Enter'&&!event.shiftKey) submitResponse()"/>
-      <button class="reply-send" id="replySend" onclick="submitResponse()">Send</button>
+      <input class="reply-input" type="text" id="replyInput" placeholder="Type your reply..." />
+      <button class="reply-send" id="replySend">Send</button>
     </div>`;
-    // Focus the input
-    setTimeout(() => { const el = document.getElementById('replyInput'); if (el) el.focus(); }, 100);
+    const input = document.getElementById('replyInput');
+    const send = document.getElementById('replySend');
+    input.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) submitResponse(); });
+    send.addEventListener('click', submitResponse);
+    setTimeout(() => input.focus(), 100);
   }
 }
 
-function selectOption(idx, value) {
+function selectOption(idx, value, block) {
   selectedOption = value;
-  document.querySelectorAll('.option-item').forEach((el, i) => el.classList.toggle('selected', i === idx));
+  const container = block || document.getElementById('optionsBlock');
+  if (!container) return;
+  container.querySelectorAll('.option-item').forEach((el, i) => {
+    el.classList.toggle('selected', i === idx);
+  });
   const btn = document.getElementById('confirmBtn');
   if (btn) btn.disabled = false;
 }
