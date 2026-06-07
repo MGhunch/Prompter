@@ -5,180 +5,424 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Prompter — Find your brand voice</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
 :root {
   --red: #ED1C24;
   --ink: #1A1917;
   --white: #FFFFFF;
   --card-bg: #F5F3EF;
   --card-border: #E8E5E0;
-  --card-mid: #9A9590;
-  --gutter: 32px;
+  --mid: #9A9590;
+  --g: 32px;
 }
 
-body { font-family: 'Inter', sans-serif; background: var(--red); min-height: 100vh; display: flex; flex-direction: column; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--red);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
 
-/* TOPBAR */
-.topbar { background: white; padding: 13px var(--gutter); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+/* ── TOPBAR ── */
+.topbar {
+  background: white;
+  padding: 13px var(--g);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
 .hai-logo { height: 26px; width: auto; }
 .suite-nav { display: flex; align-items: center; gap: 10px; }
 .suite-item { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: #C8C4BE; }
 .suite-item.active { color: var(--ink); }
 .suite-div { color: #D8D5D0; }
 
-/* SCREENS */
-.screen { display: none; flex: 1; flex-direction: column; }
-.screen.active { display: flex; }
+/* ── MAIN ── */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 0 var(--g) 24px;
+  max-width: 640px;
+  width: 100%;
+  align-self: center;
+}
 
-/* HERO */
-.s1-hero {
-  padding: 20px var(--gutter) 0;
+/* ── HERO ── */
+.hero {
   display: flex;
   align-items: flex-end;
   gap: 0;
+  padding-top: 16px;
+  padding-bottom: 0;
 }
-.dot-hero-img { height: 130px; width: auto; flex-shrink: 0; margin-bottom: -4px; }
-.hero-copy { padding-bottom: 16px; padding-left: 16px; flex: 1; }
-.hero-tag { font-size: 10px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.38); margin-bottom: 8px; }
-.hero-hed { font-family: 'Bebas Neue', sans-serif; font-size: 48px; letter-spacing: 2px; color: white; line-height: 0.95; margin-bottom: 10px; }
+.dot-hero-img {
+  height: 130px;
+  width: auto;
+  flex-shrink: 0;
+  margin-bottom: -4px;
+}
+.hero-copy {
+  padding-left: 16px;
+  padding-bottom: 16px;
+  flex: 1;
+}
+.hero-tag {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.38);
+  margin-bottom: 8px;
+}
+.hero-hed {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 48px;
+  letter-spacing: 2px;
+  color: white;
+  line-height: 0.95;
+  margin-bottom: 10px;
+}
 .hero-hed em { font-style: normal; opacity: 0.35; }
-.hero-sub { font-size: 12px; color: rgba(255,255,255,0.48); line-height: 1.65; font-weight: 300; max-width: 340px; }
+.hero-sub {
+  font-size: 12px;
+  color: rgba(255,255,255,0.45);
+  line-height: 1.65;
+  font-weight: 300;
+}
 
-/* FACTORY */
-.factory { display: flex; flex: 1; padding: 0 var(--gutter); gap: 16px; min-height: 0; }
-.col { display: flex; flex-direction: column; flex: 1; min-width: 0; }
+/* ── INPUT ZONE ── */
+.input-zone {
+  background: white;
+  border-radius: 14px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 8px;
+}
 
-/* Hanging signs — aligned to panel edges, not offset */
-.sign-wrap { display: flex; flex-direction: column; align-items: flex-start; margin-bottom: 6px; padding-left: 12px; }
-.sign-wrap.right { align-items: flex-end; padding-left: 0; padding-right: 12px; }
-.sign-string { width: 1px; height: 16px; background: rgba(255,255,255,0.3); margin-left: 14px; }
-.sign-wrap.right .sign-string { margin-left: 0; margin-right: 14px; }
-.sign { position: relative; display: inline-flex; align-items: center; }
-.sign-eyelet { position: absolute; top: -4px; left: 50%; transform: translateX(-50%); width: 6px; height: 6px; border-radius: 50%; background: var(--red); border: 1.5px solid rgba(255,255,255,0.5); z-index: 1; }
-.sign-body { background: white; border-radius: 5px; padding: 5px 12px; }
-.sign-body::after { content:''; position:absolute; right:-9px; top:50%; transform:translateY(-50%); border-left:9px solid white; border-top:12px solid transparent; border-bottom:12px solid transparent; }
-.sign-wrap.right .sign-body::after { display:none; }
-.sign-wrap.right .sign-body::before { content:''; position:absolute; left:-9px; top:50%; transform:translateY(-50%); border-right:9px solid white; border-top:12px solid transparent; border-bottom:12px solid transparent; }
-.sign-txt { font-size: 10px; font-weight: 800; letter-spacing: 3px; color: var(--red); text-transform: uppercase; }
-
-/* LEFT: INPUT PANEL */
-.input-panel { background: white; border-radius: 14px; flex: 1; padding: 16px; display: flex; flex-direction: column; gap: 10px; min-height: 0; }
-
-.icon-row { display: flex; gap: 12px; flex-shrink: 0; }
-.icon-btn { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; opacity: 0.35; transition: opacity 0.15s, transform 0.15s; }
+.icon-row { display: flex; gap: 12px; }
+.icon-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  opacity: 0.32;
+  transition: opacity 0.15s, transform 0.15s;
+}
 .icon-btn.active { opacity: 1; }
-.icon-btn:hover { opacity: 0.65; transform: translateY(-1px); }
-.icon-btn.active:hover { opacity: 1; transform: translateY(-1px); }
-.icircle { width: 48px; height: 48px; background: var(--red); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.icon-btn:hover { opacity: 0.62; transform: translateY(-1px); }
+.icon-btn.active:hover { opacity: 1; }
+.icircle {
+  width: 44px;
+  height: 44px;
+  background: var(--red);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 .ilbl { font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--ink); }
 
-.tab-panels { flex-shrink: 0; }
-.tab-panel { display: none; }
-.tab-panel.active { display: flex; flex-direction: column; gap: 8px; }
+.tab-panel { display: none; flex-direction: column; gap: 8px; }
+.tab-panel.active { display: flex; }
 
-.upload-drop { border: 1.5px dashed var(--card-border); border-radius: 10px; padding: 14px 16px; text-align: center; cursor: pointer; transition: border-color 0.15s, background 0.1s; }
-.upload-drop:hover, .upload-drop.drag-over { border-color: var(--red); background: rgba(237,28,36,0.02); }
-.upload-drop-lbl { font-size: 12px; font-weight: 500; color: var(--ink); margin-bottom: 2px; }
-.upload-drop-lbl u { color: var(--red); }
-.upload-drop-sub { font-size: 9px; color: var(--card-mid); letter-spacing: 2px; text-transform: uppercase; }
+.drop-zone {
+  border: 1.5px dashed var(--card-border);
+  border-radius: 10px;
+  padding: 14px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.drop-zone:hover, .drop-zone.drag-over { border-color: var(--red); }
+.drop-lbl { font-size: 12px; font-weight: 500; color: var(--ink); margin-bottom: 2px; }
+.drop-lbl u { color: var(--red); text-decoration-color: var(--red); }
+.drop-sub { font-size: 9px; color: var(--mid); letter-spacing: 2px; text-transform: uppercase; }
 
 .weblink-row { display: flex; gap: 7px; }
-.weblink-input { flex: 1; background: var(--card-bg); border: 0.5px solid var(--card-border); border-radius: 8px; padding: 9px 12px; font-size: 12px; color: var(--ink); font-family: 'Inter', sans-serif; outline: none; }
-.weblink-input::placeholder { color: var(--card-mid); }
+.weblink-input {
+  flex: 1; background: var(--card-bg); border: 0.5px solid var(--card-border);
+  border-radius: 8px; padding: 9px 12px; font-size: 12px; color: var(--ink);
+  font-family: 'Inter', sans-serif; outline: none;
+}
+.weblink-input::placeholder { color: var(--mid); }
 .weblink-input:focus { border-color: var(--red); }
-.weblink-btn { background: var(--red); color: white; border: none; border-radius: 8px; padding: 9px 14px; font-size: 11px; font-weight: 700; cursor: pointer; font-family: 'Inter', sans-serif; white-space: nowrap; }
+.weblink-btn {
+  background: var(--red); color: white; border: none; border-radius: 8px;
+  padding: 9px 14px; font-size: 11px; font-weight: 700; cursor: pointer;
+  font-family: 'Inter', sans-serif; white-space: nowrap;
+}
 .weblink-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-.weblink-note { font-size: 10px; color: var(--card-mid); line-height: 1.5; }
+.weblink-note { font-size: 10px; color: var(--mid); line-height: 1.5; }
 
-.notes-textarea { width: 100%; min-height: 80px; background: var(--card-bg); border: 0.5px solid var(--card-border); border-radius: 8px; padding: 10px 12px; font-size: 12px; color: var(--ink); font-family: 'Inter', sans-serif; font-weight: 300; resize: none; outline: none; line-height: 1.65; }
-.notes-textarea::placeholder { color: var(--card-mid); }
+.notes-textarea {
+  width: 100%; min-height: 80px; background: var(--card-bg);
+  border: 0.5px solid var(--card-border); border-radius: 8px;
+  padding: 10px 12px; font-size: 12px; color: var(--ink);
+  font-family: 'Inter', sans-serif; font-weight: 300; resize: none; outline: none;
+  line-height: 1.65;
+}
+.notes-textarea::placeholder { color: var(--mid); }
 .notes-textarea:focus { border-color: var(--red); }
-.notes-add-btn { background: var(--red); color: white; border: none; border-radius: 8px; padding: 7px 16px; font-size: 11px; font-weight: 700; cursor: pointer; font-family: 'Inter', sans-serif; align-self: flex-end; }
+.notes-add-btn {
+  background: var(--red); color: white; border: none; border-radius: 8px;
+  padding: 7px 16px; font-size: 11px; font-weight: 700; cursor: pointer;
+  font-family: 'Inter', sans-serif; align-self: flex-end;
+}
 
 /* File list */
-.file-list { display: flex; flex-direction: column; gap: 5px; overflow-y: auto; flex: 1; min-height: 0; }
-.file-row { display: flex; align-items: center; gap: 8px; background: var(--card-bg); border-radius: 8px; padding: 7px 10px; flex-shrink: 0; border: 0.5px solid var(--card-border); }
-.file-row-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; background: var(--card-border); }
-.file-row-name { font-size: 12px; font-weight: 500; color: var(--ink); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.file-row-size { font-size: 10px; color: var(--card-mid); flex-shrink: 0; }
-.file-row-x { font-size: 14px; color: var(--card-mid); cursor: pointer; background: none; border: none; padding: 0; line-height: 1; font-family: inherit; transition: color 0.15s; }
-.file-row-x:hover { color: var(--red); }
+.file-list { display: flex; flex-direction: column; gap: 5px; }
+.file-row {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--card-bg); border-radius: 8px; padding: 7px 10px;
+  border: 0.5px solid var(--card-border);
+}
+.file-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; background: var(--card-border); transition: background 0.3s; }
+.file-name { font-size: 12px; font-weight: 500; color: var(--ink); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.file-size { font-size: 10px; color: var(--mid); flex-shrink: 0; }
+.file-x { font-size: 14px; color: var(--mid); cursor: pointer; background: none; border: none; padding: 0; line-height: 1; font-family: inherit; transition: color 0.15s; }
+.file-x:hover { color: var(--red); }
 
-/* LET'S GO in left panel */
-.go-btn { background: var(--red); color: white; border: none; border-radius: 8px; padding: 11px 0; font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 4px; cursor: pointer; transition: all 0.15s; width: 100%; flex-shrink: 0; }
-.go-btn:hover { background: #C8141B; }
-.go-btn:disabled { background: var(--card-border); color: var(--card-mid); cursor: not-allowed; }
+/* ── CONSULTATION ZONE ── */
+.consult-zone {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+}
 
-.input-meta { display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
-.material-count { font-size: 11px; color: var(--card-mid); font-weight: 300; }
-.error-msg { font-size: 11px; color: var(--red); font-weight: 400; min-height: 14px; }
+.dot-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+}
+.dot-small-img {
+  height: 52px;
+  width: auto;
+  flex-shrink: 0;
+}
+.dot-message-bubble {
+  background: white;
+  border-radius: 16px 16px 16px 4px;
+  padding: 12px 16px;
+  flex: 1;
+  animation: fadeUp 0.3s ease;
+}
+@keyframes fadeUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+.dot-message-text {
+  font-size: 13px;
+  color: var(--ink);
+  line-height: 1.65;
+  font-weight: 300;
+}
+.dot-message-text.thinking {
+  color: var(--mid);
+  font-style: italic;
+}
 
-/* RIGHT: CONSULTANCY PANEL */
-.consult-panel { background: white; border-radius: 14px; flex: 1; display: flex; flex-direction: column; overflow: hidden; min-height: 0; }
+.dot-thinking {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  padding: 4px 0;
+}
+.dot-thinking span {
+  width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.5);
+  animation: blink 1.2s ease-in-out infinite;
+}
+.dot-thinking span:nth-child(2) { animation-delay: 0.2s; }
+.dot-thinking span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes blink { 0%,80%,100% { opacity: 0.2; } 40% { opacity: 1; } }
 
-/* Empty state */
-.dot-empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; gap: 14px; }
-.dot-waiting-img { height: 72px; width: auto; opacity: 0.8; }
-.dot-waiting-bubble { background: var(--red); border-radius: 16px 16px 16px 4px; padding: 10px 16px; max-width: 190px; text-align: center; }
-.dot-waiting-bubble span { font-size: 12px; color: white; font-weight: 400; line-height: 1.5; }
+/* Options */
+.options-block {
+  background: white;
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  animation: fadeUp 0.3s ease;
+}
+.option-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 0.5px solid var(--card-border);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  font-size: 12px;
+  color: var(--ink);
+  font-weight: 400;
+}
+.option-item:hover { border-color: var(--red); background: rgba(237,28,36,0.02); }
+.option-item.selected { border-color: var(--red); background: rgba(237,28,36,0.04); }
+.option-radio {
+  width: 14px; height: 14px; border-radius: 50%;
+  border: 1.5px solid var(--card-border); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: border-color 0.15s;
+}
+.option-item.selected .option-radio { border-color: var(--red); }
+.option-item.selected .option-radio::after {
+  content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--red);
+}
 
-/* Dot's read */
-.dot-read { display: none; flex-direction: column; min-height: 0; }
-.dot-read-head { padding: 10px 14px; border-bottom: 0.5px solid var(--card-border); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
-.dot-tag { background: var(--red); border-radius: 6px 6px 6px 2px; padding: 4px 10px; display: inline-block; }
-.dot-tag span { font-size: 9px; font-weight: 700; letter-spacing: 2px; color: white; text-transform: uppercase; }
-.dot-count { font-size: 10px; color: var(--card-mid); }
-.dot-read-items { padding: 10px 14px; display: flex; flex-direction: column; gap: 7px; overflow-y: auto; flex-shrink: 0; max-height: 140px; }
-.dot-read-row { display: flex; align-items: flex-start; gap: 8px; }
-.dot-read-dot { width: 7px; height: 7px; border-radius: 50%; margin-top: 4px; flex-shrink: 0; }
-.dot-read-text { font-size: 11px; color: var(--ink); line-height: 1.55; font-weight: 300; }
-.dot-read-text strong { font-weight: 600; }
-.dot-nudge { margin: 0 14px 10px; background: #FFF8EE; border-radius: 8px; padding: 9px 12px; font-size: 11px; color: #7A4A00; line-height: 1.6; font-weight: 300; flex-shrink: 0; }
+/* Free text reply */
+.reply-row { display: flex; gap: 7px; }
+.reply-input {
+  flex: 1; background: white; border: 0.5px solid var(--card-border);
+  border-radius: 20px; padding: 8px 14px; font-size: 12px; color: var(--ink);
+  font-family: 'Inter', sans-serif; outline: none;
+}
+.reply-input::placeholder { color: var(--mid); }
+.reply-input:focus { border-color: var(--red); }
+.reply-send {
+  background: white; color: var(--red); border: 0.5px solid var(--card-border);
+  border-radius: 20px; padding: 8px 14px; font-size: 11px; font-weight: 700;
+  cursor: pointer; font-family: 'Inter', sans-serif; white-space: nowrap;
+  transition: all 0.15s;
+}
+.reply-send:hover { background: var(--red); color: white; border-color: var(--red); }
+.reply-send:disabled { opacity: 0.4; cursor: not-allowed; }
 
-/* Chat */
-.dot-chat { display: flex; flex-direction: column; flex: 1; min-height: 0; border-top: 0.5px solid var(--card-border); }
-.dot-chat-messages { flex: 1; overflow-y: auto; padding: 10px 14px; display: flex; flex-direction: column; gap: 8px; min-height: 0; }
-.chat-msg { font-size: 11px; line-height: 1.6; max-width: 88%; }
-.chat-msg.user { align-self: flex-end; background: var(--red); color: white; padding: 7px 11px; border-radius: 10px 10px 3px 10px; }
-.chat-msg.dot { align-self: flex-start; background: var(--card-bg); color: var(--ink); padding: 7px 11px; border-radius: 10px 10px 10px 3px; font-weight: 300; }
-.dot-chat-input-row { display: flex; gap: 6px; padding: 8px 14px; border-top: 0.5px solid var(--card-border); flex-shrink: 0; }
-.dot-chat-input { flex: 1; border: 0.5px solid var(--card-border); border-radius: 20px; padding: 7px 12px; font-size: 11px; font-family: 'Inter', sans-serif; color: var(--ink); outline: none; background: var(--card-bg); }
-.dot-chat-input::placeholder { color: var(--card-mid); }
-.dot-chat-input:focus { border-color: var(--red); }
-.dot-chat-send { background: var(--red); color: white; border: none; border-radius: 20px; padding: 7px 14px; font-size: 11px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; }
-.dot-chat-send:disabled { opacity: 0.4; cursor: not-allowed; }
+/* History */
+.history { display: flex; flex-direction: column; gap: 6px; }
+.history-user {
+  align-self: flex-end;
+  background: white;
+  border-radius: 12px 12px 3px 12px;
+  padding: 8px 12px;
+  font-size: 12px;
+  color: var(--ink);
+  font-weight: 400;
+  max-width: 80%;
+}
+.history-dot {
+  align-self: flex-start;
+  background: rgba(255,255,255,0.18);
+  border-radius: 12px 12px 12px 3px;
+  padding: 8px 12px;
+  font-size: 12px;
+  color: white;
+  font-weight: 300;
+  max-width: 80%;
+}
 
-/* Profile output */
-.dot-profile { display: none; flex-direction: column; flex: 1; overflow-y: auto; }
-.psec { padding: 11px 14px; border-bottom: 0.5px solid var(--card-border); flex-shrink: 0; }
+/* Ready state */
+.ready-glow { border-color: rgba(255,255,255,0.6) !important; }
+
+/* ── LET'S GO ── */
+.go-wrap {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.material-count { font-size: 11px; color: rgba(255,255,255,0.4); font-weight: 300; }
+.go-btn {
+  background: white;
+  color: var(--red);
+  border: none;
+  border-radius: 8px;
+  padding: 12px 32px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.go-btn:hover { background: #F0EDEA; }
+.go-btn:disabled { background: rgba(255,255,255,0.18); color: rgba(255,255,255,0.28); cursor: not-allowed; }
+.go-btn.ready { animation: readyPulse 2s ease-in-out infinite; }
+@keyframes readyPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(255,255,255,0.4); } 50% { box-shadow: 0 0 0 8px rgba(255,255,255,0); } }
+
+.error-msg { font-size: 11px; color: rgba(255,255,255,0.7); font-weight: 300; min-height: 14px; text-align: right; }
+
+/* ── PROFILE ── */
+.profile-zone {
+  background: white;
+  border-radius: 14px;
+  overflow: hidden;
+  margin-top: 10px;
+  animation: fadeUp 0.4s ease;
+}
+.profile-header {
+  padding: 14px 18px;
+  border-bottom: 0.5px solid var(--card-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.profile-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: 3px;
+  color: var(--ink);
+}
+.profile-title span { color: var(--red); }
+.profile-actions { display: flex; gap: 6px; }
+.pact { border: 0.5px solid var(--card-border); border-radius: 6px; padding: 5px 11px; font-size: 10px; color: var(--mid); background: none; cursor: pointer; font-family: inherit; transition: all 0.15s; }
+.pact:hover { border-color: var(--ink); color: var(--ink); }
+.pact.copied { border-color: var(--red); color: var(--red); }
+.pact-solid { background: var(--ink); color: white; border: none; border-radius: 6px; padding: 5px 11px; font-size: 10px; cursor: pointer; font-family: inherit; }
+.pact-solid:hover { background: var(--red); }
+
+.psec { padding: 12px 18px; border-bottom: 0.5px solid var(--card-border); }
 .psec:last-of-type { border-bottom: none; }
-.plbl { font-size: 8px; font-weight: 700; color: var(--red); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }
-.pbody { font-size: 11px; color: var(--ink); line-height: 1.7; font-weight: 300; }
-.ptable { width: 100%; border-collapse: collapse; margin-top: 3px; }
+.plbl { font-size: 8px; font-weight: 700; color: var(--red); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 5px; }
+.pbody { font-size: 12px; color: var(--ink); line-height: 1.75; font-weight: 300; }
+.ptable { width: 100%; border-collapse: collapse; margin-top: 4px; }
 .ptable th { font-size: 8px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; padding: 5px 8px; background: var(--ink); color: white; text-align: left; }
 .ptable td { font-size: 11px; padding: 6px 8px; border-bottom: 0.5px solid var(--card-border); font-weight: 300; color: var(--ink); line-height: 1.45; }
 .ptable tr:nth-child(even) td { background: var(--card-bg); }
 .ptable tr:last-child td { border-bottom: none; }
 .ptable td:first-child { font-weight: 500; }
-.ptable td.less { color: var(--card-mid); }
+.ptable td.less { color: var(--mid); }
 .rules-list { display: flex; flex-direction: column; gap: 4px; margin-top: 3px; }
 .rule-item { display: flex; gap: 10px; font-size: 11px; line-height: 1.5; font-weight: 300; }
-.rule-key { font-weight: 600; min-width: 110px; color: var(--ink); flex-shrink: 0; }
+.rule-key { font-weight: 600; min-width: 120px; color: var(--ink); flex-shrink: 0; }
 .rule-val { color: var(--ink); }
-.profile-actions { padding: 10px 14px; border-top: 0.5px solid var(--card-border); display: flex; gap: 6px; justify-content: flex-end; flex-shrink: 0; }
-.pact-btn { border: 0.5px solid var(--card-border); border-radius: 6px; padding: 5px 11px; font-size: 10px; color: var(--card-mid); background: none; cursor: pointer; font-family: inherit; transition: all 0.15s; }
-.pact-btn:hover { border-color: var(--ink); color: var(--ink); }
-.pact-btn.copied { border-color: var(--red); color: var(--red); }
-.pact-solid { background: var(--ink); color: white; border: none; border-radius: 6px; padding: 5px 11px; font-size: 10px; cursor: pointer; font-family: inherit; }
-.pact-solid:hover { background: var(--red); }
 
-/* Bottom padding */
-.factory-foot { padding: 10px var(--gutter) 20px; flex-shrink: 0; }
+.profile-footer {
+  padding: 10px 18px;
+  border-top: 0.5px solid var(--card-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.footer-note { font-size: 10px; color: var(--mid); }
+.start-again { font-size: 11px; color: var(--mid); text-decoration: underline; background: none; border: none; cursor: pointer; font-family: inherit; }
+.start-again:hover { color: var(--ink); }
 
-/* SCREEN 2: THINKING */
-.s2-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px; padding: 40px 32px; }
+/* ── FOOTER ── */
+.page-footer {
+  padding: 8px var(--g) 16px;
+  text-align: center;
+}
+.page-footer span { font-size: 9px; color: rgba(255,255,255,0.25); letter-spacing: 1.5px; text-transform: uppercase; }
+
+/* ── THINKING SCREEN ── */
+.thinking-screen {
+  display: none;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  padding: 40px var(--g);
+}
+.thinking-screen.active { display: flex; }
 .thinking-dot-img { height: 90px; width: auto; }
 .thinking-label { font-family: 'Bebas Neue', sans-serif; font-size: 44px; letter-spacing: 6px; color: white; animation: pulse 1s ease-in-out infinite alternate; }
 @keyframes pulse { from { opacity: 0.25; } to { opacity: 1; } }
@@ -204,185 +448,152 @@ body { font-family: 'Inter', sans-serif; background: var(--red); min-height: 100
   </div>
 </div>
 
-<!-- SCREEN 1 -->
-<div class="screen active" id="screen1">
+<!-- MAIN PAGE -->
+<div class="main" id="mainPage">
 
-  <!-- HERO: full width -->
-  <div class="s1-hero">
+  <!-- HERO -->
+  <div class="hero">
     <img src="/images/Dotandhello.png" class="dot-hero-img" alt="Dot" onerror="this.style.display='none'"/>
     <div class="hero-copy">
       <div class="hero-tag">Find your brand voice</div>
       <div class="hero-hed">Drop in your brand.<br><em>Draw out your voice.</em></div>
-      <div class="hero-sub">Share your guidelines, your brand rules and some killer examples you love. Get a one page profile and a robot prompt.</div>
+      <div class="hero-sub">Share your guidelines, brand rules and examples you love.</div>
     </div>
   </div>
 
-  <!-- FACTORY -->
-  <div class="factory">
+  <!-- INPUT ZONE -->
+  <div class="input-zone" id="inputZone">
 
-    <!-- LEFT: INPUTS -->
-    <div class="col">
-      <div class="sign-wrap">
-        <div class="sign-string"></div>
-        <div class="sign">
-          <div class="sign-eyelet"></div>
-          <div class="sign-body"><span class="sign-txt">Inputs</span></div>
+    <div class="icon-row">
+      <div class="icon-btn active" id="btn-uploads" onclick="switchTab('uploads')">
+        <div class="icircle">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 16V8M8 12l4-4 4 4"/>
+            <rect x="3" y="19" width="18" height="2.5" rx="1.2" fill="white" stroke="none"/>
+          </svg>
         </div>
+        <span class="ilbl">Uploads</span>
       </div>
-
-      <div class="input-panel">
-
-        <div class="icon-row">
-          <div class="icon-btn active" id="tab-uploads-btn" onclick="switchTab('uploads')">
-            <div class="icircle">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 16V8M8 12l4-4 4 4"/>
-                <rect x="3" y="19" width="18" height="2.5" rx="1.2" fill="white" stroke="none"/>
-              </svg>
-            </div>
-            <span class="ilbl">Uploads</span>
-          </div>
-          <div class="icon-btn" id="tab-weblinks-btn" onclick="switchTab('weblinks')">
-            <div class="icircle">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="9"/>
-                <path d="M12 3c-2.5 3-2.5 15 0 18M12 3c2.5 3 2.5 15 0 18"/>
-                <path d="M3 12h18"/>
-              </svg>
-            </div>
-            <span class="ilbl">Weblinks</span>
-          </div>
-          <div class="icon-btn" id="tab-notes-btn" onclick="switchTab('notes')">
-            <div class="icircle">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M4 6h16M4 11h16M4 16h10"/>
-                <path d="M16 18l2-2 3 3-2 2-3-3z" fill="white" stroke="white" stroke-width="0.5"/>
-              </svg>
-            </div>
-            <span class="ilbl">Notes</span>
-          </div>
+      <div class="icon-btn" id="btn-weblinks" onclick="switchTab('weblinks')">
+        <div class="icircle">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9"/>
+            <path d="M12 3c-2.5 3-2.5 15 0 18M12 3c2.5 3 2.5 15 0 18"/>
+            <path d="M3 12h18"/>
+          </svg>
         </div>
-
-        <div class="tab-panels">
-          <div class="tab-panel active" id="tab-uploads">
-            <div class="upload-drop" id="dropZone"
-              onclick="document.getElementById('fileInput').click()"
-              ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
-              <div class="upload-drop-lbl">Drop files here &nbsp;or&nbsp; <u>browse</u></div>
-              <div class="upload-drop-sub">PDF · Word</div>
-              <input type="file" id="fileInput" accept=".pdf,.doc,.docx" multiple style="display:none" onchange="handleFileSelect(event)"/>
-            </div>
-          </div>
-          <div class="tab-panel" id="tab-weblinks">
-            <div class="weblink-row">
-              <input class="weblink-input" type="text" id="weblinkInput" placeholder="https://yourbrand.com/about" onkeydown="if(event.key==='Enter') fetchWeblink()"/>
-              <button class="weblink-btn" id="weblinkBtn" onclick="fetchWeblink()">Fetch</button>
-            </div>
-            <div class="weblink-note">Dot will read the page and pull out copy. Works best with About or brand story pages.</div>
-          </div>
-          <div class="tab-panel" id="tab-notes">
-            <textarea class="notes-textarea" id="notesInput" placeholder="Paste anything — copy you love, words you hate, a brief, a rant. Dot will work with it."></textarea>
-            <button class="notes-add-btn" onclick="addNotes()">Add these notes</button>
-          </div>
+        <span class="ilbl">Weblinks</span>
+      </div>
+      <div class="icon-btn" id="btn-notes" onclick="switchTab('notes')">
+        <div class="icircle">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 6h16M4 11h16M4 16h10"/>
+            <path d="M16 18l2-2 3 3-2 2-3-3z" fill="white" stroke="white" stroke-width="0.5"/>
+          </svg>
         </div>
-
-        <div class="file-list" id="fileList"></div>
-
-        <div class="input-meta">
-          <span class="material-count" id="materialCount"></span>
-          <span class="error-msg" id="errorMsg"></span>
-        </div>
-
-        <button class="go-btn" id="goBtn" onclick="runPrompter()" disabled>LET'S GO</button>
-
+        <span class="ilbl">Notes</span>
       </div>
     </div>
 
-    <!-- RIGHT: CONSULTANCY -->
-    <div class="col">
-      <div class="sign-wrap right">
-        <div class="sign-string"></div>
-        <div class="sign">
-          <div class="sign-eyelet"></div>
-          <div class="sign-body"><span class="sign-txt">Consultancy</span></div>
-        </div>
-      </div>
-
-      <div class="consult-panel">
-
-        <!-- EMPTY: Dot waiting -->
-        <div class="dot-empty" id="dotEmpty">
-          <img src="/images/Robot.png" class="dot-waiting-img" alt="Dot" onerror="this.style.display='none'"/>
-          <div class="dot-waiting-bubble">
-            <span>What are we working on?</span>
-          </div>
-        </div>
-
-        <!-- DOT'S READ -->
-        <div class="dot-read" id="dotRead">
-          <div class="dot-read-head">
-            <div class="dot-tag"><span>Dot's read</span></div>
-            <span class="dot-count" id="dotCount"></span>
-          </div>
-          <div class="dot-read-items" id="dotReadItems"></div>
-          <div class="dot-nudge" id="dotNudge"></div>
-          <div class="dot-chat">
-            <div class="dot-chat-messages" id="chatMessages"></div>
-            <div class="dot-chat-input-row">
-              <input class="dot-chat-input" type="text" id="chatInput" placeholder="Ask Dot anything..." onkeydown="if(event.key==='Enter') sendChat()"/>
-              <button class="dot-chat-send" id="chatSend" onclick="sendChat()">Ask</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- PROFILE -->
-        <div class="dot-profile" id="dotProfile">
-          <div id="profileCard"></div>
-          <div class="profile-actions">
-            <button class="pact-btn" id="copyPromptBtn" onclick="copyPrompt()">Copy prompt</button>
-            <button class="pact-btn" id="copyBtn" onclick="copyProfile()">Copy profile</button>
-            <button class="pact-solid" onclick="downloadMd()">Download prompt</button>
-          </div>
-        </div>
-
+    <div class="tab-panel active" id="tab-uploads">
+      <div class="drop-zone" id="dropZone"
+        onclick="document.getElementById('fileInput').click()"
+        ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
+        <div class="drop-lbl">Drop files here &nbsp;or&nbsp; <u>browse</u></div>
+        <div class="drop-sub">PDF · Word</div>
+        <input type="file" id="fileInput" accept=".pdf,.doc,.docx" multiple style="display:none" onchange="handleFileSelect(event)"/>
       </div>
     </div>
+
+    <div class="tab-panel" id="tab-weblinks">
+      <div class="weblink-row">
+        <input class="weblink-input" type="text" id="weblinkInput" placeholder="https://yourbrand.com/about" onkeydown="if(event.key==='Enter') fetchWeblink()"/>
+        <button class="weblink-btn" id="weblinkBtn" onclick="fetchWeblink()">Fetch</button>
+      </div>
+      <div class="weblink-note">Dot will read the page and pull out the copy.</div>
+    </div>
+
+    <div class="tab-panel" id="tab-notes">
+      <textarea class="notes-textarea" id="notesInput" placeholder="Paste anything — copy you love, words you hate, a brief, a rant."></textarea>
+      <button class="notes-add-btn" onclick="addNotes()">Add these notes</button>
+    </div>
+
+    <div class="file-list" id="fileList"></div>
 
   </div>
-  <div class="factory-foot"></div>
+
+  <!-- CONSULTATION ZONE -->
+  <div class="consult-zone" id="consultZone" style="display:none;">
+
+    <!-- Dot's current message -->
+    <div class="dot-row" id="dotRow">
+      <img src="/images/Robot.png" class="dot-small-img" alt="Dot" onerror="this.style.display='none'"/>
+      <div class="dot-message-bubble" id="dotBubble">
+        <div class="dot-thinking" id="dotThinking">
+          <span></span><span></span><span></span>
+        </div>
+        <div class="dot-message-text" id="dotMessageText" style="display:none;"></div>
+      </div>
+    </div>
+
+    <!-- Conversation history (previous exchanges) -->
+    <div class="history" id="historyEl"></div>
+
+    <!-- Options or free text reply -->
+    <div id="responseArea"></div>
+
+  </div>
+
+  <!-- LET'S GO -->
+  <div class="go-wrap" id="goWrap" style="display:none;">
+    <span class="material-count" id="materialCount"></span>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+      <div class="error-msg" id="errorMsg"></div>
+      <button class="go-btn" id="goBtn" onclick="runExtract()" disabled>LET'S GO</button>
+    </div>
+  </div>
+
+  <!-- PROFILE -->
+  <div id="profileZone" style="display:none;"></div>
 
 </div>
 
-<!-- SCREEN 2: THINKING -->
-<div class="screen" id="screen2">
-  <div class="s2-wrap">
-    <img src="/images/Robot.png" class="thinking-dot-img" alt="Dot" onerror="this.style.display='none'"/>
-    <div class="thinking-label" id="thinkingLabel">READING</div>
-    <div class="thinking-steps">
-      <div class="thinking-step active" id="step1"><div class="step-dot"></div>Reading your material</div>
-      <div class="thinking-step" id="step2"><div class="step-dot"></div>Finding the voice</div>
-      <div class="thinking-step" id="step3"><div class="step-dot"></div>Writing the behaviours</div>
-      <div class="thinking-step" id="step4"><div class="step-dot"></div>Building the examples</div>
-      <div class="thinking-step" id="step5"><div class="step-dot"></div>Locking the house rules</div>
-    </div>
+<!-- THINKING SCREEN -->
+<div class="thinking-screen" id="thinkingScreen">
+  <img src="/images/Robot.png" class="thinking-dot-img" alt="Dot" onerror="this.style.display='none'"/>
+  <div class="thinking-label" id="thinkingLabel">READING</div>
+  <div class="thinking-steps">
+    <div class="thinking-step active" id="step1"><div class="step-dot"></div>Reading your material</div>
+    <div class="thinking-step" id="step2"><div class="step-dot"></div>Finding the voice</div>
+    <div class="thinking-step" id="step3"><div class="step-dot"></div>Writing the behaviours</div>
+    <div class="thinking-step" id="step4"><div class="step-dot"></div>Building the examples</div>
+    <div class="thinking-step" id="step5"><div class="step-dot"></div>Locking the house rules</div>
   </div>
+</div>
+
+<div class="page-footer" id="pageFooter">
+  <span>Produced by Prompter — a Hunch product</span>
 </div>
 
 <script>
 let uploadedFiles = [];
 let profileData = null;
-let chatHistory = [];
+let consultHistory = [];
 let notesCounter = 0;
+let dotReady = false;
+let selectedOption = null;
 
+// ── TABS ──────────────────────────────────────────────────
 function switchTab(name) {
   ['uploads','weblinks','notes'].forEach(t => {
     document.getElementById('tab-' + t).classList.toggle('active', t === name);
-    document.getElementById('tab-' + t + '-btn').classList.toggle('active', t === name);
+    document.getElementById('btn-' + t).classList.toggle('active', t === name);
   });
 }
 
+// ── FILE HANDLING ────────────────────────────────────────
 function handleDragOver(e) { e.preventDefault(); document.getElementById('dropZone').classList.add('drag-over'); }
-function handleDragLeave(e) { document.getElementById('dropZone').classList.remove('drag-over'); }
+function handleDragLeave() { document.getElementById('dropZone').classList.remove('drag-over'); }
 function handleDrop(e) { e.preventDefault(); document.getElementById('dropZone').classList.remove('drag-over'); uploadFiles(Array.from(e.dataTransfer.files)); }
 function handleFileSelect(e) { uploadFiles(Array.from(e.target.files)); e.target.value = ''; }
 
@@ -408,9 +619,9 @@ async function fetchWeblink() {
   const btn = document.getElementById('weblinkBtn');
   const url = input.value.trim();
   if (!url) return;
-  btn.disabled = true; btn.textContent = '...'; showError('');
+  btn.disabled = true; btn.textContent = '...';
   try {
-    const res = await fetch('/api/fetch', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ url }) });
+    const res = await fetch('/api/fetch', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({url}) });
     const data = await res.json();
     if (data.success) {
       if (!uploadedFiles.find(f => f.filename === data.filename)) uploadedFiles.push({ filename: data.filename, text: data.text, size: data.text.length });
@@ -434,125 +645,267 @@ function addNotes() {
 function removeFile(filename) {
   uploadedFiles = uploadedFiles.filter(f => f.filename !== filename);
   renderFileList();
-  if (uploadedFiles.length > 0) runReview();
-  else showDotEmpty();
+  if (!uploadedFiles.length) {
+    document.getElementById('consultZone').style.display = 'none';
+    document.getElementById('goWrap').style.display = 'none';
+    document.getElementById('goBtn').disabled = true;
+    consultHistory = [];
+    dotReady = false;
+  }
 }
 
 function afterFilesChanged() {
   renderFileList();
-  if (uploadedFiles.length > 0) runReview();
+  if (uploadedFiles.length > 0 && consultHistory.length === 0) {
+    startConsultation();
+  } else if (uploadedFiles.length > 0) {
+    updateGoBtn();
+  }
 }
 
 function renderFileList() {
   const list = document.getElementById('fileList');
-  const goBtn = document.getElementById('goBtn');
-  const count = document.getElementById('materialCount');
-  if (!uploadedFiles.length) { list.innerHTML = ''; goBtn.disabled = true; count.textContent = ''; return; }
+  if (!uploadedFiles.length) { list.innerHTML = ''; return; }
   list.innerHTML = uploadedFiles.map(f => {
     const size = f.size < 1024*1024 ? Math.round(f.size/1024) + ' KB' : (f.size/1024/1024).toFixed(1) + ' MB';
     return `<div class="file-row">
-      <div class="file-row-dot" id="dot-${CSS.escape(f.filename)}"></div>
-      <span class="file-row-name">${escHtml(f.filename)}</span>
-      <span class="file-row-size">${size}</span>
-      <button class="file-row-x" onclick="removeFile('${escHtml(f.filename)}')">&times;</button>
+      <div class="file-dot" id="fdot-${CSS.escape(f.filename)}"></div>
+      <span class="file-name">${escHtml(f.filename)}</span>
+      <span class="file-size">${size}</span>
+      <button class="file-x" onclick="removeFile('${escHtml(f.filename)}')">&times;</button>
     </div>`;
   }).join('');
-  const n = uploadedFiles.length;
-  count.textContent = `${n} piece${n !== 1 ? 's' : ''} of material`;
-  goBtn.disabled = false;
+  // Animate dots green after a moment
+  setTimeout(() => {
+    uploadedFiles.forEach(f => {
+      const dot = document.getElementById('fdot-' + CSS.escape(f.filename));
+      if (dot) dot.style.background = '#4ADE80';
+    });
+  }, 400);
 }
 
-function showDotEmpty() { document.getElementById('dotEmpty').style.display = 'flex'; document.getElementById('dotRead').style.display = 'none'; document.getElementById('dotProfile').style.display = 'none'; }
-function showDotRead() { document.getElementById('dotEmpty').style.display = 'none'; document.getElementById('dotRead').style.display = 'flex'; document.getElementById('dotProfile').style.display = 'none'; }
-function showDotProfile() { document.getElementById('dotEmpty').style.display = 'none'; document.getElementById('dotRead').style.display = 'none'; document.getElementById('dotProfile').style.display = 'flex'; }
+function updateGoBtn() {
+  const n = uploadedFiles.length;
+  document.getElementById('materialCount').textContent = `${n} piece${n !== 1 ? 's' : ''} of material`;
+  document.getElementById('goBtn').disabled = false;
+  document.getElementById('goWrap').style.display = 'flex';
+}
 
-async function runReview() {
-  showDotRead();
-  const items = document.getElementById('dotReadItems');
-  const nudge = document.getElementById('dotNudge');
-  const count = document.getElementById('dotCount');
-  count.textContent = `${uploadedFiles.length} piece${uploadedFiles.length !== 1 ? 's' : ''} in`;
-  items.innerHTML = '<div style="font-size:11px;color:#C8C4BE;padding:2px 0;">Reading your material...</div>';
-  nudge.textContent = '';
+// ── CONSULTATION ─────────────────────────────────────────
+async function startConsultation() {
+  document.getElementById('consultZone').style.display = 'flex';
+  document.getElementById('goWrap').style.display = 'flex';
+  updateGoBtn();
+  showDotThinking();
+  await runConsult();
+}
+
+async function runConsult() {
+  showDotThinking();
   try {
-    const res = await fetch('/api/review', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ files: uploadedFiles.map(f => ({ filename: f.filename, text: f.text })) }) });
+    const res = await fetch('/api/consult', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        files: uploadedFiles.map(f => ({filename: f.filename, text: f.text})),
+        history: consultHistory
+      })
+    });
     const data = await res.json();
     if (!data.success) throw new Error(data.error);
-    const colours = { good: '#4ADE80', warn: '#FCD34D', miss: '#D1D0CC' };
-    items.innerHTML = data.review.files.map(f => `
-      <div class="dot-read-row">
-        <div class="dot-read-dot" style="background:${colours[f.verdict]||colours.miss};"></div>
-        <div class="dot-read-text"><strong>${escHtml(f.filename)}</strong> — ${escHtml(f.summary)}</div>
-      </div>`).join('');
-    nudge.textContent = data.review.nudge;
-    data.review.files.forEach(f => {
-      const dot = document.getElementById('dot-' + CSS.escape(f.filename));
-      if (dot) dot.style.background = colours[f.verdict] || colours.miss;
-    });
-  } catch { items.innerHTML = '<div style="font-size:11px;color:#C8C4BE;">Could not load review.</div>'; }
+
+    // Add Dot's message to history
+    consultHistory.push({ role: 'assistant', content: data.message });
+
+    showDotMessage(data.message);
+    dotReady = data.ready;
+
+    if (dotReady) {
+      document.getElementById('goBtn').classList.add('ready');
+      renderResponseArea([], true);
+    } else {
+      renderResponseArea(data.options || [], false);
+    }
+
+  } catch (err) {
+    showDotMessage("I had trouble reading that. Try adding your material again.");
+    renderResponseArea([], false);
+  }
 }
 
-async function sendChat() {
-  const input = document.getElementById('chatInput');
-  const btn = document.getElementById('chatSend');
-  const message = input.value.trim();
-  if (!message) return;
-  appendChatMsg('user', message);
-  chatHistory.push({ role: 'user', content: message });
-  input.value = ''; btn.disabled = true;
-  try {
-    const res = await fetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ files: uploadedFiles.map(f => ({ filename: f.filename, text: f.text })), history: chatHistory.slice(-8), message }) });
-    const data = await res.json();
-    const reply = data.success ? data.reply : 'Something went wrong — try again.';
-    appendChatMsg('dot', reply);
-    chatHistory.push({ role: 'assistant', content: reply });
-  } catch { appendChatMsg('dot', 'Could not reach Dot right now.'); }
-  btn.disabled = false;
+function showDotThinking() {
+  document.getElementById('dotThinking').style.display = 'flex';
+  document.getElementById('dotMessageText').style.display = 'none';
 }
 
-function appendChatMsg(role, text) {
-  const msgs = document.getElementById('chatMessages');
-  const div = document.createElement('div');
-  div.className = `chat-msg ${role}`;
-  div.textContent = text;
-  msgs.appendChild(div);
-  msgs.scrollTop = msgs.scrollHeight;
+function showDotMessage(text) {
+  document.getElementById('dotThinking').style.display = 'none';
+  const el = document.getElementById('dotMessageText');
+  el.style.display = 'block';
+  el.textContent = text;
+  el.classList.remove('thinking');
 }
 
-function buildChatSummary() {
-  if (!chatHistory.length) return '';
-  return chatHistory.map(m => `${m.role === 'user' ? 'User' : 'Dot'}: ${m.content}`).join('\n');
+function renderResponseArea(options, ready) {
+  const area = document.getElementById('responseArea');
+  selectedOption = null;
+
+  if (ready) {
+    area.innerHTML = '';
+    return;
+  }
+
+  if (options.length > 0) {
+    area.innerHTML = `<div class="options-block" id="optionsBlock">
+      ${options.map((opt, i) => `
+        <div class="option-item" onclick="selectOption(${i}, '${escHtml(opt)}')" id="opt-${i}">
+          <div class="option-radio" id="radio-${i}"></div>
+          ${escHtml(opt)}
+        </div>`).join('')}
+      <button class="reply-send" id="confirmBtn" onclick="submitResponse()" style="margin-top:4px;border-radius:8px;width:100%;padding:9px;font-size:12px;letter-spacing:1px;" disabled>That's right</button>
+    </div>`;
+  } else {
+    area.innerHTML = `<div class="reply-row">
+      <input class="reply-input" type="text" id="replyInput" placeholder="Type your answer..." onkeydown="if(event.key==='Enter') submitResponse()"/>
+      <button class="reply-send" id="replySend" onclick="submitResponse()">Send</button>
+    </div>`;
+  }
 }
 
-async function runPrompter() {
-  if (!uploadedFiles.length) { showError('Add some material first.'); return; }
+function selectOption(idx, value) {
+  selectedOption = value;
+  document.querySelectorAll('.option-item').forEach((el, i) => {
+    el.classList.toggle('selected', i === idx);
+  });
+  const btn = document.getElementById('confirmBtn');
+  if (btn) btn.disabled = false;
+}
+
+async function submitResponse() {
+  let userReply = selectedOption;
+  if (!userReply) {
+    const input = document.getElementById('replyInput');
+    if (input) userReply = input.value.trim();
+  }
+  if (!userReply) return;
+
+  // Push to history
+  consultHistory.push({ role: 'user', content: userReply });
+
+  // Move current exchange to history display
+  const currentMsg = document.getElementById('dotMessageText').textContent;
+  addToHistory(currentMsg, userReply);
+
+  // Clear response area
+  document.getElementById('responseArea').innerHTML = '';
+
+  // Run next consult round
+  await runConsult();
+}
+
+function addToHistory(dotMsg, userMsg) {
+  const hist = document.getElementById('historyEl');
+  const dotDiv = document.createElement('div');
+  dotDiv.className = 'history-dot';
+  dotDiv.textContent = dotMsg;
+  const userDiv = document.createElement('div');
+  userDiv.className = 'history-user';
+  userDiv.textContent = userMsg;
+  hist.appendChild(dotDiv);
+  hist.appendChild(userDiv);
+}
+
+// ── EXTRACT ──────────────────────────────────────────────
+async function runExtract() {
+  if (!uploadedFiles.length) return;
   showError('');
-  document.getElementById('goBtn').disabled = true;
-  showScreen(2);
+  document.getElementById('mainPage').style.display = 'none';
+  document.getElementById('pageFooter').style.display = 'none';
+  document.getElementById('thinkingScreen').classList.add('active');
   animateSteps();
+
   try {
     const res = await fetch('/api/extract', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ files: uploadedFiles.map(f => ({ filename: f.filename, text: f.text })), chatSummary: buildChatSummary() })
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        files: uploadedFiles.map(f => ({filename: f.filename, text: f.text})),
+        history: consultHistory
+      })
     });
     const data = await res.json();
     if (!data.success) throw new Error(data.error);
     profileData = data.profile;
-    renderProfile(profileData);
-    showScreen(1);
-    showDotProfile();
+
+    document.getElementById('thinkingScreen').classList.remove('active');
+    document.getElementById('mainPage').style.display = 'flex';
+    document.getElementById('pageFooter').style.display = 'block';
+
+    // Hide input and consult zones, show profile
+    document.getElementById('inputZone').style.display = 'none';
+    document.getElementById('consultZone').style.display = 'none';
+    document.getElementById('goWrap').style.display = 'none';
+    document.getElementById('hero').style.display = 'none';
+
+    renderProfileZone(profileData);
+    document.getElementById('profileZone').style.display = 'block';
+
   } catch (err) {
-    showScreen(1);
+    document.getElementById('thinkingScreen').classList.remove('active');
+    document.getElementById('mainPage').style.display = 'flex';
+    document.getElementById('pageFooter').style.display = 'block';
     showError('Something went wrong. Try again.');
     document.getElementById('goBtn').disabled = false;
-    if (uploadedFiles.length) showDotRead();
   }
 }
 
-function showScreen(n) { document.querySelectorAll('.screen').forEach((s, i) => s.classList.toggle('active', i === n - 1)); }
-function showError(msg) { document.getElementById('errorMsg').textContent = msg; }
+function renderProfileZone(p) {
+  const bn = p.brandName || 'Brand';
+  let html = `<div class="profile-zone">
+    <div class="profile-header">
+      <div class="profile-title">YOUR <span>${escHtml(bn.toUpperCase())}</span> VOICE</div>
+      <div class="profile-actions">
+        <button class="pact" id="copyPromptBtn" onclick="copyPrompt()">Copy prompt</button>
+        <button class="pact" id="copyBtn" onclick="copyProfile()">Copy profile</button>
+        <button class="pact-solid" onclick="downloadMd()">Download prompt</button>
+      </div>
+    </div>`;
 
+  html += `<div class="psec"><div class="plbl">Brand</div><div class="pbody">${escHtml(p.brand)}</div></div>`;
+  html += `<div class="psec"><div class="plbl">Customer Feels</div><div class="pbody">${escHtml(p.customerFeels)}</div></div>`;
+  html += `<div class="psec"><div class="plbl">Behaviours</div><table class="ptable"><tr><th>We are</th><th>We are not</th></tr>${p.behaviours.map(b=>`<tr><td>${escHtml(b.we)}</td><td>${escHtml(b.not)}</td></tr>`).join('')}</table></div>`;
+  html += `<div class="psec"><div class="plbl">Examples</div><table class="ptable"><tr><th>More this</th><th>Less this</th></tr>${p.examples.map(e=>`<tr><td>${escHtml(e.more)}</td><td class="less">${escHtml(e.less)}</td></tr>`).join('')}</table></div>`;
+  html += `<div class="psec"><div class="plbl">House Rules</div><div class="rules-list">${p.houseRules.map(r=>`<div class="rule-item"><span class="rule-key">${escHtml(r.key)}</span><span class="rule-val">${escHtml(r.rule)}</span></div>`).join('')}</div></div>`;
+
+  html += `<div class="profile-footer">
+    <span class="footer-note">Produced by Prompter — a Hunch product &nbsp;·&nbsp; Review before use</span>
+    <button class="start-again" onclick="startAgain()">Start again</button>
+  </div></div>`;
+
+  document.getElementById('profileZone').innerHTML = html;
+}
+
+function startAgain() {
+  uploadedFiles = []; profileData = null; consultHistory = [];
+  notesCounter = 0; dotReady = false; selectedOption = null;
+  document.getElementById('fileList').innerHTML = '';
+  document.getElementById('historyEl').innerHTML = '';
+  document.getElementById('responseArea').innerHTML = '';
+  document.getElementById('profileZone').style.display = 'none';
+  document.getElementById('profileZone').innerHTML = '';
+  document.getElementById('inputZone').style.display = 'flex';
+  document.getElementById('consultZone').style.display = 'none';
+  document.getElementById('goWrap').style.display = 'none';
+  document.getElementById('hero').style.display = 'flex';
+  document.getElementById('goBtn').disabled = true;
+  document.getElementById('goBtn').classList.remove('ready');
+  document.getElementById('dotMessageText').style.display = 'none';
+  document.getElementById('dotThinking').style.display = 'flex';
+  showError('');
+  switchTab('uploads');
+}
+
+// ── HELPERS ──────────────────────────────────────────────
 function animateSteps() {
   const steps = ['step1','step2','step3','step4','step5'];
   const labels = ['READING','LISTENING','WRITING','EXAMPLES','LOCKING'];
@@ -564,16 +917,7 @@ function animateSteps() {
   }, 1200);
 }
 
-function renderProfile(p) {
-  const card = document.getElementById('profileCard');
-  let html = '';
-  html += `<div class="psec"><div class="plbl">Brand</div><div class="pbody">${escHtml(p.brand)}</div></div>`;
-  html += `<div class="psec"><div class="plbl">Customer Feels</div><div class="pbody">${escHtml(p.customerFeels)}</div></div>`;
-  html += `<div class="psec"><div class="plbl">Behaviours</div><table class="ptable"><tr><th>We are</th><th>We are not</th></tr>${p.behaviours.map(b=>`<tr><td>${escHtml(b.we)}</td><td>${escHtml(b.not)}</td></tr>`).join('')}</table></div>`;
-  html += `<div class="psec"><div class="plbl">Examples</div><table class="ptable"><tr><th>More this</th><th>Less this</th></tr>${p.examples.map(e=>`<tr><td>${escHtml(e.more)}</td><td class="less">${escHtml(e.less)}</td></tr>`).join('')}</table></div>`;
-  html += `<div class="psec"><div class="plbl">House Rules</div><div class="rules-list">${p.houseRules.map(r=>`<div class="rule-item"><span class="rule-key">${escHtml(r.key)}</span><span class="rule-val">${escHtml(r.rule)}</span></div>`).join('')}</div></div>`;
-  card.innerHTML = html;
-}
+function showError(msg) { document.getElementById('errorMsg').textContent = msg; }
 
 function escHtml(str) {
   if (!str) return '';
@@ -607,7 +951,7 @@ function buildPromptMd() {
 function downloadMd() {
   const md = buildPromptMd(); if (!md) return;
   const bn = (profileData && profileData.brandName) || 'brand';
-  const blob = new Blob([md], { type: 'text/markdown' });
+  const blob = new Blob([md], {type:'text/markdown'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a'); a.href = url;
   a.download = bn.toLowerCase().replace(/\s+/g,'-') + '-voice-prompt.md';
@@ -621,6 +965,10 @@ function copyPrompt() {
     setTimeout(() => { btn.textContent = 'Copy prompt'; btn.classList.remove('copied'); }, 2000);
   });
 }
+
+// Fix hero reference
+document.querySelector('.hero').id = 'hero';
 </script>
+
 </body>
 </html>

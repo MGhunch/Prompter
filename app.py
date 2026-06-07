@@ -1,7 +1,7 @@
 """
-Prompter v4
-Two-column layout. Dot chat in right panel.
-Brand name inferred. Upload / fetch / notes / chat / extract.
+Prompter v5
+Single-stage consultation model.
+Dot reads material, asks targeted questions, builds profile through conversation.
 """
 
 from flask import Flask, jsonify, request, send_from_directory
@@ -18,43 +18,45 @@ CORS(app)
 
 ANTHROPIC_API_KEY = os.environ.get('ANTHROPIC_API_KEY')
 
-EXTRACT_PROMPT = """You are the Prompter InputBot. Read brand material and produce a structured one-page brand profile.
+CONSULT_PROMPT = """You are Dot — brand voice consultant at Hunch. Sharp, warm, a little cheeky. You've just read some brand material and you're going to have a focused conversation to fill the gaps before building a voice profile.
 
-This document will be used by both humans and AI to write on-brand communications. Write with precision, not length. If it doesn't change how something gets written, leave it out.
+Your hidden brief: before you can build a great profile you need to establish:
+1. The true tone character (not what they say it is — what their actual writing shows)
+2. Any tension between stated voice and real examples
+3. Who the reader actually is and how they should feel
+4. One or two critical house rules that aren't obvious from the material
 
-Output a JSON object with these exact keys: brandName, brand, customerFeels, behaviours, examples, houseRules.
+Work through these naturally — one observation at a time. Don't mention this list to the user. Don't ask more than one thing per turn. Stop when you have enough (usually 2-4 exchanges).
 
-BRAND_NAME: Infer from the material. Just the name. If unclear, use "Unknown Brand".
+Your response must be a JSON object with these exact keys:
+- message: your observation and question (2-4 sentences max, plain English, no bullet points, warm and direct)
+- options: array of 2-4 short answer options IF the question has clear options, otherwise empty array []
+- ready: true if you now have enough to build an excellent profile, false otherwise
 
-BRAND: One short paragraph. Who this brand is, what they stand for, what that means for the writing. End with a single direction sentence. Maximum four sentences.
+The first message should demonstrate you actually read the material — reference something specific from it. That's the moment that earns trust.
 
-CUSTOMER_FEELS: One short paragraph. The reader's emotional state after reading — not the brand's intention. Maximum three sentences.
+When ready is true, your message should be a brief warm confirmation that you have what you need — something like "Right, I think I've got a good picture. Hit Let's Go when you're ready."
 
-BEHAVIOURS: Array of exactly five objects with keys "we" and "not". Specific paired contrasts true to this brand only. No generic pairs.
-
-EXAMPLES: Array of exactly five objects with keys "more" and "less". Real sentences — brand voice on left, generic on right.
-
-HOUSE_RULES: Array of objects with keys "key" and "rule". No cap. Each rule specific and binary.
-
-For insufficient material use "[DON'T KNOW YET — reason]". Never guess. Never pad.
-Ignore: photography, logos, colours, internal values, mission statements.
-Respond ONLY with valid JSON. No markdown. No backticks. No preamble."""
-
-REVIEW_PROMPT = """You are Dot. Give a quick, honest, chatty read on brand material. One sentence per file — plain English, no jargon. Sound like a smart colleague, not a report.
-
-Output JSON with:
-- files: array of {filename, verdict (good|warn|miss), summary (one punchy sentence)}
-- nudge: one sentence. Warm, specific, direct. What one thing would make this better?
+Format options as short plain phrases — 3-6 words each. No punctuation at the end.
 
 Respond ONLY with valid JSON. No markdown. No backticks. No preamble."""
 
-DOT_CHAT_PROMPT = """You are Dot — brand voice consultant at Hunch. Sharp, curious, a little cheeky. You love a good brief and hate waffle.
+EXTRACT_PROMPT = """You are the Prompter InputBot. Read brand material and conversation notes, then produce a structured one-page brand profile.
 
-You're looking at brand material someone just shared. Be genuinely useful — read what's there, spot what's missing, ask good questions, give honest opinions. You're a consultant having a real conversation, not a chatbot giving a report.
+Used by both humans and AI to write on-brand communications. Write with precision not length. If it doesn't change how something gets written, leave it out.
 
-One or two sentences. No bullet points. No preamble. Just talk. If something's interesting, say so. If something's weak, say it nicely. If you need more, ask for it.
+Output a JSON object: brandName, brand, customerFeels, behaviours, examples, houseRules.
 
-You are NOT generating the profile yet — that happens when they hit LET'S GO. Right now you're just having a good conversation."""
+BRAND_NAME: Infer from material. Just the name. If unclear: "Unknown Brand".
+BRAND: Who they are, what that means for the writing. End with a direction sentence. Max 4 sentences.
+CUSTOMER_FEELS: Reader's emotional state after reading. Not the brand's intention. Max 3 sentences.
+BEHAVIOURS: Exactly 5 objects {we, not}. Specific to this brand. No generic pairs.
+EXAMPLES: Exactly 5 objects {more, less}. Real sentences. Brand voice left, generic right.
+HOUSE_RULES: Objects {key, rule}. No cap. Specific and binary.
+
+For gaps: "[DON'T KNOW YET — reason]". Never guess. Never pad.
+Ignore: photography, logos, colours, values, mission statements.
+Respond ONLY with valid JSON. No markdown. No backticks. No preamble."""
 
 
 def extract_text_from_pdf(file_bytes):
@@ -137,44 +139,14 @@ def fetch_url():
         return jsonify({'error': str(e)}), 500
 
 
-@app.route('/api/review', methods=['POST'])
-def review():
-    data = request.get_json() or {}
-    files = data.get('files', [])
-    if not files:
-        return jsonify({'error': 'No files to review'}), 400
-    if not ANTHROPIC_API_KEY:
-        return jsonify({'error': 'API key not configured'}), 500
-    try:
-        client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
-        file_summaries = [f"--- FILE: {f['filename']} ---\n{f['text'][:2000]}" for f in files]
-        user_content = "Brand files to review:\n\n" + "\n\n".join(file_summaries)
-        message = client.messages.create(
-            model="claude-sonnet-4-20250514",
-            max_tokens=1024,
-            system=REVIEW_PROMPT,
-            messages=[{'role': 'user', 'content': user_content}]
-        )
-        raw = message.content[0].text
-        clean = raw.replace('```json', '').replace('```', '').strip()
-        return jsonify({'success': True, 'review': json.loads(clean)})
-    except json.JSONDecodeError as e:
-        print(f'[Prompter] Review JSON error: {e}')
-        return jsonify({'error': 'Could not parse review response'}), 500
-    except Exception as e:
-        print(f'[Prompter] Review error: {e}')
-        return jsonify({'error': str(e)}), 500
-
-
-@app.route('/api/chat', methods=['POST'])
-def chat():
+@app.route('/api/consult', methods=['POST'])
+def consult():
     data = request.get_json() or {}
     files = data.get('files', [])
     history = data.get('history', [])
-    message = (data.get('message') or '').strip()
 
-    if not message:
-        return jsonify({'error': 'No message provided'}), 400
+    if not files:
+        return jsonify({'error': 'No files provided'}), 400
     if not ANTHROPIC_API_KEY:
         return jsonify({'error': 'API key not configured'}), 500
 
@@ -182,34 +154,44 @@ def chat():
         client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
 
         # Build file context
-        file_context = ""
-        if files:
-            file_context = "\n\nFiles the user has shared:\n"
-            for f in files:
-                file_context += f"\n--- {f['filename']} ---\n{f['text'][:1500]}\n"
-        else:
-            file_context = "\n\nThe user hasn't shared any files yet."
+        file_context = "Brand material provided:\n\n"
+        for f in files:
+            file_context += f"--- {f['filename']} ---\n{f['text'][:3000]}\n\n"
 
-        system = DOT_CHAT_PROMPT + file_context
+        system = CONSULT_PROMPT + "\n\n" + file_context
 
         # Build message history
         messages = []
         for h in history:
             messages.append({'role': h['role'], 'content': h['content']})
-        messages.append({'role': 'user', 'content': message})
+
+        # If no history, trigger first observation
+        if not messages:
+            messages = [{'role': 'user', 'content': 'Please read the material and start.'}]
 
         response = client.messages.create(
             model="claude-sonnet-4-20250514",
-            max_tokens=512,
+            max_tokens=600,
             system=system,
             messages=messages
         )
 
-        reply = response.content[0].text
-        return jsonify({'success': True, 'reply': reply})
+        raw = response.content[0].text
+        clean = raw.replace('```json', '').replace('```', '').strip()
+        result = json.loads(clean)
 
+        return jsonify({
+            'success': True,
+            'message': result.get('message', ''),
+            'options': result.get('options', []),
+            'ready': result.get('ready', False)
+        })
+
+    except json.JSONDecodeError as e:
+        print(f'[Prompter] Consult JSON error: {e}')
+        return jsonify({'error': 'Could not parse response'}), 500
     except Exception as e:
-        print(f'[Prompter] Chat error: {e}')
+        print(f'[Prompter] Consult error: {e}')
         return jsonify({'error': str(e)}), 500
 
 
@@ -217,27 +199,37 @@ def chat():
 def extract():
     data = request.get_json() or {}
     files = data.get('files', [])
+    history = data.get('history', [])
+
     if not files:
         return jsonify({'error': 'No content provided'}), 400
     if not ANTHROPIC_API_KEY:
         return jsonify({'error': 'API key not configured'}), 500
+
     try:
         client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
-        chat_summary = data.get('chatSummary', '')
+
         labelled = [f"--- SOURCE: {f['filename']} ---\n{f['text']}" for f in files]
-        if chat_summary:
-            labelled.append(f"--- CONSULTANT CONVERSATION NOTES ---\n{chat_summary}")
         user_content = "\n\n".join(labelled)
-        message = client.messages.create(
+
+        # Inject consultation history as context
+        if history:
+            convo = "\n".join([f"{'Dot' if h['role']=='assistant' else 'User'}: {h['content']}" for h in history])
+            user_content += f"\n\n--- CONSULTATION NOTES ---\n{convo}"
+
+        response = client.messages.create(
             model="claude-sonnet-4-20250514",
             max_tokens=1500,
             system=EXTRACT_PROMPT,
             messages=[{'role': 'user', 'content': user_content}]
         )
-        raw = message.content[0].text
+
+        raw = response.content[0].text
         clean = raw.replace('```json', '').replace('```', '').strip()
         profile = json.loads(clean)
+
         return jsonify({'success': True, 'profile': profile, 'brandName': profile.get('brandName', 'Brand')})
+
     except json.JSONDecodeError as e:
         print(f'[Prompter] Extract JSON error: {e}')
         return jsonify({'error': 'Could not parse AI response'}), 500
