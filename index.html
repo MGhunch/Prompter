@@ -34,7 +34,7 @@ body { font-family: 'Inter', sans-serif; background: var(--red); min-height: 100
 
 /* DOT OPENING */
 .dot-opening {
-  display: flex; align-items: flex-end; gap: 12px; margin-top: 12px; margin-bottom: 4px;
+  display: flex; align-items: flex-end; gap: 12px; margin-top: 14px; margin-bottom: 4px;
 }
 .dot-open-img { height: 48px; width: auto; flex-shrink: 0; }
 .dot-open-bubble {
@@ -233,14 +233,6 @@ body { font-family: 'Inter', sans-serif; background: var(--red); min-height: 100
     <img src="/images/Dot_Hello.png" class="dot-hero-img" alt="Dot" onerror="this.style.display='none'"/>
   </div>
 
-  <!-- DOT OPENS FIRST -->
-  <div class="dot-opening" id="dotOpening">
-    <img src="/images/Dot_White.png" class="dot-open-img" alt="Dot" onerror="this.style.display='none'"/>
-    <div class="dot-open-bubble">
-      <div class="dot-open-text" id="dotOpenText">...</div>
-    </div>
-  </div>
-
   <!-- INPUT ZONE -->
   <div class="input-zone" id="inputZone">
     <div class="icon-row">
@@ -296,6 +288,14 @@ body { font-family: 'Inter', sans-serif; background: var(--red); min-height: 100
     </div>
 
     <div class="file-list" id="fileList"></div>
+  </div>
+
+  <!-- DOT OPENS FIRST -->
+  <div class="dot-opening" id="dotOpening">
+    <img src="/images/Dot_White.png" class="dot-open-img" alt="Dot" onerror="this.style.display='none'"/>
+    <div class="dot-open-bubble">
+      <div class="dot-open-text" id="dotOpenText">...</div>
+    </div>
   </div>
 
   <!-- CONSULTATION ZONE -->
@@ -374,7 +374,7 @@ window.addEventListener('load', async () => {
       document.getElementById('dotOpenText').textContent = data.message;
     }
   } catch {
-    document.getElementById('dotOpenText').textContent = "How you talk is who you are. Drop in your guidelines, some copy you love, a website — whatever you've got.";
+    document.getElementById('dotOpenText').textContent = "How you talk is who you are. Drop in an example and let's chat.";
   }
 });
 

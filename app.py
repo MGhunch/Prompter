@@ -280,7 +280,7 @@ def summarise():
 def opening():
     return jsonify({
         'success': True,
-        'message': "How you talk is who you are. Drop in your guidelines, some copy you love, a website — whatever you've got. The more real examples the better."
+        'message': "How you talk is who you are. Drop in an example and let's chat."
     })
 
 
