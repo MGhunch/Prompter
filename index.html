@@ -20,42 +20,26 @@
 
 body {
   font-family: 'Inter', sans-serif;
+  background: var(--red);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: var(--red);
 }
 
 /* ── TOPBAR ── */
 .topbar {
   background: white;
-  padding: 14px 32px;
+  padding: 13px 32px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-shrink: 0;
 }
 
-.hai-logo {
-  height: 28px;
-  width: auto;
-}
+.hai-logo { height: 26px; width: auto; }
 
-.suite-nav {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.suite-item {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: #C8C4BE;
-  cursor: default;
-}
-
+.suite-nav { display: flex; align-items: center; gap: 10px; }
+.suite-item { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: #C8C4BE; }
 .suite-item.active { color: var(--ink); }
 .suite-div { color: #D8D5D0; font-size: 11px; }
 
@@ -65,336 +49,294 @@ body {
 
 /* ── SCREEN 1 ── */
 .s1-hero {
+  padding: 10px 32px 0;
   display: flex;
   align-items: flex-end;
-  padding: 0 40px;
-  gap: 0;
+  gap: 8px;
 }
 
-.dot-hero-img {
-  height: 200px;
-  width: auto;
-  flex-shrink: 0;
+.dot-hero-img { height: 120px; width: auto; flex-shrink: 0; }
+
+.hero-copy { padding-bottom: 16px; padding-left: 10px; }
+.hero-tag { font-size: 10px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.38); margin-bottom: 8px; }
+.hero-hed { font-family: 'Bebas Neue', sans-serif; font-size: 44px; letter-spacing: 2px; color: white; line-height: 0.95; margin-bottom: 8px; }
+.hero-hed em { font-style: normal; opacity: 0.35; }
+.hero-sub { font-size: 12px; color: rgba(255,255,255,0.48); line-height: 1.65; font-weight: 300; max-width: 300px; }
+
+/* ── FACTORY ── */
+.factory {
+  display: flex;
+  flex: 1;
+  padding: 4px 32px 0;
+  gap: 16px;
+  min-height: 0;
 }
 
-.hero-copy {
-  padding-bottom: 32px;
-  padding-left: 16px;
-}
+.col { display: flex; flex-direction: column; flex: 1; min-width: 0; }
 
-.hero-tag {
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: rgba(255,255,255,0.4);
-  margin-bottom: 12px;
-}
+/* Hanging signs */
+.sign-wrap { display: flex; flex-direction: column; align-items: flex-start; margin-bottom: 6px; padding-left: 14px; }
+.sign-wrap.right { align-items: flex-end; padding-left: 0; padding-right: 14px; }
+.sign-string { width: 1px; height: 16px; background: rgba(255,255,255,0.3); margin-left: 16px; }
+.sign-wrap.right .sign-string { margin-left: 0; margin-right: 16px; }
+.sign { position: relative; display: inline-flex; align-items: center; }
+.sign-eyelet { position: absolute; top: -4px; left: 50%; transform: translateX(-50%); width: 6px; height: 6px; border-radius: 50%; background: var(--red); border: 1.5px solid rgba(255,255,255,0.5); z-index: 1; }
+.sign-body { background: white; border-radius: 5px; padding: 5px 12px; }
+.sign-body::after { content:''; position:absolute; right:-9px; top:50%; transform:translateY(-50%); border-left:9px solid white; border-top:12px solid transparent; border-bottom:12px solid transparent; }
+.sign-wrap.right .sign-body::after { display:none; }
+.sign-wrap.right .sign-body::before { content:''; position:absolute; left:-9px; top:50%; transform:translateY(-50%); border-right:9px solid white; border-top:12px solid transparent; border-bottom:12px solid transparent; }
+.sign-txt { font-size: 10px; font-weight: 800; letter-spacing: 3px; color: var(--red); text-transform: uppercase; }
 
-.hero-headline {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 52px;
-  letter-spacing: 2px;
-  color: white;
-  line-height: 0.95;
-  margin-bottom: 14px;
-}
-
-.hero-headline em {
-  font-style: normal;
-  opacity: 0.38;
-}
-
-.hero-sub {
-  font-size: 13px;
-  color: rgba(255,255,255,0.55);
-  line-height: 1.7;
-  max-width: 320px;
-  font-weight: 300;
-}
-
-.s1-body {
-  padding: 4px 40px 48px;
+/* ── LEFT: INPUT PANEL ── */
+.input-panel {
+  background: rgba(0,0,0,0.12);
+  border-radius: 14px;
+  flex: 1;
+  padding: 14px;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  max-width: 720px;
-  width: 100%;
+  min-height: 0;
 }
 
-/* ── INPUT TABS ── */
-.input-tabs {
-  display: flex;
-  gap: 0;
-  background: rgba(0,0,0,0.15);
-  border-radius: 12px 12px 0 0;
-  overflow: hidden;
-}
+.icon-row { display: flex; gap: 12px; flex-shrink: 0; }
 
-.input-tab {
-  flex: 1;
-  padding: 11px 16px;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: rgba(255,255,255,0.4);
-  cursor: pointer;
-  text-align: center;
-  border-bottom: 2px solid transparent;
-  transition: all 0.15s;
-}
+.icon-btn { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; opacity: 0.42; transition: opacity 0.15s, transform 0.15s; }
+.icon-btn.active { opacity: 1; }
+.icon-btn:hover { opacity: 0.72; transform: translateY(-1px); }
+.icon-btn.active:hover { transform: translateY(-1px); }
 
-.input-tab.active {
-  color: white;
-  border-bottom-color: white;
-  background: rgba(255,255,255,0.08);
-}
-
-.input-tab:hover:not(.active) {
-  color: rgba(255,255,255,0.65);
-}
+.icircle { width: 48px; height: 48px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.ilbl { font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: white; }
 
 /* Tab panels */
-.tab-panels {
-  background: rgba(0,0,0,0.12);
-  border-radius: 0 0 12px 12px;
-  overflow: hidden;
-}
-
+.tab-panels { flex-shrink: 0; }
 .tab-panel { display: none; }
-.tab-panel.active { display: block; }
+.tab-panel.active { display: flex; flex-direction: column; gap: 8px; }
 
-/* UPLOADS panel */
+/* Upload drop */
 .upload-drop {
-  border: 2px dashed rgba(255,255,255,0.22);
+  border: 1.5px dashed rgba(255,255,255,0.2);
   border-radius: 10px;
-  margin: 16px;
-  padding: 28px 20px;
+  padding: 14px 16px;
   text-align: center;
   cursor: pointer;
   transition: border-color 0.15s, background 0.1s;
 }
+.upload-drop:hover, .upload-drop.drag-over { border-color: rgba(255,255,255,0.55); background: rgba(255,255,255,0.04); }
+.upload-drop-lbl { font-size: 12px; font-weight: 500; color: white; margin-bottom: 2px; }
+.upload-drop-lbl u { opacity: 0.55; }
+.upload-drop-sub { font-size: 9px; color: rgba(255,255,255,0.28); letter-spacing: 2px; text-transform: uppercase; }
 
-.upload-drop:hover,
-.upload-drop.drag-over {
-  border-color: rgba(255,255,255,0.6);
-  background: rgba(255,255,255,0.05);
-}
-
-.upload-drop-icon {
-  font-size: 26px;
-  color: rgba(255,255,255,0.4);
-  margin-bottom: 8px;
-}
-
-.upload-drop-label {
-  font-size: 13px;
-  font-weight: 500;
-  color: white;
-  margin-bottom: 3px;
-}
-
-.upload-drop-label u { opacity: 0.55; }
-
-.upload-drop-types {
-  font-size: 10px;
-  color: rgba(255,255,255,0.3);
-  letter-spacing: 2px;
-  text-transform: uppercase;
-}
-
-/* WEBLINKS panel */
-.weblink-wrap {
-  padding: 18px 16px;
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
+/* Weblink */
+.weblink-row { display: flex; gap: 7px; }
 .weblink-input {
   flex: 1;
-  background: rgba(255,255,255,0.12);
-  border: 0.5px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.1);
+  border: 0.5px solid rgba(255,255,255,0.18);
   border-radius: 8px;
-  padding: 10px 14px;
-  font-size: 13px;
+  padding: 9px 12px;
+  font-size: 12px;
   color: white;
   font-family: 'Inter', sans-serif;
   outline: none;
-  transition: border-color 0.15s;
 }
-
-.weblink-input::placeholder { color: rgba(255,255,255,0.28); }
-.weblink-input:focus { border-color: rgba(255,255,255,0.55); }
-
+.weblink-input::placeholder { color: rgba(255,255,255,0.25); }
+.weblink-input:focus { border-color: rgba(255,255,255,0.45); }
 .weblink-btn {
   background: white;
   color: var(--red);
   border: none;
   border-radius: 8px;
-  padding: 10px 18px;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 1px;
+  padding: 9px 14px;
+  font-size: 11px;
+  font-weight: 700;
   cursor: pointer;
   font-family: 'Inter', sans-serif;
   white-space: nowrap;
-  transition: background 0.15s;
 }
-
-.weblink-btn:hover { background: #F0EDEA; }
 .weblink-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.weblink-note { font-size: 10px; color: rgba(255,255,255,0.3); line-height: 1.5; }
 
-.weblink-note {
-  padding: 0 16px 14px;
-  font-size: 11px;
-  color: rgba(255,255,255,0.35);
-  line-height: 1.5;
-}
-
-/* NOTES panel */
-.notes-wrap {
-  padding: 4px 16px 16px;
-}
-
+/* Notes */
 .notes-textarea {
   width: 100%;
-  min-height: 130px;
+  min-height: 80px;
   background: rgba(255,255,255,0.08);
   border: 0.5px solid rgba(255,255,255,0.15);
   border-radius: 8px;
-  padding: 14px 16px;
-  font-size: 13px;
+  padding: 10px 12px;
+  font-size: 12px;
   color: white;
   font-family: 'Inter', sans-serif;
   font-weight: 300;
   resize: none;
   outline: none;
-  line-height: 1.7;
+  line-height: 1.65;
   caret-color: white;
-  transition: border-color 0.15s;
 }
-
-.notes-textarea::placeholder { color: rgba(255,255,255,0.25); }
-.notes-textarea:focus { border-color: rgba(255,255,255,0.4); }
-
-.notes-footer {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 8px;
-}
-
+.notes-textarea::placeholder { color: rgba(255,255,255,0.22); }
 .notes-add-btn {
   background: white;
   color: var(--red);
   border: none;
   border-radius: 8px;
-  padding: 8px 18px;
+  padding: 7px 16px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  align-self: flex-end;
+}
+
+/* File list */
+.file-list { display: flex; flex-direction: column; gap: 5px; overflow-y: auto; flex: 1; min-height: 0; }
+.file-row { display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.12); border-radius: 8px; padding: 7px 10px; flex-shrink: 0; }
+.file-row-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.file-row-name { font-size: 12px; font-weight: 500; color: white; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.file-row-size { font-size: 10px; color: rgba(255,255,255,0.3); flex-shrink: 0; }
+.file-row-x { font-size: 14px; color: rgba(255,255,255,0.25); cursor: pointer; background: none; border: none; padding: 0; line-height: 1; font-family: inherit; transition: color 0.15s; }
+.file-row-x:hover { color: white; }
+
+/* ── RIGHT: DOT PANEL ── */
+.dot-panel {
+  background: white;
+  border-radius: 14px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* Empty state — Dot waiting */
+.dot-empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  gap: 12px;
+}
+
+.dot-waiting-img { height: 80px; width: auto; opacity: 0.85; }
+
+.dot-waiting-bubble {
+  background: var(--red);
+  border-radius: 16px 16px 16px 4px;
+  padding: 10px 16px;
+  max-width: 200px;
+  text-align: center;
+}
+
+.dot-waiting-bubble span {
   font-size: 12px;
+  color: white;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+/* Dot's read state */
+.dot-read { display: none; flex-direction: column; flex: 1; min-height: 0; }
+.dot-read-head { padding: 10px 14px; border-bottom: 0.5px solid var(--card-border); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+.dot-read-bubble { background: var(--red); border-radius: 8px 8px 8px 2px; padding: 4px 10px; display: inline-block; }
+.dot-read-bubble span { font-size: 9px; font-weight: 700; letter-spacing: 2px; color: white; text-transform: uppercase; }
+.dot-read-count { font-size: 10px; color: var(--card-mid); letter-spacing: 0.5px; }
+
+.dot-read-items { padding: 10px 14px; display: flex; flex-direction: column; gap: 7px; overflow-y: auto; flex: 1; }
+.dot-read-row { display: flex; align-items: flex-start; gap: 8px; flex-shrink: 0; }
+.dot-read-dot { width: 7px; height: 7px; border-radius: 50%; margin-top: 4px; flex-shrink: 0; }
+.dot-read-text { font-size: 11px; color: var(--ink); line-height: 1.55; font-weight: 300; }
+.dot-read-text strong { font-weight: 600; }
+
+.dot-nudge { margin: 0 14px 10px; background: #FFF8EE; border-radius: 8px; padding: 9px 12px; font-size: 11px; color: #7A4A00; line-height: 1.6; font-weight: 300; flex-shrink: 0; }
+
+/* Chat */
+.dot-chat { border-top: 0.5px solid var(--card-border); display: flex; flex-direction: column; flex-shrink: 0; max-height: 200px; }
+.dot-chat-messages { flex: 1; overflow-y: auto; padding: 10px 14px; display: flex; flex-direction: column; gap: 7px; min-height: 0; }
+.chat-msg { font-size: 11px; line-height: 1.55; max-width: 90%; }
+.chat-msg.user { align-self: flex-end; background: var(--red); color: white; padding: 6px 10px; border-radius: 10px 10px 3px 10px; font-weight: 400; }
+.chat-msg.dot { align-self: flex-start; background: var(--card-bg); color: var(--ink); padding: 6px 10px; border-radius: 10px 10px 10px 3px; font-weight: 300; }
+.dot-chat-input-row { display: flex; gap: 6px; padding: 8px 14px; border-top: 0.5px solid var(--card-border); flex-shrink: 0; }
+.dot-chat-input {
+  flex: 1;
+  border: 0.5px solid var(--card-border);
+  border-radius: 20px;
+  padding: 7px 12px;
+  font-size: 11px;
+  font-family: 'Inter', sans-serif;
+  color: var(--ink);
+  outline: none;
+  background: var(--card-bg);
+}
+.dot-chat-input::placeholder { color: var(--card-mid); }
+.dot-chat-input:focus { border-color: var(--red); }
+.dot-chat-send {
+  background: var(--red);
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 7px 14px;
+  font-size: 11px;
   font-weight: 600;
-  letter-spacing: 1px;
   cursor: pointer;
   font-family: 'Inter', sans-serif;
 }
+.dot-chat-send:disabled { opacity: 0.4; cursor: not-allowed; }
 
-.notes-add-btn:hover { background: #F0EDEA; }
+/* Profile output state */
+.dot-profile { display: none; flex-direction: column; flex: 1; overflow-y: auto; }
+.psec { padding: 11px 14px; border-bottom: 0.5px solid var(--card-border); flex-shrink: 0; }
+.psec:last-of-type { border-bottom: none; }
+.plbl { font-size: 8px; font-weight: 700; color: var(--red); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }
+.pbody { font-size: 11px; color: var(--ink); line-height: 1.7; font-weight: 300; }
+.ptable { width: 100%; border-collapse: collapse; margin-top: 3px; }
+.ptable th { font-size: 8px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; padding: 5px 8px; background: var(--ink); color: white; text-align: left; }
+.ptable td { font-size: 11px; padding: 6px 8px; border-bottom: 0.5px solid var(--card-border); font-weight: 300; color: var(--ink); line-height: 1.45; }
+.ptable tr:nth-child(even) td { background: var(--card-bg); }
+.ptable tr:last-child td { border-bottom: none; }
+.ptable td:first-child { font-weight: 500; }
+.ptable td.less { color: var(--card-mid); }
+.rules-list { display: flex; flex-direction: column; gap: 4px; margin-top: 3px; }
+.rule-item { display: flex; gap: 10px; font-size: 11px; line-height: 1.5; font-weight: 300; }
+.rule-key { font-weight: 600; min-width: 110px; color: var(--ink); flex-shrink: 0; }
+.rule-val { color: var(--ink); }
 
-/* ── FILE LIST ── */
-.file-list {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
+.profile-actions { padding: 10px 14px; border-top: 0.5px solid var(--card-border); display: flex; gap: 6px; justify-content: flex-end; flex-shrink: 0; }
+.pact-btn { border: 0.5px solid var(--card-border); border-radius: 6px; padding: 5px 11px; font-size: 10px; color: var(--card-mid); background: none; cursor: pointer; font-family: inherit; transition: all 0.15s; }
+.pact-btn:hover { border-color: var(--ink); color: var(--ink); }
+.pact-btn.copied { border-color: var(--red); color: var(--red); }
+.pact-solid { background: var(--ink); color: white; border: none; border-radius: 6px; padding: 5px 11px; font-size: 10px; cursor: pointer; font-family: inherit; transition: background 0.15s; }
+.pact-solid:hover { background: var(--red); }
 
-.file-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: rgba(0,0,0,0.12);
-  border-radius: 10px;
-  padding: 10px 14px;
-}
-
-.file-row-icon { font-size: 16px; color: rgba(255,255,255,0.55); flex-shrink: 0; }
-.file-row-name { font-size: 13px; font-weight: 500; color: white; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.file-row-size { font-size: 11px; color: rgba(255,255,255,0.32); flex-shrink: 0; }
-.file-row-remove { font-size: 16px; color: rgba(255,255,255,0.28); cursor: pointer; flex-shrink: 0; background: none; border: none; font-family: inherit; padding: 0; line-height: 1; transition: color 0.15s; }
-.file-row-remove:hover { color: white; }
-
-/* ── REVIEW CARD ── */
-.review-card {
-  background: rgba(0,0,0,0.14);
-  border-radius: 14px;
-  overflow: hidden;
-}
-
-.review-header {
-  padding: 10px 16px;
-  border-bottom: 0.5px solid rgba(255,255,255,0.1);
-}
-
-.review-bubble {
-  background: white;
-  border-radius: 10px 10px 10px 3px;
-  display: inline-block;
-  padding: 4px 12px;
-}
-
-.review-bubble span {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 2px;
-  color: var(--red);
-  text-transform: uppercase;
-}
-
-.review-items { padding: 12px 16px; display: flex; flex-direction: column; gap: 8px; }
-.review-row { display: flex; align-items: flex-start; gap: 10px; }
-.review-verdict { width: 8px; height: 8px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
-.review-verdict.good { background: #4ADE80; }
-.review-verdict.warn { background: #FCD34D; }
-.review-verdict.miss { background: rgba(255,255,255,0.35); }
-.review-summary { font-size: 12px; color: rgba(255,255,255,0.78); font-weight: 300; line-height: 1.55; }
-.review-summary strong { font-weight: 600; color: white; }
-.review-nudge { margin: 0 16px 14px; background: rgba(0,0,0,0.14); border-radius: 8px; padding: 10px 14px; font-size: 12px; color: rgba(255,255,255,0.62); line-height: 1.65; font-weight: 300; }
-
-/* ── CTA ROW ── */
-.cta-row {
+/* ── BOTTOM BAR ── */
+.bottom-bar {
+  padding: 12px 32px 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-shrink: 0;
 }
 
-.material-count {
-  font-size: 12px;
-  color: rgba(255,255,255,0.4);
-  font-weight: 300;
-}
+.material-count { font-size: 12px; color: rgba(255,255,255,0.38); font-weight: 300; }
 
 .go-btn {
   background: white;
   color: var(--red);
   border: none;
   border-radius: 8px;
-  padding: 12px 32px;
+  padding: 11px 32px;
   font-family: 'Bebas Neue', sans-serif;
   font-size: 22px;
   letter-spacing: 4px;
   cursor: pointer;
   transition: all 0.15s;
 }
-
 .go-btn:hover { background: #F0EDEA; }
-.go-btn:disabled { background: rgba(255,255,255,0.18); color: rgba(255,255,255,0.3); cursor: not-allowed; }
+.go-btn:disabled { background: rgba(255,255,255,0.18); color: rgba(255,255,255,0.28); cursor: not-allowed; }
 
-.error-msg {
-  font-size: 12px;
-  color: rgba(255,255,255,0.7);
-  text-align: center;
-  font-weight: 300;
-  min-height: 18px;
-}
+.error-msg { font-size: 11px; color: rgba(255,255,255,0.65); font-weight: 300; min-height: 16px; }
 
 /* ── SCREEN 2: THINKING ── */
 .s2-wrap {
@@ -403,142 +345,21 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 22px;
   padding: 40px 32px;
-  gap: 24px;
 }
 
-.thinking-dot-img { height: 100px; width: auto; }
-
-.thinking-label {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 46px;
-  letter-spacing: 6px;
-  color: white;
-  animation: pulse 1s ease-in-out infinite alternate;
-}
-
+.thinking-dot-img { height: 90px; width: auto; }
+.thinking-label { font-family: 'Bebas Neue', sans-serif; font-size: 44px; letter-spacing: 6px; color: white; animation: pulse 1s ease-in-out infinite alternate; }
 @keyframes pulse { from { opacity: 0.25; } to { opacity: 1; } }
 
-.thinking-steps {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  width: 100%;
-  max-width: 360px;
-}
-
-.thinking-step {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 14px;
-  border-radius: 8px;
-  background: rgba(0,0,0,0.1);
-  border: 0.5px solid rgba(255,255,255,0.1);
-  font-size: 12px;
-  color: rgba(255,255,255,0.3);
-  transition: all 0.3s;
-}
-
-.thinking-step.done { color: rgba(255,255,255,0.55); border-color: rgba(255,255,255,0.18); }
-.thinking-step.active { color: white; border-color: rgba(255,255,255,0.5); background: rgba(255,255,255,0.1); }
-
+.thinking-steps { display: flex; flex-direction: column; gap: 6px; width: 100%; max-width: 340px; }
+.thinking-step { display: flex; align-items: center; gap: 10px; padding: 7px 12px; border-radius: 8px; background: rgba(0,0,0,0.1); border: 0.5px solid rgba(255,255,255,0.1); font-size: 12px; color: rgba(255,255,255,0.28); transition: all 0.3s; }
+.thinking-step.done { color: rgba(255,255,255,0.52); border-color: rgba(255,255,255,0.18); }
+.thinking-step.active { color: white; border-color: rgba(255,255,255,0.48); background: rgba(255,255,255,0.1); }
 .step-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.18); flex-shrink: 0; transition: background 0.3s; }
 .thinking-step.done .step-dot { background: rgba(255,255,255,0.45); }
 .thinking-step.active .step-dot { background: white; }
-
-/* ── SCREEN 3: OUTPUT ── */
-.s3-wrap {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  padding: 28px 40px 52px;
-  max-width: 760px;
-  width: 100%;
-}
-
-.output-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 16px;
-}
-
-.output-title {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 34px;
-  letter-spacing: 4px;
-  color: white;
-}
-
-.output-title span { opacity: 0.45; }
-
-.output-actions { display: flex; gap: 6px; }
-
-.btn-outline {
-  border: 0.5px solid rgba(255,255,255,0.28);
-  border-radius: 8px;
-  padding: 7px 14px;
-  font-size: 11px;
-  font-family: 'Inter', sans-serif;
-  color: rgba(255,255,255,0.65);
-  background: none;
-  cursor: pointer;
-  letter-spacing: 0.3px;
-  transition: all 0.15s;
-}
-
-.btn-outline:hover { border-color: white; color: white; }
-.btn-outline.copied { border-color: white; color: white; }
-
-.btn-solid {
-  border: none;
-  border-radius: 8px;
-  padding: 7px 14px;
-  font-size: 11px;
-  font-family: 'Inter', sans-serif;
-  color: var(--red);
-  background: white;
-  cursor: pointer;
-  font-weight: 600;
-  letter-spacing: 0.3px;
-  transition: all 0.15s;
-}
-
-.btn-solid:hover { background: #F0EDEA; }
-
-.profile-card { background: white; border-radius: 16px; overflow: hidden; }
-
-.profile-section { padding: 16px 22px; border-bottom: 0.5px solid var(--card-border); }
-.profile-section:last-child { border-bottom: none; }
-
-.section-label { font-size: 9px; font-weight: 700; color: var(--red); letter-spacing: 2.5px; text-transform: uppercase; margin-bottom: 8px; }
-.section-body { font-size: 13px; line-height: 1.75; color: var(--ink); font-weight: 300; }
-
-.profile-table { width: 100%; border-collapse: collapse; margin-top: 4px; }
-.profile-table th { font-size: 9px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; padding: 6px 10px; background: var(--ink); color: white; text-align: left; }
-.profile-table td { font-size: 12px; padding: 7px 10px; border-bottom: 0.5px solid var(--card-border); font-weight: 300; color: var(--ink); line-height: 1.5; }
-.profile-table tr:nth-child(even) td { background: var(--card-bg); }
-.profile-table tr:last-child td { border-bottom: none; }
-.profile-table td:first-child { font-weight: 500; }
-.profile-table td.less { color: var(--card-mid); }
-
-.rules-list { display: flex; flex-direction: column; gap: 5px; margin-top: 4px; }
-.rule-item { display: flex; gap: 12px; font-size: 12px; line-height: 1.55; font-weight: 300; }
-.rule-key { font-weight: 600; min-width: 130px; color: var(--ink); flex-shrink: 0; }
-.rule-val { color: var(--ink); }
-
-.output-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: 12px;
-  padding: 0 2px;
-}
-
-.footer-note { font-size: 10px; color: rgba(255,255,255,0.3); letter-spacing: 0.2px; }
-.start-again { font-size: 11px; color: rgba(255,255,255,0.4); cursor: pointer; text-decoration: underline; background: none; border: none; font-family: 'Inter', sans-serif; transition: color 0.15s; }
-.start-again:hover { color: white; }
 </style>
 </head>
 <body>
@@ -555,81 +376,158 @@ body {
   </div>
 </div>
 
-<!-- SCREEN 1: INPUT -->
+<!-- SCREEN 1: FACTORY -->
 <div class="screen active" id="screen1">
 
   <div class="s1-hero">
     <img src="/images/Dotandhello.png" class="dot-hero-img" alt="Dot" onerror="this.style.display='none'"/>
     <div class="hero-copy">
       <div class="hero-tag">Find your brand voice</div>
-      <div class="hero-headline">Drop in your brand.<br><em>Draw out your voice.</em></div>
+      <div class="hero-hed">Drop in your brand.<br><em>Draw out your voice.</em></div>
       <div class="hero-sub">Share your guidelines, your brand rules and some killer examples you love. Get a one page profile and a robot prompt.</div>
     </div>
   </div>
 
-  <div class="s1-body">
+  <div class="factory">
 
-    <div class="input-tabs">
-      <div class="input-tab active" onclick="switchTab('uploads')">Uploads</div>
-      <div class="input-tab" onclick="switchTab('weblinks')">Weblinks</div>
-      <div class="input-tab" onclick="switchTab('notes')">Notes</div>
-    </div>
-
-    <div class="tab-panels">
-
-      <!-- UPLOADS -->
-      <div class="tab-panel active" id="tab-uploads">
-        <div class="upload-drop" id="dropZone"
-          onclick="document.getElementById('fileInput').click()"
-          ondragover="handleDragOver(event)"
-          ondragleave="handleDragLeave(event)"
-          ondrop="handleDrop(event)">
-          <div class="upload-drop-icon">&#8613;</div>
-          <div class="upload-drop-label">Drop files here &nbsp;or&nbsp; <u>browse</u></div>
-          <div class="upload-drop-types">PDF &nbsp;·&nbsp; Word</div>
-          <input type="file" id="fileInput" accept=".pdf,.doc,.docx" multiple style="display:none" onchange="handleFileSelect(event)"/>
+    <!-- LEFT: INPUTS -->
+    <div class="col">
+      <div class="sign-wrap">
+        <div class="sign-string"></div>
+        <div class="sign">
+          <div class="sign-eyelet"></div>
+          <div class="sign-body"><span class="sign-txt">Inputs</span></div>
         </div>
       </div>
 
-      <!-- WEBLINKS -->
-      <div class="tab-panel" id="tab-weblinks">
-        <div class="weblink-wrap">
-          <input class="weblink-input" type="text" id="weblinkInput" placeholder="https://yourbrand.com/about" onkeydown="if(event.key==='Enter') fetchWeblink()"/>
-          <button class="weblink-btn" id="weblinkBtn" onclick="fetchWeblink()">Fetch</button>
-        </div>
-        <div class="weblink-note">Dot will read the page and extract copy. Works best with About, brand story, or product pages.</div>
-      </div>
+      <div class="input-panel">
 
-      <!-- NOTES -->
-      <div class="tab-panel" id="tab-notes">
-        <div class="notes-wrap">
-          <textarea class="notes-textarea" id="notesInput" placeholder="Paste anything — a paragraph you love, an email that nailed it, a list of words you never want to see. Dot will work with whatever you give her."></textarea>
-          <div class="notes-footer">
+        <div class="icon-row">
+          <div class="icon-btn active" id="tab-uploads-btn" onclick="switchTab('uploads')">
+            <div class="icircle">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ED1C24" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 16V8M8 12l4-4 4 4"/>
+                <rect x="3" y="19" width="18" height="2.5" rx="1.2" fill="#ED1C24" stroke="none"/>
+              </svg>
+            </div>
+            <span class="ilbl">Uploads</span>
+          </div>
+          <div class="icon-btn" id="tab-weblinks-btn" onclick="switchTab('weblinks')">
+            <div class="icircle">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ED1C24" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="9"/>
+                <path d="M12 3c-2.5 3-2.5 15 0 18M12 3c2.5 3 2.5 15 0 18"/>
+                <path d="M3 12h18"/>
+              </svg>
+            </div>
+            <span class="ilbl">Weblinks</span>
+          </div>
+          <div class="icon-btn" id="tab-notes-btn" onclick="switchTab('notes')">
+            <div class="icircle">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ED1C24" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 6h16M4 11h16M4 16h10"/>
+                <path d="M16 18l2-2 3 3-2 2-3-3z" fill="#ED1C24" stroke="#ED1C24" stroke-width="0.5"/>
+              </svg>
+            </div>
+            <span class="ilbl">Notes</span>
+          </div>
+        </div>
+
+        <div class="tab-panels">
+          <div class="tab-panel active" id="tab-uploads">
+            <div class="upload-drop" id="dropZone"
+              onclick="document.getElementById('fileInput').click()"
+              ondragover="handleDragOver(event)"
+              ondragleave="handleDragLeave(event)"
+              ondrop="handleDrop(event)">
+              <div class="upload-drop-lbl">Drop files here &nbsp;or&nbsp; <u>browse</u></div>
+              <div class="upload-drop-sub">PDF · Word</div>
+              <input type="file" id="fileInput" accept=".pdf,.doc,.docx" multiple style="display:none" onchange="handleFileSelect(event)"/>
+            </div>
+          </div>
+
+          <div class="tab-panel" id="tab-weblinks">
+            <div class="weblink-row">
+              <input class="weblink-input" type="text" id="weblinkInput" placeholder="https://yourbrand.com/about" onkeydown="if(event.key==='Enter') fetchWeblink()"/>
+              <button class="weblink-btn" id="weblinkBtn" onclick="fetchWeblink()">Fetch</button>
+            </div>
+            <div class="weblink-note">Dot will read the page and pull out copy. Works best with About or brand story pages.</div>
+          </div>
+
+          <div class="tab-panel" id="tab-notes">
+            <textarea class="notes-textarea" id="notesInput" placeholder="Paste anything — copy you love, words you hate, a brief, a rant. Dot will work with it."></textarea>
             <button class="notes-add-btn" onclick="addNotes()">Add these notes</button>
           </div>
         </div>
+
+        <div class="file-list" id="fileList"></div>
+
+      </div>
+    </div>
+
+    <!-- RIGHT: DOT -->
+    <div class="col">
+      <div class="sign-wrap right">
+        <div class="sign-string"></div>
+        <div class="sign">
+          <div class="sign-eyelet"></div>
+          <div class="sign-body"><span class="sign-txt">Outputs</span></div>
+        </div>
       </div>
 
-    </div>
+      <div class="dot-panel">
 
-    <div class="file-list" id="fileList"></div>
+        <!-- EMPTY: Dot waiting -->
+        <div class="dot-empty" id="dotEmpty">
+          <img src="/images/Robot.png" class="dot-waiting-img" alt="Dot" onerror="this.style.display='none'"/>
+          <div class="dot-waiting-bubble">
+            <span>Drop something in. I'll tell you what I think.</span>
+          </div>
+        </div>
 
-    <div class="review-card" id="reviewCard" style="display:none">
-      <div class="review-header">
-        <div class="review-bubble"><span>Dot's read</span></div>
+        <!-- DOT'S READ -->
+        <div class="dot-read" id="dotRead">
+          <div class="dot-read-head">
+            <div class="dot-read-bubble"><span>Dot's read</span></div>
+            <span class="dot-read-count" id="dotReadCount"></span>
+          </div>
+          <div class="dot-read-items" id="dotReadItems"></div>
+          <div class="dot-nudge" id="dotNudge"></div>
+
+          <!-- Chat -->
+          <div class="dot-chat">
+            <div class="dot-chat-messages" id="chatMessages"></div>
+            <div class="dot-chat-input-row">
+              <input class="dot-chat-input" type="text" id="chatInput" placeholder="Ask Dot anything about your material..." onkeydown="if(event.key==='Enter') sendChat()"/>
+              <button class="dot-chat-send" id="chatSend" onclick="sendChat()">Ask</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- PROFILE OUTPUT -->
+        <div class="dot-profile" id="dotProfile">
+          <div id="profileCard"></div>
+          <div class="profile-actions">
+            <button class="pact-btn" id="copyPromptBtn" onclick="copyPrompt()">Copy prompt</button>
+            <button class="pact-btn" id="copyBtn" onclick="copyProfile()">Copy profile</button>
+            <button class="pact-solid" onclick="downloadMd()">Download prompt</button>
+          </div>
+        </div>
+
       </div>
-      <div class="review-items" id="reviewItems"></div>
-      <div class="review-nudge" id="reviewNudge"></div>
     </div>
-
-    <div class="cta-row">
-      <div class="material-count" id="materialCount"></div>
-      <button class="go-btn" id="goBtn" onclick="runPrompter()" disabled>LET'S GO</button>
-    </div>
-
-    <div class="error-msg" id="errorMsg"></div>
 
   </div>
+
+  <!-- BOTTOM BAR -->
+  <div class="bottom-bar">
+    <div class="error-msg" id="errorMsg"></div>
+    <div style="display:flex;align-items:center;gap:16px;">
+      <span class="material-count" id="materialCount"></span>
+      <button class="go-btn" id="goBtn" onclick="runPrompter()" disabled>LET'S GO</button>
+    </div>
+  </div>
+
 </div>
 
 <!-- SCREEN 2: THINKING -->
@@ -647,37 +545,19 @@ body {
   </div>
 </div>
 
-<!-- SCREEN 3: OUTPUT -->
-<div class="screen" id="screen3">
-  <div class="s3-wrap">
-    <div class="output-header">
-      <div class="output-title">YOUR <span id="outputBrandName">BRAND</span> VOICE</div>
-      <div class="output-actions">
-        <button class="btn-outline" id="copyPromptBtn" onclick="copyPrompt()">Copy prompt</button>
-        <button class="btn-outline" id="copyBtn" onclick="copyProfile()">Copy profile</button>
-        <button class="btn-solid" onclick="downloadMd()">Download prompt</button>
-      </div>
-    </div>
-    <div class="profile-card" id="profileCard"></div>
-    <div class="output-footer">
-      <div class="footer-note">Produced by Prompter — a Hunch product &nbsp;·&nbsp; Review before use</div>
-      <button class="start-again" onclick="startAgain()">Start again</button>
-    </div>
-  </div>
-</div>
-
 <script>
 let uploadedFiles = [];
 let profileData = null;
+let chatHistory = [];
 let notesCounter = 0;
 
+// ── TABS ──────────────────────────────────────────────────
+
 function switchTab(name) {
-  document.querySelectorAll('.input-tab').forEach((t, i) => {
-    const names = ['uploads','weblinks','notes'];
-    t.classList.toggle('active', names[i] === name);
+  ['uploads','weblinks','notes'].forEach(t => {
+    document.getElementById('tab-' + t).classList.toggle('active', t === name);
+    document.getElementById('tab-' + t + '-btn').classList.toggle('active', t === name);
   });
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  document.getElementById('tab-' + name).classList.add('active');
 }
 
 // ── FILE UPLOAD ──────────────────────────────────────────
@@ -705,7 +585,6 @@ function handleFileSelect(e) {
 async function uploadFiles(files) {
   const allowed = files.filter(f => /\.(pdf|docx?)$/i.test(f.name));
   if (!allowed.length) return;
-
   for (const file of allowed) {
     if (uploadedFiles.find(f => f.filename === file.name)) continue;
     const formData = new FormData();
@@ -715,29 +594,22 @@ async function uploadFiles(files) {
       const data = await res.json();
       if (data.success) {
         uploadedFiles.push({ filename: data.filename, text: data.text, size: file.size });
-      } else {
-        showError(data.error || 'Upload failed');
-      }
-    } catch (err) {
-      showError('Upload failed — try again.');
-    }
+      } else { showError(data.error || 'Upload failed'); }
+    } catch (err) { showError('Upload failed — try again.'); }
   }
-  renderFileList();
-  if (uploadedFiles.length > 0) runReview();
+  afterFilesChanged();
 }
 
-// ── WEBLINK FETCH ────────────────────────────────────────
+// ── WEBLINKS ─────────────────────────────────────────────
 
 async function fetchWeblink() {
   const input = document.getElementById('weblinkInput');
   const btn = document.getElementById('weblinkBtn');
   const url = input.value.trim();
   if (!url) return;
-
   btn.disabled = true;
-  btn.textContent = 'Fetching...';
+  btn.textContent = '...';
   showError('');
-
   try {
     const res = await fetch('/api/fetch', {
       method: 'POST',
@@ -750,15 +622,9 @@ async function fetchWeblink() {
         uploadedFiles.push({ filename: data.filename, text: data.text, size: data.text.length });
       }
       input.value = '';
-      renderFileList();
-      if (uploadedFiles.length > 0) runReview();
-    } else {
-      showError(data.error || 'Could not fetch that URL.');
-    }
-  } catch (err) {
-    showError('Fetch failed — check the URL and try again.');
-  }
-
+      afterFilesChanged();
+    } else { showError(data.error || 'Could not fetch that URL.'); }
+  } catch (err) { showError('Fetch failed — check the URL and try again.'); }
   btn.disabled = false;
   btn.textContent = 'Fetch';
 }
@@ -769,22 +635,23 @@ function addNotes() {
   const textarea = document.getElementById('notesInput');
   const text = textarea.value.trim();
   if (!text) return;
-
   notesCounter++;
-  const filename = `Notes ${notesCounter}`;
-  uploadedFiles.push({ filename, text, size: text.length });
+  uploadedFiles.push({ filename: `Notes ${notesCounter}`, text, size: text.length });
   textarea.value = '';
-  renderFileList();
-  if (uploadedFiles.length > 0) runReview();
+  afterFilesChanged();
 }
 
 // ── FILE LIST ────────────────────────────────────────────
 
 function removeFile(filename) {
   uploadedFiles = uploadedFiles.filter(f => f.filename !== filename);
+  afterFilesChanged();
+  if (!uploadedFiles.length) showDotEmpty();
+}
+
+function afterFilesChanged() {
   renderFileList();
   if (uploadedFiles.length > 0) runReview();
-  else hideReview();
 }
 
 function renderFileList() {
@@ -800,15 +667,14 @@ function renderFileList() {
   }
 
   list.innerHTML = uploadedFiles.map(f => {
-    const isText = typeof f.size === 'number' && f.size < 10000 && !f.filename.match(/\.(pdf|docx?)$/i);
     const size = f.size < 1024*1024
-      ? (f.size/1024).toFixed(0) + ' KB'
+      ? Math.round(f.size/1024) + ' KB'
       : (f.size/1024/1024).toFixed(1) + ' MB';
     return `<div class="file-row">
-      <span class="file-row-icon">&#128196;</span>
+      <div class="file-row-dot" style="background:rgba(255,255,255,0.3);"></div>
       <span class="file-row-name">${escHtml(f.filename)}</span>
       <span class="file-row-size">${size}</span>
-      <button class="file-row-remove" onclick="removeFile('${escHtml(f.filename)}')" title="Remove">&times;</button>
+      <button class="file-row-x" onclick="removeFile('${escHtml(f.filename)}')">&times;</button>
     </div>`;
   }).join('');
 
@@ -817,15 +683,36 @@ function renderFileList() {
   goBtn.disabled = false;
 }
 
+// ── DOT STATES ───────────────────────────────────────────
+
+function showDotEmpty() {
+  document.getElementById('dotEmpty').style.display = 'flex';
+  document.getElementById('dotRead').style.display = 'none';
+  document.getElementById('dotProfile').style.display = 'none';
+}
+
+function showDotRead() {
+  document.getElementById('dotEmpty').style.display = 'none';
+  document.getElementById('dotRead').style.display = 'flex';
+  document.getElementById('dotProfile').style.display = 'none';
+}
+
+function showDotProfile() {
+  document.getElementById('dotEmpty').style.display = 'none';
+  document.getElementById('dotRead').style.display = 'none';
+  document.getElementById('dotProfile').style.display = 'flex';
+}
+
 // ── DOT'S REVIEW ────────────────────────────────────────
 
 async function runReview() {
-  const card = document.getElementById('reviewCard');
-  const items = document.getElementById('reviewItems');
-  const nudge = document.getElementById('reviewNudge');
+  showDotRead();
+  const items = document.getElementById('dotReadItems');
+  const nudge = document.getElementById('dotNudge');
+  const count = document.getElementById('dotReadCount');
 
-  card.style.display = 'block';
-  items.innerHTML = '<div style="font-size:12px;color:rgba(255,255,255,0.4);padding:4px 0">Dot is reading your material...</div>';
+  count.textContent = `${uploadedFiles.length} piece${uploadedFiles.length !== 1 ? 's' : ''} in`;
+  items.innerHTML = '<div style="font-size:11px;color:#C8C4BE;padding:4px 0;">Reading your material...</div>';
   nudge.textContent = '';
 
   try {
@@ -837,31 +724,82 @@ async function runReview() {
     const data = await res.json();
     if (!data.success) throw new Error(data.error);
 
-    const review = data.review;
-    items.innerHTML = review.files.map(f => `
-      <div class="review-row">
-        <div class="review-verdict ${f.verdict}"></div>
-        <div class="review-summary"><strong>${escHtml(f.filename)}</strong> — ${escHtml(f.summary)}</div>
+    const colours = { good: '#4ADE80', warn: '#FCD34D', miss: '#D1D0CC' };
+    items.innerHTML = data.review.files.map(f => `
+      <div class="dot-read-row">
+        <div class="dot-read-dot" style="background:${colours[f.verdict] || colours.miss};"></div>
+        <div class="dot-read-text"><strong>${escHtml(f.filename)}</strong> — ${escHtml(f.summary)}</div>
       </div>`).join('');
-    nudge.textContent = review.nudge;
+    nudge.textContent = data.review.nudge;
+
+    // Update file list dots
+    updateFileDots(data.review.files);
 
   } catch (err) {
-    items.innerHTML = '<div style="font-size:12px;color:rgba(255,255,255,0.38)">Could not load review.</div>';
+    items.innerHTML = '<div style="font-size:11px;color:#C8C4BE;">Could not load review.</div>';
   }
 }
 
-function hideReview() {
-  document.getElementById('reviewCard').style.display = 'none';
+function updateFileDots(reviewFiles) {
+  const colours = { good: '#4ADE80', warn: '#FCD34D', miss: '#D1D0CC' };
+  const rows = document.querySelectorAll('.file-row');
+  rows.forEach((row, i) => {
+    const dot = row.querySelector('.file-row-dot');
+    const rf = reviewFiles[i];
+    if (dot && rf) dot.style.background = colours[rf.verdict] || colours.miss;
+  });
+}
+
+// ── DOT CHAT ────────────────────────────────────────────
+
+async function sendChat() {
+  const input = document.getElementById('chatInput');
+  const btn = document.getElementById('chatSend');
+  const message = input.value.trim();
+  if (!message) return;
+
+  appendChatMsg('user', message);
+  chatHistory.push({ role: 'user', content: message });
+  input.value = '';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        files: uploadedFiles.map(f => ({ filename: f.filename, text: f.text })),
+        history: chatHistory.slice(-8),
+        message
+      })
+    });
+    const data = await res.json();
+    if (data.success) {
+      appendChatMsg('dot', data.reply);
+      chatHistory.push({ role: 'assistant', content: data.reply });
+    } else {
+      appendChatMsg('dot', 'Something went wrong — try again.');
+    }
+  } catch (err) {
+    appendChatMsg('dot', 'Could not reach Dot right now.');
+  }
+
+  btn.disabled = false;
+}
+
+function appendChatMsg(role, text) {
+  const msgs = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className = `chat-msg ${role}`;
+  div.textContent = text;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
 }
 
 // ── EXTRACT ──────────────────────────────────────────────
 
 async function runPrompter() {
-  if (!uploadedFiles.length) {
-    showError('Add some material first.');
-    return;
-  }
-
+  if (!uploadedFiles.length) { showError('Add some material first.'); return; }
   showError('');
   document.getElementById('goBtn').disabled = true;
   showScreen(2);
@@ -871,38 +809,29 @@ async function runPrompter() {
     const res = await fetch('/api/extract', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        files: uploadedFiles.map(f => ({ filename: f.filename, text: f.text }))
-      })
+      body: JSON.stringify({ files: uploadedFiles.map(f => ({ filename: f.filename, text: f.text })) })
     });
-
     const data = await res.json();
     if (!data.success) throw new Error(data.error);
     profileData = data.profile;
-
-    const brandName = profileData.brandName || 'Brand';
-    document.getElementById('outputBrandName').textContent = brandName.toUpperCase();
     renderProfile(profileData);
-    showScreen(3);
-
+    showScreen(1);
+    showDotProfile();
   } catch (err) {
     showScreen(1);
     showError('Something went wrong. Try again.');
     document.getElementById('goBtn').disabled = false;
+    if (uploadedFiles.length) showDotRead();
   }
 }
 
 // ── UI HELPERS ───────────────────────────────────────────
 
 function showScreen(n) {
-  document.querySelectorAll('.screen').forEach((s, i) => {
-    s.classList.toggle('active', i === n - 1);
-  });
+  document.querySelectorAll('.screen').forEach((s, i) => s.classList.toggle('active', i === n - 1));
 }
 
-function showError(msg) {
-  document.getElementById('errorMsg').textContent = msg;
-}
+function showError(msg) { document.getElementById('errorMsg').textContent = msg; }
 
 function animateSteps() {
   const steps = ['step1','step2','step3','step4','step5'];
@@ -917,59 +846,32 @@ function animateSteps() {
       document.getElementById(steps[i]).classList.add('active');
       document.getElementById('thinkingLabel').textContent = labels[i];
       i++;
-    } else {
-      clearInterval(interval);
-    }
+    } else { clearInterval(interval); }
   }, 1200);
 }
 
 function renderProfile(p) {
   const card = document.getElementById('profileCard');
   let html = '';
-
-  html += `<div class="profile-section">
-    <div class="section-label">Brand</div>
-    <div class="section-body">${escHtml(p.brand)}</div>
-  </div>`;
-
-  html += `<div class="profile-section">
-    <div class="section-label">Customer Feels</div>
-    <div class="section-body">${escHtml(p.customerFeels)}</div>
-  </div>`;
-
-  html += `<div class="profile-section">
-    <div class="section-label">Behaviours</div>
-    <table class="profile-table">
-      <tr><th>We are</th><th>We are not</th></tr>
-      ${p.behaviours.map(b => `<tr><td>${escHtml(b.we)}</td><td>${escHtml(b.not)}</td></tr>`).join('')}
-    </table>
-  </div>`;
-
-  html += `<div class="profile-section">
-    <div class="section-label">Examples</div>
-    <table class="profile-table">
-      <tr><th>More this</th><th>Less this</th></tr>
-      ${p.examples.map(e => `<tr><td>${escHtml(e.more)}</td><td class="less">${escHtml(e.less)}</td></tr>`).join('')}
-    </table>
-  </div>`;
-
-  html += `<div class="profile-section">
-    <div class="section-label">House Rules</div>
-    <div class="rules-list">
-      ${p.houseRules.map(r => `<div class="rule-item"><span class="rule-key">${escHtml(r.key)}</span><span class="rule-val">${escHtml(r.rule)}</span></div>`).join('')}
-    </div>
-  </div>`;
-
+  html += `<div class="psec"><div class="plbl">Brand</div><div class="pbody">${escHtml(p.brand)}</div></div>`;
+  html += `<div class="psec"><div class="plbl">Customer Feels</div><div class="pbody">${escHtml(p.customerFeels)}</div></div>`;
+  html += `<div class="psec"><div class="plbl">Behaviours</div><table class="ptable">
+    <tr><th>We are</th><th>We are not</th></tr>
+    ${p.behaviours.map(b => `<tr><td>${escHtml(b.we)}</td><td>${escHtml(b.not)}</td></tr>`).join('')}
+  </table></div>`;
+  html += `<div class="psec"><div class="plbl">Examples</div><table class="ptable">
+    <tr><th>More this</th><th>Less this</th></tr>
+    ${p.examples.map(e => `<tr><td>${escHtml(e.more)}</td><td class="less">${escHtml(e.less)}</td></tr>`).join('')}
+  </table></div>`;
+  html += `<div class="psec"><div class="plbl">House Rules</div><div class="rules-list">
+    ${p.houseRules.map(r => `<div class="rule-item"><span class="rule-key">${escHtml(r.key)}</span><span class="rule-val">${escHtml(r.rule)}</span></div>`).join('')}
+  </div></div>`;
   card.innerHTML = html;
 }
 
 function escHtml(str) {
   if (!str) return '';
-  return String(str)
-    .replace(/&/g,'&amp;')
-    .replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;');
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
 function copyProfile() {
@@ -977,8 +879,7 @@ function copyProfile() {
   const p = profileData;
   const bn = p.brandName || 'Brand';
   let text = `${bn.toUpperCase()} — BRAND PROFILE\n\n`;
-  text += `BRAND\n${p.brand}\n\n`;
-  text += `CUSTOMER FEELS\n${p.customerFeels}\n\n`;
+  text += `BRAND\n${p.brand}\n\nCUSTOMER FEELS\n${p.customerFeels}\n\n`;
   text += `BEHAVIOURS\n${p.behaviours.map(b => `We are: ${b.we} / Not: ${b.not}`).join('\n')}\n\n`;
   text += `EXAMPLES\n${p.examples.map(e => `More: ${e.more} / Less: ${e.less}`).join('\n')}\n\n`;
   text += `HOUSE RULES\n${p.houseRules.map(r => `${r.key}: ${r.rule}`).join('\n')}`;
@@ -994,20 +895,11 @@ function buildPromptMd() {
   if (!profileData) return '';
   const p = profileData;
   const bn = p.brandName || 'this brand';
-  let md = '';
-  md += `You are an experienced copywriter crafting communications for **${bn}**. `;
-  md += `Your job is to write in their exact voice — not approximately, exactly.\n\n`;
-  md += `---\n\n`;
-  md += `## Brand\n\n${p.brand}\n\n`;
-  md += `## Your reader feels\n\n${p.customerFeels}\n\n`;
-  md += `## How you write\n\n`;
-  md += p.behaviours.map(b => `- **Do:** ${b.we}  \n  **Don't:** ${b.not}`).join('\n') + '\n\n';
-  md += `## Write more like this\n\n`;
-  md += p.examples.map(e => `- ✓ ${e.more}  \n  ✗ ${e.less}`).join('\n') + '\n\n';
-  md += `## House rules\n\n`;
-  md += p.houseRules.map(r => `- **${r.key}:** ${r.rule}`).join('\n') + '\n\n';
-  md += `---\n\n`;
-  md += `Now write like this. Every time. No exceptions.`;
+  let md = `You are an experienced copywriter crafting communications for **${bn}**. Your job is to write in their exact voice — not approximately, exactly.\n\n---\n\n`;
+  md += `## Brand\n\n${p.brand}\n\n## Your reader feels\n\n${p.customerFeels}\n\n`;
+  md += `## How you write\n\n${p.behaviours.map(b => `- **Do:** ${b.we}  \n  **Don't:** ${b.not}`).join('\n')}\n\n`;
+  md += `## Write more like this\n\n${p.examples.map(e => `- ✓ ${e.more}  \n  ✗ ${e.less}`).join('\n')}\n\n`;
+  md += `## House rules\n\n${p.houseRules.map(r => `- **${r.key}:** ${r.rule}`).join('\n')}\n\n---\n\nNow write like this. Every time. No exceptions.`;
   return md;
 }
 
@@ -1033,22 +925,6 @@ function copyPrompt() {
     btn.classList.add('copied');
     setTimeout(() => { btn.textContent = 'Copy prompt'; btn.classList.remove('copied'); }, 2000);
   });
-}
-
-function startAgain() {
-  uploadedFiles = [];
-  profileData = null;
-  notesCounter = 0;
-  document.getElementById('fileList').innerHTML = '';
-  document.getElementById('materialCount').textContent = '';
-  document.getElementById('goBtn').disabled = true;
-  document.getElementById('notesInput').value = '';
-  document.getElementById('weblinkInput').value = '';
-  hideReview();
-  document.querySelectorAll('.thinking-step').forEach(s => s.classList.remove('active','done'));
-  document.getElementById('step1').classList.add('active');
-  switchTab('uploads');
-  showScreen(1);
 }
 </script>
 
