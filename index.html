@@ -5,186 +5,360 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Prompter — Find your brand voice</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
   --red: #ED1C24;
-  --black: #0D0D0D;
-  --warm: #F0EDE8;
-  --mid: #888;
-  --light: #E0DDD8;
-  --border: #D8D5D0;
+  --red-dark: #C8141B;
+  --red-deep: rgba(0,0,0,0.14);
   --white: #FFFFFF;
+  --ink: #1A1917;
+  --mid: rgba(255,255,255,0.45);
+  --faint: rgba(255,255,255,0.18);
+  --border-light: rgba(255,255,255,0.15);
+  --card-bg: #F5F3EF;
+  --card-border: #E8E5E0;
+  --card-mid: #9A9590;
 }
 
 body {
-  background: var(--warm);
+  background: var(--red);
   font-family: 'Inter', sans-serif;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
-/* TOP BAR */
+/* ── TOPBAR ── */
 .topbar {
-  padding: 18px 32px;
+  padding: 16px 32px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 0.5px solid var(--border);
-  background: var(--warm);
+  border-bottom: 0.5px solid var(--border-light);
 }
 
-.wordmark {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 20px;
-  letter-spacing: 5px;
-  color: var(--black);
+.hai-logo {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  text-decoration: none;
 }
 
-.wordmark span { color: var(--red); }
-
-.topbar-sub {
-  font-size: 11px;
-  color: var(--mid);
-  letter-spacing: 0.3px;
-}
-
-/* SCREENS */
-.screen {
-  display: none;
-  flex: 1;
-  flex-direction: column;
+.hai-circle {
+  width: 26px;
+  height: 26px;
+  background: white;
+  border-radius: 50%;
+  display: flex;
   align-items: center;
   justify-content: center;
-  padding: 40px 24px;
-  min-height: calc(100vh - 57px);
+  flex-shrink: 0;
 }
 
-.screen.active { display: flex; }
-
-/* DOT */
-.dot-wrap {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 24px;
+.hai-h {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--red);
+  font-style: italic;
+  line-height: 1;
 }
 
-.bubble {
-  background: var(--red);
-  border-radius: 20px 20px 20px 4px;
-  padding: 12px 22px;
-  margin-bottom: 10px;
-}
-
-.bubble-text {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 24px;
-  letter-spacing: 3px;
+.hai-rest {
+  font-size: 16px;
+  font-weight: 700;
   color: white;
   line-height: 1;
 }
 
-.dot-img {
-  width: 72px;
-  height: 72px;
-  object-fit: contain;
+.hai-sup {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--red);
+  background: white;
+  border-radius: 2px;
+  padding: 0 1px;
+  vertical-align: super;
+  line-height: 0;
 }
 
-.dot-img-sm {
-  width: 48px;
-  height: 48px;
-  object-fit: contain;
-}
-
-/* SCREEN 1 — DROP */
-.drop-card {
-  width: 100%;
-  max-width: 580px;
-  background: var(--white);
-  border: 0.5px solid var(--border);
-  border-radius: 16px;
-  overflow: hidden;
-}
-
-.drop-tabs {
+.suite-nav {
   display: flex;
-  border-bottom: 0.5px solid var(--border);
+  align-items: center;
+  gap: 8px;
 }
 
-.drop-tab {
-  flex: 1;
-  padding: 10px;
-  text-align: center;
+.suite-item {
   font-size: 11px;
   font-weight: 500;
-  color: var(--mid);
-  cursor: pointer;
-  border-bottom: 2px solid transparent;
-  transition: all 0.15s;
-  letter-spacing: 0.3px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+  cursor: default;
 }
 
-.drop-tab.on {
-  color: var(--red);
-  border-bottom-color: var(--red);
+.suite-item.active {
+  color: white;
 }
 
-.tab-panel { display: none; }
-.tab-panel.on { display: block; }
+.suite-div {
+  color: rgba(255,255,255,0.2);
+  font-size: 11px;
+}
 
-textarea#dump {
-  width: 100%;
-  min-height: 200px;
-  border: none;
-  outline: none;
-  resize: none;
-  padding: 20px 22px;
-  font-size: 13px;
-  line-height: 1.75;
-  color: var(--black);
-  font-family: 'Inter', sans-serif;
+/* ── SCREENS ── */
+.screen { display: none; flex: 1; flex-direction: column; }
+.screen.active { display: flex; }
+
+/* ── SCREEN 1: INPUT ── */
+.s1-hero {
+  display: flex;
+  align-items: flex-end;
+  padding: 0 32px;
+  gap: 4px;
+}
+
+.dot-hero-img {
+  height: 180px;
+  width: auto;
+  flex-shrink: 0;
+  margin-bottom: -4px;
+}
+
+.hero-copy {
+  padding-bottom: 28px;
+  padding-left: 12px;
+}
+
+.hero-tag {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.45);
+  margin-bottom: 10px;
+}
+
+.hero-headline {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 42px;
+  letter-spacing: 2px;
+  color: white;
+  line-height: 1.0;
+  margin-bottom: 10px;
+}
+
+.hero-headline em {
+  font-style: normal;
+  opacity: 0.45;
+}
+
+.hero-sub {
+  font-size: 12px;
+  color: rgba(255,255,255,0.5);
+  line-height: 1.65;
+  max-width: 260px;
   font-weight: 300;
-  background: transparent;
-  caret-color: var(--red);
 }
 
-textarea#dump::placeholder { color: #bbb; }
-
-.url-wrap {
-  padding: 20px 22px;
+.s1-body {
+  padding: 0 32px 40px;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  min-height: 200px;
-}
-
-input#url {
-  border: 0.5px solid var(--border);
-  border-radius: 8px;
-  padding: 10px 14px;
-  font-size: 13px;
-  font-family: 'Inter', sans-serif;
-  color: var(--black);
-  outline: none;
+  max-width: 680px;
   width: 100%;
 }
 
-input#url:focus { border-color: var(--red); }
-input#url::placeholder { color: #bbb; }
-
-.url-note {
-  font-size: 11px;
-  color: var(--mid);
-  line-height: 1.6;
+/* Drop zone */
+.drop-zone {
+  border: 2px dashed rgba(255,255,255,0.28);
+  border-radius: 16px;
+  padding: 32px 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.1s;
 }
 
-.drop-footer {
-  padding: 12px 18px;
-  border-top: 0.5px solid var(--border);
+.drop-zone:hover,
+.drop-zone.drag-over {
+  border-color: rgba(255,255,255,0.65);
+  background: rgba(0,0,0,0.08);
+}
+
+.drop-zone-icon {
+  font-size: 30px;
+  color: rgba(255,255,255,0.45);
+  margin-bottom: 10px;
+}
+
+.drop-zone-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: white;
+  margin-bottom: 4px;
+}
+
+.drop-zone-label u {
+  opacity: 0.6;
+}
+
+.drop-zone-types {
+  font-size: 10px;
+  color: rgba(255,255,255,0.35);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+/* File list */
+.file-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.file-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(0,0,0,0.12);
+  border-radius: 10px;
+  padding: 10px 14px;
+}
+
+.file-row-icon {
+  font-size: 18px;
+  color: rgba(255,255,255,0.65);
+  flex-shrink: 0;
+}
+
+.file-row-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: white;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.file-row-size {
+  font-size: 11px;
+  color: rgba(255,255,255,0.35);
+  flex-shrink: 0;
+}
+
+.file-row-remove {
+  font-size: 16px;
+  color: rgba(255,255,255,0.3);
+  cursor: pointer;
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  font-family: inherit;
+  padding: 0;
+  line-height: 1;
+  transition: color 0.15s;
+}
+
+.file-row-remove:hover { color: white; }
+
+/* Review card */
+.review-card {
+  background: rgba(0,0,0,0.14);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.review-header {
+  padding: 10px 16px;
+  border-bottom: 0.5px solid rgba(255,255,255,0.1);
+}
+
+.review-bubble {
+  background: white;
+  border-radius: 10px 10px 10px 3px;
+  display: inline-block;
+  padding: 4px 12px;
+}
+
+.review-bubble span {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--red);
+  text-transform: uppercase;
+}
+
+.review-items {
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.review-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.review-verdict {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-top: 5px;
+  flex-shrink: 0;
+}
+
+.review-verdict.good { background: #4ADE80; }
+.review-verdict.warn { background: #FCD34D; }
+.review-verdict.miss { background: rgba(255,255,255,0.4); }
+
+.review-summary {
+  font-size: 12px;
+  color: rgba(255,255,255,0.8);
+  font-weight: 300;
+  line-height: 1.55;
+}
+
+.review-summary strong { font-weight: 600; color: white; }
+
+.review-nudge {
+  margin: 0 16px 14px;
+  background: rgba(0,0,0,0.14);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.65);
+  line-height: 1.65;
+  font-weight: 300;
+}
+
+/* Add more */
+.add-more-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 0.5px dashed rgba(255,255,255,0.25);
+  border-radius: 10px;
+  padding: 9px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.5);
+  cursor: pointer;
+  background: none;
+  font-family: 'Inter', sans-serif;
+  width: 100%;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.add-more-btn:hover { border-color: rgba(255,255,255,0.6); color: white; }
+
+/* Footer row */
+.input-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -198,54 +372,69 @@ input#url::placeholder { color: #bbb; }
 
 .brand-label-sm {
   font-size: 11px;
-  color: var(--mid);
+  color: rgba(255,255,255,0.4);
 }
 
 input#brandname {
-  border: 0.5px solid var(--border);
+  background: rgba(255,255,255,0.12);
+  border: 0.5px solid rgba(255,255,255,0.22);
   border-radius: 20px;
-  padding: 5px 12px;
-  font-size: 11px;
+  padding: 6px 14px;
+  font-size: 12px;
+  color: white;
   font-family: 'Inter', sans-serif;
-  color: var(--black);
   outline: none;
   width: 140px;
+  transition: border-color 0.15s;
 }
 
-input#brandname:focus { border-color: var(--red); }
-input#brandname::placeholder { color: #bbb; }
+input#brandname::placeholder { color: rgba(255,255,255,0.28); }
+input#brandname:focus { border-color: rgba(255,255,255,0.55); }
 
 .go-btn {
-  background: var(--red);
-  color: white;
+  background: white;
+  color: var(--red);
   border: none;
   border-radius: 8px;
-  padding: 9px 20px;
+  padding: 10px 26px;
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 16px;
+  font-size: 18px;
   letter-spacing: 3px;
   cursor: pointer;
   transition: all 0.15s;
 }
 
-.go-btn:hover { background: #ff2a31; }
-.go-btn:disabled { background: #ccc; cursor: not-allowed; }
+.go-btn:hover { background: #F0EDEA; }
+.go-btn:disabled { background: rgba(255,255,255,0.2); color: rgba(255,255,255,0.35); cursor: not-allowed; }
 
-/* SCREEN 2 — THINKING */
-.thinking-wrap {
+.error-msg {
+  font-size: 12px;
+  color: rgba(255,255,255,0.75);
+  text-align: center;
+  font-weight: 300;
+}
+
+/* ── SCREEN 2: THINKING ── */
+.s2-wrap {
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
-  max-width: 400px;
-  text-align: center;
+  justify-content: center;
+  padding: 40px 32px;
+  gap: 24px;
+}
+
+.thinking-dot-img {
+  height: 100px;
+  width: auto;
 }
 
 .thinking-label {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 36px;
+  font-size: 42px;
   letter-spacing: 6px;
-  color: var(--red);
+  color: white;
   animation: pulse 1s ease-in-out infinite alternate;
 }
 
@@ -256,6 +445,7 @@ input#brandname::placeholder { color: #bbb; }
   flex-direction: column;
   gap: 6px;
   width: 100%;
+  max-width: 360px;
 }
 
 .thinking-step {
@@ -264,43 +454,44 @@ input#brandname::placeholder { color: #bbb; }
   gap: 10px;
   padding: 8px 14px;
   border-radius: 8px;
-  background: var(--white);
-  border: 0.5px solid var(--border);
+  background: rgba(0,0,0,0.1);
+  border: 0.5px solid rgba(255,255,255,0.1);
   font-size: 12px;
-  color: var(--mid);
-  font-weight: 400;
+  color: rgba(255,255,255,0.35);
   transition: all 0.3s;
 }
 
 .thinking-step.done {
-  color: var(--black);
-  border-color: var(--light);
+  color: rgba(255,255,255,0.6);
+  border-color: rgba(255,255,255,0.2);
 }
 
 .thinking-step.active {
-  color: var(--red);
-  border-color: var(--red);
-  background: rgba(237,28,36,0.03);
+  color: white;
+  border-color: rgba(255,255,255,0.5);
+  background: rgba(255,255,255,0.1);
 }
 
 .step-dot {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--border);
+  background: rgba(255,255,255,0.2);
   flex-shrink: 0;
   transition: background 0.3s;
 }
 
-.thinking-step.done .step-dot { background: var(--black); }
-.thinking-step.active .step-dot { background: var(--red); }
+.thinking-step.done .step-dot { background: rgba(255,255,255,0.5); }
+.thinking-step.active .step-dot { background: white; }
 
-/* SCREEN 3 — OUTPUT */
-.output-wrap {
-  width: 100%;
-  max-width: 660px;
+/* ── SCREEN 3: OUTPUT ── */
+.s3-wrap {
+  flex: 1;
   display: flex;
   flex-direction: column;
+  padding: 28px 32px 48px;
+  max-width: 720px;
+  width: 100%;
   gap: 0;
 }
 
@@ -313,33 +504,33 @@ input#brandname::placeholder { color: #bbb; }
 
 .output-title {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 28px;
+  font-size: 32px;
   letter-spacing: 4px;
-  color: var(--black);
+  color: white;
 }
 
-.output-title span { color: var(--red); }
+.output-title span { opacity: 0.5; }
 
 .output-actions {
   display: flex;
-  gap: 8px;
+  gap: 6px;
 }
 
 .btn-outline {
-  border: 0.5px solid var(--border);
+  border: 0.5px solid rgba(255,255,255,0.3);
   border-radius: 8px;
   padding: 7px 14px;
   font-size: 11px;
   font-family: 'Inter', sans-serif;
-  color: var(--mid);
+  color: rgba(255,255,255,0.7);
   background: none;
   cursor: pointer;
   letter-spacing: 0.3px;
   transition: all 0.15s;
 }
 
-.btn-outline:hover { border-color: var(--black); color: var(--black); }
-.btn-outline.copied { border-color: var(--red); color: var(--red); }
+.btn-outline:hover { border-color: white; color: white; }
+.btn-outline.copied { border-color: white; color: white; }
 
 .btn-solid {
   border: none;
@@ -347,42 +538,43 @@ input#brandname::placeholder { color: #bbb; }
   padding: 7px 14px;
   font-size: 11px;
   font-family: 'Inter', sans-serif;
-  color: white;
-  background: var(--black);
+  color: var(--red);
+  background: white;
   cursor: pointer;
   letter-spacing: 0.3px;
+  font-weight: 600;
   transition: all 0.15s;
 }
 
-.btn-solid:hover { background: var(--red); }
+.btn-solid:hover { background: #F0EDEA; }
 
+/* Profile card */
 .profile-card {
-  background: var(--white);
-  border: 0.5px solid var(--border);
+  background: white;
   border-radius: 16px;
   overflow: hidden;
 }
 
 .profile-section {
   padding: 16px 22px;
-  border-bottom: 0.5px solid var(--border);
+  border-bottom: 0.5px solid var(--card-border);
 }
 
 .profile-section:last-child { border-bottom: none; }
 
 .section-label {
   font-size: 9px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--red);
-  letter-spacing: 2px;
+  letter-spacing: 2.5px;
   text-transform: uppercase;
   margin-bottom: 8px;
 }
 
 .section-body {
   font-size: 13px;
-  line-height: 1.7;
-  color: var(--black);
+  line-height: 1.75;
+  color: var(--ink);
   font-weight: 300;
 }
 
@@ -398,7 +590,7 @@ input#brandname::placeholder { color: #bbb; }
   letter-spacing: 1.5px;
   text-transform: uppercase;
   padding: 6px 10px;
-  background: var(--black);
+  background: var(--ink);
   color: white;
   text-align: left;
 }
@@ -406,186 +598,138 @@ input#brandname::placeholder { color: #bbb; }
 .profile-table td {
   font-size: 12px;
   padding: 7px 10px;
-  border-bottom: 0.5px solid var(--border);
+  border-bottom: 0.5px solid var(--card-border);
   font-weight: 300;
-  color: var(--black);
+  color: var(--ink);
   line-height: 1.5;
 }
 
-.profile-table tr:nth-child(even) td { background: var(--warm); }
+.profile-table tr:nth-child(even) td { background: var(--card-bg); }
 .profile-table tr:last-child td { border-bottom: none; }
 .profile-table td:first-child { font-weight: 500; }
-.profile-table td.less { color: var(--mid); }
+.profile-table td.less { color: var(--card-mid); }
 
 .rules-list {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 5px;
   margin-top: 4px;
 }
 
 .rule-item {
   display: flex;
-  gap: 10px;
+  gap: 12px;
   font-size: 12px;
-  line-height: 1.5;
+  line-height: 1.55;
   font-weight: 300;
 }
 
 .rule-key {
-  font-weight: 500;
-  min-width: 120px;
-  color: var(--black);
+  font-weight: 600;
+  min-width: 130px;
+  color: var(--ink);
   flex-shrink: 0;
 }
 
-.rule-val { color: var(--black); }
-
-.gap-flag {
-  color: var(--red);
-  font-style: italic;
-  font-size: 11px;
-}
+.rule-val { color: var(--ink); }
 
 .output-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 10px;
-  padding: 0 4px;
+  margin-top: 12px;
+  padding: 0 2px;
 }
 
 .footer-note {
   font-size: 10px;
-  color: var(--mid);
+  color: rgba(255,255,255,0.35);
+  letter-spacing: 0.3px;
 }
 
 .start-again {
   font-size: 11px;
-  color: var(--mid);
+  color: rgba(255,255,255,0.45);
   cursor: pointer;
   text-decoration: underline;
   background: none;
   border: none;
   font-family: 'Inter', sans-serif;
+  transition: color 0.15s;
 }
 
-.start-again:hover { color: var(--red); }
-
-/* ERROR */
-.error-msg {
-  font-size: 12px;
-  color: var(--red);
-  text-align: center;
-  margin-top: 8px;
-}
-
-/* DROP ZONE */
-.drop-zone {
-  width: 100%;
-  max-width: 580px;
-  border: 1.5px dashed var(--border);
-  border-radius: 16px;
-  padding: 2.5rem 2rem;
-  text-align: center;
-  background: var(--white);
-  cursor: pointer;
-  transition: border-color 0.15s, background 0.15s;
-  margin-bottom: 12px;
-}
-.drop-zone.drag-over { border-color: var(--red); background: rgba(237,28,36,0.03); }
-.drop-zone-icon { font-size: 32px; color: var(--mid); margin-bottom: 10px; }
-.drop-zone-label { font-size: 14px; color: var(--black); font-weight: 400; margin-bottom: 4px; }
-.drop-zone-label span { color: var(--red); text-decoration: underline; cursor: pointer; }
-.drop-zone-types { font-size: 11px; color: var(--mid); }
-
-/* FILE LIST */
-.file-list { width: 100%; max-width: 580px; display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
-.file-row { display: flex; align-items: center; gap: 10px; background: var(--white); border: 0.5px solid var(--border); border-radius: 10px; padding: 10px 14px; }
-.file-row-icon { font-size: 18px; color: var(--red); flex-shrink: 0; }
-.file-row-name { font-size: 13px; font-weight: 500; color: var(--black); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.file-row-size { font-size: 11px; color: var(--mid); flex-shrink: 0; }
-.file-row-remove { font-size: 15px; color: var(--mid); cursor: pointer; flex-shrink: 0; line-height: 1; background: none; border: none; font-family: inherit; padding: 0; }
-.file-row-remove:hover { color: var(--red); }
-
-/* REVIEW CARD */
-.review-card { width: 100%; max-width: 580px; background: var(--white); border: 0.5px solid var(--border); border-radius: 16px; overflow: hidden; margin-bottom: 12px; }
-.review-header { display: flex; align-items: center; gap: 10px; padding: 11px 16px; border-bottom: 0.5px solid var(--border); }
-.review-items { padding: 12px 16px; display: flex; flex-direction: column; gap: 8px; }
-.review-row { display: flex; align-items: flex-start; gap: 10px; }
-.review-verdict { width: 8px; height: 8px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
-.review-verdict.good { background: #1D9E75; }
-.review-verdict.warn { background: #BA7517; }
-.review-verdict.miss { background: var(--red); }
-.review-summary { font-size: 12px; color: var(--black); font-weight: 300; line-height: 1.5; }
-.review-summary strong { font-weight: 500; }
-.review-nudge { margin: 0 16px 14px; background: #FFF8EE; border-radius: 8px; padding: 10px 14px; font-size: 12px; color: #7A4A00; line-height: 1.6; font-weight: 300; }
-
-/* ADD MORE + FOOTER */
-.add-more-btn { width: 100%; max-width: 580px; display: flex; align-items: center; justify-content: center; gap: 6px; border: 0.5px dashed var(--border); border-radius: 10px; padding: 9px 14px; font-size: 12px; color: var(--mid); cursor: pointer; background: none; font-family: 'Inter', sans-serif; margin-bottom: 12px; transition: border-color 0.15s, color 0.15s; }
-.add-more-btn:hover { border-color: var(--red); color: var(--red); }
-.input-footer { width: 100%; max-width: 580px; display: flex; align-items: center; justify-content: space-between; }
+.start-again:hover { color: white; }
 </style>
 </head>
 <body>
 
 <div class="topbar">
-  <div class="wordmark">PROMPT<span>E</span>R</div>
-  <div class="topbar-sub">Drop in your brand. Pull out your voice.</div>
+  <div class="hai-logo">
+    <div class="hai-circle"><span class="hai-h">h</span></div>
+    <span class="hai-rest">ai<sup class="hai-sup">2</sup></span>
+  </div>
+  <div class="suite-nav">
+    <span class="suite-item active">Prompter</span>
+    <span class="suite-div">|</span>
+    <span class="suite-item">Slicer</span>
+    <span class="suite-div">|</span>
+    <span class="suite-item">Wrangler</span>
+  </div>
 </div>
 
-<!-- SCREEN 1: DROP -->
+<!-- SCREEN 1: INPUT -->
 <div class="screen active" id="screen1">
-  <div class="dot-wrap">
-    <div class="bubble">
-      <div class="bubble-text">WHAT'VE YOU GOT?</div>
+
+  <div class="s1-hero">
+    <img src="/images/Dotandhello.png" class="dot-hero-img" alt="Dot" onerror="this.style.display='none'"/>
+    <div class="hero-copy">
+      <div class="hero-tag">Find your brand voice</div>
+      <div class="hero-headline">Drop in your brand.<br><em>Pull out your voice.</em></div>
+      <div class="hero-sub">Dot reads your brand files and pulls out a one-page voice profile — ready for humans and AI alike.</div>
     </div>
-    <img src="/images/Robot.png" class="dot-img" alt="Dot" onerror="this.style.display='none'"/>
   </div>
 
-  <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()"
-    ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
-    <div class="drop-zone-icon">&#8613;</div>
-    <div class="drop-zone-label">Drop your brand files here &nbsp;or&nbsp; <span>browse</span></div>
-    <div class="drop-zone-types">PDF &nbsp;&middot;&nbsp; Word &nbsp;&middot;&nbsp; More coming</div>
-    <input type="file" id="fileInput" accept=".pdf,.doc,.docx" multiple style="display:none" onchange="handleFileSelect(event)"/>
-  </div>
+  <div class="s1-body">
 
-  <div class="file-list" id="fileList"></div>
+    <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()"
+      ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
+      <div class="drop-zone-icon">&#8613;</div>
+      <div class="drop-zone-label">Drop your brand files here &nbsp;or&nbsp; <u>browse</u></div>
+      <div class="drop-zone-types">PDF &nbsp;·&nbsp; Word &nbsp;·&nbsp; More coming</div>
+      <input type="file" id="fileInput" accept=".pdf,.doc,.docx" multiple style="display:none" onchange="handleFileSelect(event)"/>
+    </div>
 
-  <div class="review-card" id="reviewCard" style="display:none">
-    <div class="review-header">
-      <div class="bubble" style="padding:5px 14px; margin:0">
-        <div class="bubble-text" style="font-size:14px; letter-spacing:2px">DOT'S READ</div>
+    <div class="file-list" id="fileList"></div>
+
+    <div class="review-card" id="reviewCard" style="display:none">
+      <div class="review-header">
+        <div class="review-bubble"><span>Dot's read</span></div>
       </div>
+      <div class="review-items" id="reviewItems"></div>
+      <div class="review-nudge" id="reviewNudge"></div>
     </div>
-    <div class="review-items" id="reviewItems"></div>
-    <div class="review-nudge" id="reviewNudge"></div>
-  </div>
 
-  <button class="add-more-btn" id="addMoreBtn" style="display:none" onclick="document.getElementById('fileInput').click()">
-    + Add more material
-  </button>
+    <button class="add-more-btn" id="addMoreBtn" style="display:none" onclick="document.getElementById('fileInput').click()">
+      + Add more material
+    </button>
 
-  <div class="input-footer">
-    <div class="brand-input-wrap">
-      <span class="brand-label-sm">Brand name</span>
-      <input type="text" id="brandname" placeholder="e.g. Tower" />
+    <div class="input-footer">
+      <div class="brand-input-wrap">
+        <span class="brand-label-sm">Brand name</span>
+        <input type="text" id="brandname" placeholder="e.g. Tower" />
+      </div>
+      <button class="go-btn" id="goBtn" onclick="runPrompter()" disabled>EXTRACT</button>
     </div>
-    <button class="go-btn" id="goBtn" onclick="runPrompter()" disabled>EXTRACT</button>
+
+    <div class="error-msg" id="errorMsg"></div>
+
   </div>
-  <div class="error-msg" id="errorMsg"></div>
 </div>
 
 <!-- SCREEN 2: THINKING -->
 <div class="screen" id="screen2">
-  <div class="thinking-wrap">
-    <div class="dot-wrap">
-      <div class="bubble">
-        <div class="bubble-text">ON IT.</div>
-      </div>
-      <img src="/images/Robot.png" class="dot-img" alt="Dot" onerror="this.style.display='none'"/>
-    </div>
+  <div class="s2-wrap">
+    <img src="/images/Robot.png" class="thinking-dot-img" alt="Dot" onerror="this.style.display='none'"/>
     <div class="thinking-label" id="thinkingLabel">READING</div>
     <div class="thinking-steps">
       <div class="thinking-step active" id="step1"><div class="step-dot"></div>Reading your material</div>
@@ -599,7 +743,7 @@ input#brandname::placeholder { color: #bbb; }
 
 <!-- SCREEN 3: OUTPUT -->
 <div class="screen" id="screen3">
-  <div class="output-wrap">
+  <div class="s3-wrap">
     <div class="output-header">
       <div class="output-title">YOUR <span id="outputBrandName">BRAND</span> VOICE</div>
       <div class="output-actions">
@@ -609,9 +753,7 @@ input#brandname::placeholder { color: #bbb; }
       </div>
     </div>
 
-    <div class="profile-card" id="profileCard">
-      <!-- Populated by JS -->
-    </div>
+    <div class="profile-card" id="profileCard"></div>
 
     <div class="output-footer">
       <div class="footer-note">Produced by Prompter — a Hunch product &nbsp;·&nbsp; Review before use</div>
@@ -621,11 +763,9 @@ input#brandname::placeholder { color: #bbb; }
 </div>
 
 <script>
-let uploadedFiles = [];   // [{filename, text, size}, ...]
+let uploadedFiles = [];
 let profileData = null;
 let brandName = '';
-
-// ── FILE HANDLING ──────────────────────────────────────────────
 
 function handleDragOver(e) {
   e.preventDefault();
@@ -653,10 +793,8 @@ async function uploadFiles(files) {
 
   for (const file of allowed) {
     if (uploadedFiles.find(f => f.filename === file.name)) continue;
-
     const formData = new FormData();
     formData.append('file', file);
-
     try {
       const res = await fetch('/api/upload', { method: 'POST', body: formData });
       const data = await res.json();
@@ -694,13 +832,11 @@ function renderFileList() {
   }
 
   list.innerHTML = uploadedFiles.map(f => {
-    const ext = f.filename.split('.').pop().toLowerCase();
-    const icon = ext === 'pdf' ? '&#128196;' : '&#128196;';
     const size = f.size < 1024*1024
       ? (f.size/1024).toFixed(0) + ' KB'
       : (f.size/1024/1024).toFixed(1) + ' MB';
     return `<div class="file-row">
-      <span class="file-row-icon">${icon}</span>
+      <span class="file-row-icon">&#128196;</span>
       <span class="file-row-name">${escHtml(f.filename)}</span>
       <span class="file-row-size">${size}</span>
       <button class="file-row-remove" onclick="removeFile('${escHtml(f.filename)}')" title="Remove">&times;</button>
@@ -711,15 +847,13 @@ function renderFileList() {
   goBtn.disabled = false;
 }
 
-// ── DOT'S REVIEW ──────────────────────────────────────────────
-
 async function runReview() {
   const card = document.getElementById('reviewCard');
   const items = document.getElementById('reviewItems');
   const nudge = document.getElementById('reviewNudge');
 
   card.style.display = 'block';
-  items.innerHTML = '<div style="font-size:12px;color:var(--mid);padding:4px 0">Dot is reading your files...</div>';
+  items.innerHTML = '<div style="font-size:12px;color:rgba(255,255,255,0.45);padding:4px 0">Dot is reading your files...</div>';
   nudge.textContent = '';
 
   try {
@@ -732,17 +866,15 @@ async function runReview() {
     if (!data.success) throw new Error(data.error);
 
     const review = data.review;
-
     items.innerHTML = review.files.map(f => `
       <div class="review-row">
         <div class="review-verdict ${f.verdict}"></div>
         <div class="review-summary"><strong>${escHtml(f.filename)}</strong> — ${escHtml(f.summary)}</div>
       </div>`).join('');
-
     nudge.textContent = review.nudge;
 
   } catch (err) {
-    items.innerHTML = '<div style="font-size:12px;color:var(--mid)">Could not load review.</div>';
+    items.innerHTML = '<div style="font-size:12px;color:rgba(255,255,255,0.45)">Could not load review.</div>';
   }
 }
 
@@ -750,8 +882,6 @@ function hideReview() {
   document.getElementById('reviewCard').style.display = 'none';
   document.getElementById('addMoreBtn').style.display = 'none';
 }
-
-// ── EXTRACT ───────────────────────────────────────────────────
 
 async function runPrompter() {
   brandName = document.getElementById('brandname').value.trim() || 'Brand';
@@ -790,8 +920,6 @@ async function runPrompter() {
     document.getElementById('goBtn').disabled = false;
   }
 }
-
-// ── UI HELPERS ────────────────────────────────────────────────
 
 function showScreen(n) {
   document.querySelectorAll('.screen').forEach((s, i) => {
@@ -892,7 +1020,6 @@ function buildPromptMd() {
   if (!profileData) return '';
   const p = profileData;
   const bn = brandName || 'this brand';
-
   let md = '';
   md += `You are an experienced copywriter crafting communications for **${bn}**. `;
   md += `Your job is to write in their exact voice — not approximately, exactly.\n\n`;
@@ -931,10 +1058,6 @@ function copyPrompt() {
     btn.classList.add('copied');
     setTimeout(() => { btn.textContent = 'Copy prompt'; btn.classList.remove('copied'); }, 2000);
   });
-}
-
-function downloadProfile() {
-  window.print();
 }
 
 function startAgain() {
