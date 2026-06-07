@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prompter — Find your brand voice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --red: #ED1C24;
+  --black: #0D0D0D;
+  --warm: #F0EDE8;
+  --mid: #888;
+  --light: #E0DDD8;
+  --border: #D8D5D0;
+  --white: #FFFFFF;
+}
+
+body {
+  background: var(--warm);
+  font-family: 'Inter', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* TOP BAR */
+.topbar {
+  padding: 18px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 0.5px solid var(--border);
+  background: var(--warm);
+}
+
+.wordmark {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  letter-spacing: 5px;
+  color: var(--black);
+}
+
+.wordmark span { color: var(--red); }
+
+.topbar-sub {
+  font-size: 11px;
+  color: var(--mid);
+  letter-spacing: 0.3px;
+}
+
+/* SCREENS */
+.screen {
+  display: none;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  min-height: calc(100vh - 57px);
+}
+
+.screen.active { display: flex; }
+
+/* DOT */
+.dot-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.bubble {
+  background: var(--red);
+  border-radius: 20px 20px 20px 4px;
+  padding: 12px 22px;
+  margin-bottom: 10px;
+}
+
+.bubble-text {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 24px;
+  letter-spacing: 3px;
+  color: white;
+  line-height: 1;
+}
+
+.dot-img {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+}
+
+.dot-img-sm {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}
+
+/* SCREEN 1 — DROP */
+.drop-card {
+  width: 100%;
+  max-width: 580px;
+  background: var(--white);
+  border: 0.5px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.drop-tabs {
+  display: flex;
+  border-bottom: 0.5px solid var(--border);
+}
+
+.drop-tab {
+  flex: 1;
+  padding: 10px;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--mid);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.15s;
+  letter-spacing: 0.3px;
+}
+
+.drop-tab.on {
+  color: var(--red);
+  border-bottom-color: var(--red);
+}
+
+.tab-panel { display: none; }
+.tab-panel.on { display: block; }
+
+textarea#dump {
+  width: 100%;
+  min-height: 200px;
+  border: none;
+  outline: none;
+  resize: none;
+  padding: 20px 22px;
+  font-size: 13px;
+  line-height: 1.75;
+  color: var(--black);
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+  background: transparent;
+  caret-color: var(--red);
+}
+
+textarea#dump::placeholder { color: #bbb; }
+
+.url-wrap {
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 200px;
+}
+
+input#url {
+  border: 0.5px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-family: 'Inter', sans-serif;
+  color: var(--black);
+  outline: none;
+  width: 100%;
+}
+
+input#url:focus { border-color: var(--red); }
+input#url::placeholder { color: #bbb; }
+
+.url-note {
+  font-size: 11px;
+  color: var(--mid);
+  line-height: 1.6;
+}
+
+.drop-footer {
+  padding: 12px 18px;
+  border-top: 0.5px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.brand-label-sm {
+  font-size: 11px;
+  color: var(--mid);
+}
+
+input#brandname {
+  border: 0.5px solid var(--border);
+  border-radius: 20px;
+  padding: 5px 12px;
+  font-size: 11px;
+  font-family: 'Inter', sans-serif;
+  color: var(--black);
+  outline: none;
+  width: 140px;
+}
+
+input#brandname:focus { border-color: var(--red); }
+input#brandname::placeholder { color: #bbb; }
+
+.go-btn {
+  background: var(--red);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 9px 20px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 16px;
+  letter-spacing: 3px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.go-btn:hover { background: #ff2a31; }
+.go-btn:disabled { background: #ccc; cursor: not-allowed; }
+
+/* SCREEN 2 — THINKING */
+.thinking-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  max-width: 400px;
+  text-align: center;
+}
+
+.thinking-label {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 36px;
+  letter-spacing: 6px;
+  color: var(--red);
+  animation: pulse 1s ease-in-out infinite alternate;
+}
+
+@keyframes pulse { from { opacity: 0.3; } to { opacity: 1; } }
+
+.thinking-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+
+.thinking-step {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: var(--white);
+  border: 0.5px solid var(--border);
+  font-size: 12px;
+  color: var(--mid);
+  font-weight: 400;
+  transition: all 0.3s;
+}
+
+.thinking-step.done {
+  color: var(--black);
+  border-color: var(--light);
+}
+
+.thinking-step.active {
+  color: var(--red);
+  border-color: var(--red);
+  background: rgba(237,28,36,0.03);
+}
+
+.step-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--border);
+  flex-shrink: 0;
+  transition: background 0.3s;
+}
+
+.thinking-step.done .step-dot { background: var(--black); }
+.thinking-step.active .step-dot { background: var(--red); }
+
+/* SCREEN 3 — OUTPUT */
+.output-wrap {
+  width: 100%;
+  max-width: 660px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.output-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.output-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px;
+  letter-spacing: 4px;
+  color: var(--black);
+}
+
+.output-title span { color: var(--red); }
+
+.output-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-outline {
+  border: 0.5px solid var(--border);
+  border-radius: 8px;
+  padding: 7px 14px;
+  font-size: 11px;
+  font-family: 'Inter', sans-serif;
+  color: var(--mid);
+  background: none;
+  cursor: pointer;
+  letter-spacing: 0.3px;
+  transition: all 0.15s;
+}
+
+.btn-outline:hover { border-color: var(--black); color: var(--black); }
+.btn-outline.copied { border-color: var(--red); color: var(--red); }
+
+.btn-solid {
+  border: none;
+  border-radius: 8px;
+  padding: 7px 14px;
+  font-size: 11px;
+  font-family: 'Inter', sans-serif;
+  color: white;
+  background: var(--black);
+  cursor: pointer;
+  letter-spacing: 0.3px;
+  transition: all 0.15s;
+}
+
+.btn-solid:hover { background: var(--red); }
+
+.profile-card {
+  background: var(--white);
+  border: 0.5px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.profile-section {
+  padding: 16px 22px;
+  border-bottom: 0.5px solid var(--border);
+}
+
+.profile-section:last-child { border-bottom: none; }
+
+.section-label {
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--red);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.section-body {
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--black);
+  font-weight: 300;
+}
+
+.profile-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 4px;
+}
+
+.profile-table th {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 6px 10px;
+  background: var(--black);
+  color: white;
+  text-align: left;
+}
+
+.profile-table td {
+  font-size: 12px;
+  padding: 7px 10px;
+  border-bottom: 0.5px solid var(--border);
+  font-weight: 300;
+  color: var(--black);
+  line-height: 1.5;
+}
+
+.profile-table tr:nth-child(even) td { background: var(--warm); }
+.profile-table tr:last-child td { border-bottom: none; }
+.profile-table td:first-child { font-weight: 500; }
+.profile-table td.less { color: var(--mid); }
+
+.rules-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.rule-item {
+  display: flex;
+  gap: 10px;
+  font-size: 12px;
+  line-height: 1.5;
+  font-weight: 300;
+}
+
+.rule-key {
+  font-weight: 500;
+  min-width: 120px;
+  color: var(--black);
+  flex-shrink: 0;
+}
+
+.rule-val { color: var(--black); }
+
+.gap-flag {
+  color: var(--red);
+  font-style: italic;
+  font-size: 11px;
+}
+
+.output-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+  padding: 0 4px;
+}
+
+.footer-note {
+  font-size: 10px;
+  color: var(--mid);
+}
+
+.start-again {
+  font-size: 11px;
+  color: var(--mid);
+  cursor: pointer;
+  text-decoration: underline;
+  background: none;
+  border: none;
+  font-family: 'Inter', sans-serif;
+}
+
+.start-again:hover { color: var(--red); }
+
+/* ERROR */
+.error-msg {
+  font-size: 12px;
+  color: var(--red);
+  text-align: center;
+  margin-top: 8px;
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wordmark">PROMPT<span>E</span>R</div>
+  <div class="topbar-sub">Drop in your brand. Pull out your voice.</div>
+</div>
+
+<!-- SCREEN 1: DROP -->
+<div class="screen active" id="screen1">
+  <div class="dot-wrap">
+    <div class="bubble">
+      <div class="bubble-text">WHAT'VE YOU GOT?</div>
+    </div>
+    <img src="/images/Robot.png" class="dot-img" alt="Dot" onerror="this.style.display='none'"/>
+  </div>
+
+  <div class="drop-card">
+    <div class="drop-tabs">
+      <div class="drop-tab on" onclick="switchTab('text')">Paste text</div>
+      <div class="drop-tab" onclick="switchTab('url')">Website URL</div>
+    </div>
+
+    <div class="tab-panel on" id="tab-text">
+      <textarea id="dump" placeholder="Drop anything in here. Brand guidelines, old emails, a website about page, a TOV doc, a deck — even a single paragraph you're proud of. Dot will find the voice."></textarea>
+    </div>
+
+    <div class="tab-panel" id="tab-url">
+      <div class="url-wrap">
+        <input type="text" id="url" placeholder="https://yourbrand.com" />
+        <div class="url-note">Dot will read your website and extract the brand voice from your copy. Works best with homepage, about page, and any brand story content.</div>
+      </div>
+    </div>
+
+    <div class="drop-footer">
+      <div class="brand-input-wrap">
+        <span class="brand-label-sm">Brand name</span>
+        <input type="text" id="brandname" placeholder="e.g. Tower" />
+      </div>
+      <button class="go-btn" id="goBtn" onclick="runPrompter()">EXTRACT</button>
+    </div>
+  </div>
+  <div class="error-msg" id="errorMsg"></div>
+</div>
+
+<!-- SCREEN 2: THINKING -->
+<div class="screen" id="screen2">
+  <div class="thinking-wrap">
+    <div class="dot-wrap">
+      <div class="bubble">
+        <div class="bubble-text">ON IT.</div>
+      </div>
+      <img src="/images/Robot.png" class="dot-img" alt="Dot" onerror="this.style.display='none'"/>
+    </div>
+    <div class="thinking-label" id="thinkingLabel">READING</div>
+    <div class="thinking-steps">
+      <div class="thinking-step active" id="step1"><div class="step-dot"></div>Reading your material</div>
+      <div class="thinking-step" id="step2"><div class="step-dot"></div>Finding the voice</div>
+      <div class="thinking-step" id="step3"><div class="step-dot"></div>Writing the behaviours</div>
+      <div class="thinking-step" id="step4"><div class="step-dot"></div>Building the examples</div>
+      <div class="thinking-step" id="step5"><div class="step-dot"></div>Locking the house rules</div>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN 3: OUTPUT -->
+<div class="screen" id="screen3">
+  <div class="output-wrap">
+    <div class="output-header">
+      <div class="output-title">YOUR <span id="outputBrandName">BRAND</span> VOICE</div>
+      <div class="output-actions">
+        <button class="btn-outline" id="copyBtn" onclick="copyProfile()">Copy profile</button>
+        <button class="btn-solid" onclick="downloadProfile()">Download PDF</button>
+      </div>
+    </div>
+
+    <div class="profile-card" id="profileCard">
+      <!-- Populated by JS -->
+    </div>
+
+    <div class="output-footer">
+      <div class="footer-note">Produced by Prompter — a Hunch product &nbsp;·&nbsp; Review before use</div>
+      <button class="start-again" onclick="startAgain()">Start again</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let currentTab = 'text';
+let profileData = null;
+let brandName = '';
+
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.drop-tab').forEach((t, i) => {
+    t.classList.toggle('on', (i === 0 && tab === 'text') || (i === 1 && tab === 'url'));
+  });
+  document.getElementById('tab-text').classList.toggle('on', tab === 'text');
+  document.getElementById('tab-url').classList.toggle('on', tab === 'url');
+}
+
+function showScreen(n) {
+  document.querySelectorAll('.screen').forEach((s, i) => {
+    s.classList.toggle('active', i === n - 1);
+  });
+}
+
+async function runPrompter() {
+  const dump = document.getElementById('dump').value.trim();
+  const url = document.getElementById('url').value.trim();
+  brandName = document.getElementById('brandname').value.trim() || 'Brand';
+
+  const content = currentTab === 'text' ? dump : url;
+  if (!content) {
+    document.getElementById('errorMsg').textContent = currentTab === 'text'
+      ? 'Drop something in first — guidelines, emails, anything.'
+      : 'Enter a website URL first.';
+    return;
+  }
+
+  document.getElementById('errorMsg').textContent = '';
+  document.getElementById('goBtn').disabled = true;
+  showScreen(2);
+  animateSteps();
+
+  const userContent = currentTab === 'url'
+    ? `Brand name: ${brandName}\n\nWebsite URL to analyse: ${content}\n\nPlease extract the brand voice from this website's copy and produce the brand profile.`
+    : `Brand name: ${brandName}\n\nBrand material:\n\n${content}`;
+
+  try {
+    const response = await fetch('/api/extract', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        content: userContent,
+        brandName: brandName
+      })
+    });
+
+    const data = await response.json();
+    if (!data.success) throw new Error(data.error);
+    profileData = data.profile;
+
+    renderProfile(profileData);
+    document.getElementById('outputBrandName').textContent = brandName.toUpperCase();
+    showScreen(3);
+
+  } catch (err) {
+    showScreen(1);
+    document.getElementById('errorMsg').textContent = 'Something went wrong. Try again.';
+    document.getElementById('goBtn').disabled = false;
+  }
+}
+
+function animateSteps() {
+  const steps = ['step1','step2','step3','step4','step5'];
+  const labels = ['READING','LISTENING','WRITING','EXAMPLES','LOCKING'];
+  let i = 0;
+  const interval = setInterval(() => {
+    if (i > 0) {
+      document.getElementById(steps[i-1]).classList.remove('active');
+      document.getElementById(steps[i-1]).classList.add('done');
+    }
+    if (i < steps.length) {
+      document.getElementById(steps[i]).classList.add('active');
+      document.getElementById('thinkingLabel').textContent = labels[i];
+      i++;
+    } else {
+      clearInterval(interval);
+    }
+  }, 1200);
+}
+
+function renderProfile(p) {
+  const card = document.getElementById('profileCard');
+  let html = '';
+
+  // BRAND
+  html += `<div class="profile-section">
+    <div class="section-label">Brand</div>
+    <div class="section-body">${escHtml(p.brand)}</div>
+  </div>`;
+
+  // CUSTOMER FEELS
+  html += `<div class="profile-section">
+    <div class="section-label">Customer Feels</div>
+    <div class="section-body">${escHtml(p.customerFeels)}</div>
+  </div>`;
+
+  // BEHAVIOURS
+  html += `<div class="profile-section">
+    <div class="section-label">Behaviours</div>
+    <table class="profile-table">
+      <tr><th>We are</th><th>We are not</th></tr>
+      ${p.behaviours.map(b => `<tr><td>${escHtml(b.we)}</td><td>${escHtml(b.not)}</td></tr>`).join('')}
+    </table>
+  </div>`;
+
+  // EXAMPLES
+  html += `<div class="profile-section">
+    <div class="section-label">Examples</div>
+    <table class="profile-table">
+      <tr><th>More this</th><th>Less this</th></tr>
+      ${p.examples.map(e => `<tr><td>${escHtml(e.more)}</td><td class="less">${escHtml(e.less)}</td></tr>`).join('')}
+    </table>
+  </div>`;
+
+  // HOUSE RULES
+  html += `<div class="profile-section">
+    <div class="section-label">House Rules</div>
+    <div class="rules-list">
+      ${p.houseRules.map(r => `<div class="rule-item"><span class="rule-key">${escHtml(r.key)}</span><span class="rule-val">${escHtml(r.rule)}</span></div>`).join('')}
+    </div>
+  </div>`;
+
+  card.innerHTML = html;
+}
+
+function escHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+
+function copyProfile() {
+  if (!profileData) return;
+  const p = profileData;
+  let text = `${brandName.toUpperCase()} — BRAND PROFILE\n\n`;
+  text += `BRAND\n${p.brand}\n\n`;
+  text += `CUSTOMER FEELS\n${p.customerFeels}\n\n`;
+  text += `BEHAVIOURS\n${p.behaviours.map(b => `We are: ${b.we} / Not: ${b.not}`).join('\n')}\n\n`;
+  text += `EXAMPLES\n${p.examples.map(e => `More: ${e.more} / Less: ${e.less}`).join('\n')}\n\n`;
+  text += `HOUSE RULES\n${p.houseRules.map(r => `${r.key}: ${r.rule}`).join('\n')}`;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = 'Copied ✓';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy profile'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+function downloadProfile() {
+  window.print();
+}
+
+function startAgain() {
+  document.getElementById('dump').value = '';
+  document.getElementById('url').value = '';
+  document.getElementById('brandname').value = '';
+  document.getElementById('goBtn').disabled = false;
+  document.querySelectorAll('.thinking-step').forEach(s => {
+    s.classList.remove('active','done');
+  });
+  document.getElementById('step1').classList.add('active');
+  showScreen(1);
+}
+</script>
+
+</body>
+</html>
