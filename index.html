@@ -603,8 +603,9 @@ input#brandname::placeholder { color: #bbb; }
     <div class="output-header">
       <div class="output-title">YOUR <span id="outputBrandName">BRAND</span> VOICE</div>
       <div class="output-actions">
+        <button class="btn-outline" id="copyPromptBtn" onclick="copyPrompt()">Copy prompt</button>
         <button class="btn-outline" id="copyBtn" onclick="copyProfile()">Copy profile</button>
-        <button class="btn-solid" onclick="downloadProfile()">Download PDF</button>
+        <button class="btn-solid" onclick="downloadMd()">Download prompt</button>
       </div>
     </div>
 
@@ -884,6 +885,51 @@ function copyProfile() {
     btn.textContent = 'Copied ✓';
     btn.classList.add('copied');
     setTimeout(() => { btn.textContent = 'Copy profile'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+function buildPromptMd() {
+  if (!profileData) return '';
+  const p = profileData;
+  const bn = brandName || 'this brand';
+
+  let md = '';
+  md += `You are an experienced copywriter crafting communications for **${bn}**. `;
+  md += `Your job is to write in their exact voice — not approximately, exactly.\n\n`;
+  md += `---\n\n`;
+  md += `## Brand\n\n${p.brand}\n\n`;
+  md += `## Your reader feels\n\n${p.customerFeels}\n\n`;
+  md += `## How you write\n\n`;
+  md += p.behaviours.map(b => `- **Do:** ${b.we}  \n  **Don't:** ${b.not}`).join('\n') + '\n\n';
+  md += `## Write more like this\n\n`;
+  md += p.examples.map(e => `- ✓ ${e.more}  \n  ✗ ${e.less}`).join('\n') + '\n\n';
+  md += `## House rules\n\n`;
+  md += p.houseRules.map(r => `- **${r.key}:** ${r.rule}`).join('\n') + '\n\n';
+  md += `---\n\n`;
+  md += `Now write like this. Every time. No exceptions.`;
+  return md;
+}
+
+function downloadMd() {
+  const md = buildPromptMd();
+  if (!md) return;
+  const blob = new Blob([md], { type: 'text/markdown' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = (brandName || 'brand').toLowerCase().replace(/\s+/g, '-') + '-voice-prompt.md';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function copyPrompt() {
+  const md = buildPromptMd();
+  if (!md) return;
+  navigator.clipboard.writeText(md).then(() => {
+    const btn = document.getElementById('copyPromptBtn');
+    btn.textContent = 'Copied ✓';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy prompt'; btn.classList.remove('copied'); }, 2000);
   });
 }
 
