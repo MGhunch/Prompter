@@ -8,12 +8,20 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-:root { --red: #ED1C24; --ink: #1A1917; --white: #FFFFFF; --card-bg: #F5F3EF; --card-border: #E8E5E0; --card-mid: #9A9590; }
+:root {
+  --red: #ED1C24;
+  --ink: #1A1917;
+  --white: #FFFFFF;
+  --card-bg: #F5F3EF;
+  --card-border: #E8E5E0;
+  --card-mid: #9A9590;
+  --gutter: 32px;
+}
 
 body { font-family: 'Inter', sans-serif; background: var(--red); min-height: 100vh; display: flex; flex-direction: column; }
 
 /* TOPBAR */
-.topbar { background: white; padding: 13px 32px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+.topbar { background: white; padding: 13px var(--gutter); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
 .hai-logo { height: 26px; width: auto; }
 .suite-nav { display: flex; align-items: center; gap: 10px; }
 .suite-item { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: #C8C4BE; }
@@ -24,29 +32,29 @@ body { font-family: 'Inter', sans-serif; background: var(--red); min-height: 100
 .screen { display: none; flex: 1; flex-direction: column; }
 .screen.active { display: flex; }
 
-/* HERO — spans full width */
+/* HERO */
 .s1-hero {
-  padding: 16px 32px 12px;
+  padding: 20px var(--gutter) 0;
   display: flex;
   align-items: flex-end;
-  gap: 12px;
+  gap: 0;
 }
-.dot-hero-img { height: 110px; width: auto; flex-shrink: 0; }
-.hero-copy { padding-bottom: 12px; padding-left: 10px; flex: 1; }
+.dot-hero-img { height: 130px; width: auto; flex-shrink: 0; margin-bottom: -4px; }
+.hero-copy { padding-bottom: 16px; padding-left: 16px; flex: 1; }
 .hero-tag { font-size: 10px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.38); margin-bottom: 8px; }
-.hero-hed { font-family: 'Bebas Neue', sans-serif; font-size: 44px; letter-spacing: 2px; color: white; line-height: 0.95; margin-bottom: 8px; }
+.hero-hed { font-family: 'Bebas Neue', sans-serif; font-size: 48px; letter-spacing: 2px; color: white; line-height: 0.95; margin-bottom: 10px; }
 .hero-hed em { font-style: normal; opacity: 0.35; }
 .hero-sub { font-size: 12px; color: rgba(255,255,255,0.48); line-height: 1.65; font-weight: 300; max-width: 340px; }
 
 /* FACTORY */
-.factory { display: flex; flex: 1; padding: 0 32px; gap: 16px; min-height: 0; }
+.factory { display: flex; flex: 1; padding: 0 var(--gutter); gap: 16px; min-height: 0; }
 .col { display: flex; flex-direction: column; flex: 1; min-width: 0; }
 
-/* Hanging signs */
-.sign-wrap { display: flex; flex-direction: column; align-items: flex-start; margin-bottom: 6px; padding-left: 14px; }
-.sign-wrap.right { align-items: flex-end; padding-left: 0; padding-right: 14px; }
-.sign-string { width: 1px; height: 16px; background: rgba(255,255,255,0.3); margin-left: 16px; }
-.sign-wrap.right .sign-string { margin-left: 0; margin-right: 16px; }
+/* Hanging signs — aligned to panel edges, not offset */
+.sign-wrap { display: flex; flex-direction: column; align-items: flex-start; margin-bottom: 6px; padding-left: 12px; }
+.sign-wrap.right { align-items: flex-end; padding-left: 0; padding-right: 12px; }
+.sign-string { width: 1px; height: 16px; background: rgba(255,255,255,0.3); margin-left: 14px; }
+.sign-wrap.right .sign-string { margin-left: 0; margin-right: 14px; }
 .sign { position: relative; display: inline-flex; align-items: center; }
 .sign-eyelet { position: absolute; top: -4px; left: 50%; transform: translateX(-50%); width: 6px; height: 6px; border-radius: 50%; background: var(--red); border: 1.5px solid rgba(255,255,255,0.5); z-index: 1; }
 .sign-body { background: white; border-radius: 5px; padding: 5px 12px; }
@@ -167,7 +175,7 @@ body { font-family: 'Inter', sans-serif; background: var(--red); min-height: 100
 .pact-solid:hover { background: var(--red); }
 
 /* Bottom padding */
-.factory-foot { padding: 10px 32px 20px; flex-shrink: 0; }
+.factory-foot { padding: 10px var(--gutter) 20px; flex-shrink: 0; }
 
 /* SCREEN 2: THINKING */
 .s2-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px; padding: 40px 32px; }
