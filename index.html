@@ -25,8 +25,8 @@ body { font-family: 'Inter', sans-serif; background: var(--red); min-height: 100
 
 /* HERO */
 .hero { display: flex; align-items: flex-end; gap: 0; padding-top: 24px; padding-bottom: 0; }
-.dot-hero-img { height: 148px; width: auto; flex-shrink: 0; margin-bottom: 0; margin-left: -16px; order: 2; }
-.hero-copy { padding-right: 8px; padding-bottom: 8px; flex: 1; order: 1; }
+.dot-hero-img { height: 148px; width: auto; flex-shrink: 0; margin-bottom: 0; margin-left: -24px; order: 2; }
+.hero-copy { padding-right: 8px; padding-bottom: 0; flex: 1; order: 1; }
 .hero-tag { font-size: 10px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.38); margin-bottom: 8px; }
 .hero-hed { font-family: 'Bebas Neue', sans-serif; font-size: 48px; letter-spacing: 2px; color: white; line-height: 0.95; margin-bottom: 10px; }
 .hero-hed em { font-style: normal; opacity: 0.35; }
@@ -303,7 +303,7 @@ body { font-family: 'Inter', sans-serif; background: var(--red); min-height: 100
 
     <!-- Collapsed history toggle -->
     <div class="history-collapsed" id="historyToggle" style="display:none;" onclick="toggleHistory()">
-      <span class="arrow">&#8679;</span>
+      <span class="arrow" style="color:white;font-size:13px;">↑</span>
       <span id="historyLabel">stuff we've covered ^</span>
     </div>
 
@@ -523,7 +523,7 @@ function renderFileList() {
 
 function updateGoBtn() {
   const n = uploadedFiles.length;
-  document.getElementById('materialCount').textContent = `${n} piece${n !== 1 ? 's' : ''} of material`;
+  document.getElementById('materialCount').textContent = `Your examples (${n})`;
   document.getElementById('goBtn').disabled = false;
   document.getElementById('goWrap').style.display = 'flex';
 }
@@ -681,7 +681,7 @@ function archiveExchange(dotMsg, userMsg) {
   // Show/update the toggle
   const toggle = document.getElementById('historyToggle');
   toggle.style.display = 'flex';
-  document.getElementById('historyLabel').textContent = `stuff we've covered ^ (${exchangeCount})`;
+  document.getElementById('historyLabel').textContent = `Stuff we've covered (${exchangeCount})`;
 }
 
 function toggleHistory() {
