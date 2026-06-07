@@ -123,7 +123,7 @@ body { font-family: 'Inter', sans-serif; background: var(--red); min-height: 100
 .dot-msg-text { font-size: 13px; color: var(--ink); line-height: 1.65; font-weight: 300; }
 
 .dot-thinking { display: flex; gap: 4px; align-items: center; padding: 4px 0; }
-.dot-thinking span { width: 6px; height: 6px; border-radius: 50%; background: var(--card-border); animation: blink 1.2s ease-in-out infinite; }
+.dot-thinking span { width: 6px; height: 6px; border-radius: 50%; background: var(--red); animation: blink 1.2s ease-in-out infinite; }
 .dot-thinking span:nth-child(2) { animation-delay: 0.2s; }
 .dot-thinking span:nth-child(3) { animation-delay: 0.4s; }
 @keyframes blink { 0%,80%,100% { opacity: 0.25; } 40% { opacity: 1; } }
@@ -207,6 +207,43 @@ body { font-family: 'Inter', sans-serif; background: var(--red); min-height: 100
 
 .page-footer { padding: 8px var(--g) 16px; text-align: center; }
 .page-footer span { font-size: 9px; color: rgba(255,255,255,0.25); letter-spacing: 1.5px; text-transform: uppercase; }
+
+/* CONFIRM SCREEN */
+.confirm-zone { display: flex; flex-direction: column; gap: 16px; margin-top: 10px; animation: fadeUp 0.3s ease; }
+.confirm-card { background: white; border-radius: 14px; padding: 22px 22px 18px; display: flex; flex-direction: column; gap: 20px; }
+.confirm-header { display: flex; align-items: center; justify-content: space-between; }
+.confirm-title { font-size: 13px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--ink); font-family: 'Inter', sans-serif; }
+.confirm-steps { display: flex; gap: 6px; align-items: center; }
+.cstep { width: 7px; height: 7px; border-radius: 50%; background: var(--card-border); flex-shrink: 0; transition: background 0.3s; }
+.cstep.on { background: var(--red); }
+.confirm-note { font-size: 14px; color: var(--mid); font-weight: 300; line-height: 1.6; transition: opacity 0.2s; min-height: 22px; }
+.confirm-note.fade { opacity: 0; }
+.confirm-note strong { color: var(--ink); font-weight: 600; }
+.confirm-note .aside { color: var(--mid); font-weight: 300; }
+.sentence-pair { display: flex; flex-direction: column; gap: 10px; }
+.csent { border-radius: 10px; padding: 15px 17px; border: 1.5px solid var(--card-border); transition: border-color 0.2s, background 0.2s, opacity 0.2s; }
+.csent.active { border-color: var(--red); background: rgba(237,28,36,0.03); }
+.csent.dimmed { opacity: 0.3; }
+.csent-lbl { font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #C8C4BE; margin-bottom: 5px; transition: color 0.2s; }
+.csent.active .csent-lbl { color: var(--red); }
+.csent p { font-size: 13px; color: var(--ink); line-height: 1.6; font-style: italic; font-weight: 400; }
+.cslider-wrap { position: relative; height: 48px; display: flex; align-items: center; }
+.ctrack-bg { position: absolute; left: 0; right: 0; height: 8px; background: var(--card-bg); border-radius: 4px; overflow: hidden; }
+.ctrack-fill { height: 100%; background: var(--red); border-radius: 4px; width: 50%; transition: width 0.04s; }
+input.crange { position: absolute; left: 0; right: 0; width: 100%; -webkit-appearance: none; appearance: none; background: transparent; outline: none; cursor: pointer; margin: 0; padding: 0; }
+input.crange::-webkit-slider-thumb { -webkit-appearance: none; width: 34px; height: 34px; border-radius: 50%; background: var(--red); cursor: pointer; border: 3px solid white; }
+input.crange::-moz-range-thumb { width: 34px; height: 34px; border-radius: 50%; background: var(--red); cursor: pointer; border: 3px solid white; }
+input.crange::-webkit-slider-runnable-track { background: transparent; }
+.confirm-actions { display: flex; align-items: center; justify-content: space-between; }
+
+/* BUTTON RULES */
+.btn-primary { background: var(--red); color: white; border: none; border-radius: 100px; padding: 10px 26px; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; transition: background 0.15s; }
+.btn-primary:hover { background: #C8141B; }
+.btn-primary:disabled { background: var(--card-border); color: var(--mid); cursor: not-allowed; }
+.btn-secondary { background: white; color: var(--red); border: 1.5px solid var(--red); border-radius: 100px; padding: 9px 24px; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+.btn-secondary:hover { background: rgba(237,28,36,0.04); }
+.btn-ghost { background: none; border: none; font-size: 12px; color: var(--mid); font-family: 'Inter', sans-serif; cursor: pointer; font-weight: 500; padding: 0; transition: color 0.15s; }
+.btn-ghost:hover { color: var(--ink); }
 </style>
 </head>
 <body>
@@ -324,12 +361,15 @@ body { font-family: 'Inter', sans-serif; background: var(--red); min-height: 100
 
   </div>
 
+  <!-- CONFIRM ZONE -->
+  <div class="confirm-zone" id="confirmZone" style="display:none;"></div>
+
   <!-- LET'S GO -->
   <div class="go-wrap" id="goWrap" style="display:none;">
     <span class="material-count" id="materialCount"></span>
     <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
       <div class="error-msg" id="errorMsg"></div>
-      <button class="go-btn" id="goBtn" onclick="runExtract()" disabled>LET'S GO</button>
+      <button class="go-btn" id="goBtn" onclick="startConfirm()" disabled>LET'S GO</button>
     </div>
   </div>
 
@@ -471,10 +511,14 @@ function afterFilesChanged() {
     startConsultation();
   } else if (uploadedFiles.length > 0) {
     updateGoBtn();
-    // New file added mid-conversation — show soaking state then re-consult
     showSoaking();
-    // Small delay so user sees the soaking message before API call
+    // Inject a nudge so Dot knows new material arrived
+    consultHistory.push({
+      role: 'user',
+      content: 'I just added another file. Please acknowledge what you can now see and continue the conversation.'
+    });
     setTimeout(async () => {
+      document.getElementById('responseArea').innerHTML = '';
       await runConsult();
     }, 1200);
   }
@@ -488,7 +532,7 @@ function showSoaking() {
   document.getElementById('dotThinking').style.display = 'none';
   const el = document.getElementById('dotMsgText');
   el.style.display = 'block';
-  el.innerHTML = '<span style="color:var(--mid);font-style:italic;">Soaking up your stuff</span> <span class="inline-dots"><span></span><span></span><span></span></span>';
+  el.innerHTML = 'Soaking up your stuff <span class="inline-dots"><span></span><span></span><span></span></span>';
   // Re-trigger animation
   const bubble = document.getElementById('dotBubble');
   bubble.style.animation = 'none';
@@ -699,7 +743,7 @@ function resetHistoryUI() {
 }
 
 // EXTRACT
-async function runExtract() {
+async function runExtract_DISABLED() {
   if (!uploadedFiles.length) return;
   showError('');
   document.getElementById('mainPage').style.display = 'none';
@@ -841,6 +885,184 @@ function copyPrompt() {
     const btn = document.getElementById('copyPromptBtn'); btn.textContent = 'Copied ✓'; btn.classList.add('copied');
     setTimeout(() => { btn.textContent = 'Copy prompt'; btn.classList.remove('copied'); }, 2000);
   });
+}
+
+
+// ── CONFIRM SCREEN ───────────────────────────────────────
+
+let confirmChecks = [];
+let confirmResults = [];
+let currentCheck = 0;
+let checkMoved = false;
+
+async function startConfirm() {
+  document.getElementById('goBtn').disabled = true;
+  const zone = document.getElementById('confirmZone');
+  zone.style.display = 'flex';
+  zone.innerHTML = '<div style="font-size:12px;color:rgba(255,255,255,0.45);padding:8px 0;">Dot is putting together a quick sense check...</div>';
+
+  try {
+    const res = await fetch('/api/confirm', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        files: uploadedFiles.map(f => ({filename: f.filename, text: f.text})),
+        history: consultHistory
+      })
+    });
+    const data = await res.json();
+    if (!data.success || !data.checks.length) throw new Error('No checks');
+    confirmChecks = data.checks;
+    confirmResults = [];
+    currentCheck = 0;
+    renderCheck(0);
+  } catch {
+    // Fallback — skip confirm, go straight to extract
+    zone.style.display = 'none';
+    document.getElementById('goBtn').disabled = false;
+    document.getElementById('goBtn').classList.add('ready');
+  }
+}
+
+function renderCheck(idx) {
+  const zone = document.getElementById('confirmZone');
+  const check = confirmChecks[idx];
+  checkMoved = false;
+
+  zone.innerHTML = '';
+
+  const card = document.createElement('div');
+  card.className = 'confirm-card';
+  card.innerHTML = `
+    <div class="confirm-header">
+      <div class="confirm-title">Quick sense check</div>
+      <div class="confirm-steps">
+        ${confirmChecks.map((_,i) => `<div class="cstep${i===idx?' on':''}"></div>`).join('')}
+      </div>
+    </div>
+    <div class="confirm-note" id="cnote">Which sounds most like you?</div>
+    <div class="sentence-pair">
+      <div class="csent" id="csentA">
+        <div class="csent-lbl">Like this?</div>
+        <p>${escHtml(check.sentenceA)}</p>
+      </div>
+      <div class="csent" id="csentB">
+        <div class="csent-lbl">Or like this?</div>
+        <p>${escHtml(check.sentenceB)}</p>
+      </div>
+    </div>
+    <div class="cslider-wrap">
+      <div class="ctrack-bg"><div class="ctrack-fill" id="cfill"></div></div>
+      <input class="crange" type="range" min="0" max="100" value="50" step="1" id="cslider" oninput="updateCheck(this.value)"/>
+    </div>
+    <div class="confirm-actions">
+      <button class="btn-ghost" onclick="skipCheck()">Skip</button>
+      <button class="btn-primary" onclick="nextCheck()" id="cnextBtn">${idx < confirmChecks.length - 1 ? 'Next' : 'Build my profile'}</button>
+    </div>
+  `;
+  zone.appendChild(card);
+}
+
+function updateCheck(v) {
+  v = parseInt(v);
+  const a = document.getElementById('csentA');
+  const b = document.getElementById('csentB');
+  const n = document.getElementById('cnote');
+  const fill = document.getElementById('cfill');
+  const check = confirmChecks[currentCheck];
+
+  fill.style.width = v + '%';
+  a.classList.remove('active','dimmed');
+  b.classList.remove('active','dimmed');
+
+  if (!checkMoved) {
+    n.classList.add('fade');
+    checkMoved = true;
+    setTimeout(() => { n.classList.remove('fade'); updateCheckNote(v, check); }, 180);
+    return;
+  }
+  updateCheckNote(v, check);
+  if (v < 40) { a.classList.add('active'); b.classList.add('dimmed'); }
+  else if (v > 60) { b.classList.add('active'); a.classList.add('dimmed'); }
+}
+
+function updateCheckNote(v, check) {
+  const n = document.getElementById('cnote');
+  if (!n) return;
+  if (v < 40) n.innerHTML = `<strong>${escHtml(check.noteA)}</strong> &nbsp;<span class="aside">(leaning this way)</span>`;
+  else if (v > 60) n.innerHTML = `<strong>${escHtml(check.noteB)}</strong> &nbsp;<span class="aside">(leaning this way)</span>`;
+  else n.innerHTML = 'Which sounds most like you?';
+}
+
+function nextCheck() {
+  const v = parseInt(document.getElementById('cslider').value);
+  const check = confirmChecks[currentCheck];
+  confirmResults.push({
+    dimension: check.dimension,
+    sentenceA: check.sentenceA,
+    sentenceB: check.sentenceB,
+    value: v
+  });
+
+  if (currentCheck < confirmChecks.length - 1) {
+    currentCheck++;
+    checkMoved = false;
+    renderCheck(currentCheck);
+  } else {
+    // Done -- run extract with calibration
+    document.getElementById('confirmZone').style.display = 'none';
+    runExtractWithCalibration();
+  }
+}
+
+function skipCheck() {
+  const check = confirmChecks[currentCheck];
+  confirmResults.push({
+    dimension: check.dimension,
+    sentenceA: check.sentenceA,
+    sentenceB: check.sentenceB,
+    value: 50
+  });
+  nextCheck();
+}
+
+async function runExtractWithCalibration() {
+  document.getElementById('mainPage').style.display = 'none';
+  document.getElementById('pageFooter').style.display = 'none';
+  document.getElementById('thinkingScreen').classList.add('active');
+  animateSteps();
+
+  try {
+    const res = await fetch('/api/extract', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        files: uploadedFiles.map(f => ({filename: f.filename, text: f.text})),
+        history: consultHistory,
+        calibration: confirmResults
+      })
+    });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.error);
+    profileData = data.profile;
+    renderProfile(profileData);
+    document.getElementById('thinkingScreen').classList.remove('active');
+    document.getElementById('mainPage').style.display = 'flex';
+    document.getElementById('pageFooter').style.display = 'block';
+    document.getElementById('hero').style.display = 'none';
+    document.getElementById('dotOpening').style.display = 'none';
+    document.getElementById('inputZone').style.display = 'none';
+    document.getElementById('consultZone').style.display = 'none';
+    document.getElementById('goWrap').style.display = 'none';
+    document.getElementById('confirmZone').style.display = 'none';
+    document.getElementById('profileZone').style.display = 'block';
+  } catch {
+    document.getElementById('thinkingScreen').classList.remove('active');
+    document.getElementById('mainPage').style.display = 'flex';
+    document.getElementById('pageFooter').style.display = 'block';
+    showError('Something went wrong. Try again.');
+    document.getElementById('goBtn').disabled = false;
+  }
 }
 </script>
 </body>
