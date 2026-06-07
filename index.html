@@ -479,6 +479,52 @@ input#brandname::placeholder { color: #bbb; }
   text-align: center;
   margin-top: 8px;
 }
+
+/* DROP ZONE */
+.drop-zone {
+  width: 100%;
+  max-width: 580px;
+  border: 1.5px dashed var(--border);
+  border-radius: 16px;
+  padding: 2.5rem 2rem;
+  text-align: center;
+  background: var(--white);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  margin-bottom: 12px;
+}
+.drop-zone.drag-over { border-color: var(--red); background: rgba(237,28,36,0.03); }
+.drop-zone-icon { font-size: 32px; color: var(--mid); margin-bottom: 10px; }
+.drop-zone-label { font-size: 14px; color: var(--black); font-weight: 400; margin-bottom: 4px; }
+.drop-zone-label span { color: var(--red); text-decoration: underline; cursor: pointer; }
+.drop-zone-types { font-size: 11px; color: var(--mid); }
+
+/* FILE LIST */
+.file-list { width: 100%; max-width: 580px; display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+.file-row { display: flex; align-items: center; gap: 10px; background: var(--white); border: 0.5px solid var(--border); border-radius: 10px; padding: 10px 14px; }
+.file-row-icon { font-size: 18px; color: var(--red); flex-shrink: 0; }
+.file-row-name { font-size: 13px; font-weight: 500; color: var(--black); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.file-row-size { font-size: 11px; color: var(--mid); flex-shrink: 0; }
+.file-row-remove { font-size: 15px; color: var(--mid); cursor: pointer; flex-shrink: 0; line-height: 1; background: none; border: none; font-family: inherit; padding: 0; }
+.file-row-remove:hover { color: var(--red); }
+
+/* REVIEW CARD */
+.review-card { width: 100%; max-width: 580px; background: var(--white); border: 0.5px solid var(--border); border-radius: 16px; overflow: hidden; margin-bottom: 12px; }
+.review-header { display: flex; align-items: center; gap: 10px; padding: 11px 16px; border-bottom: 0.5px solid var(--border); }
+.review-items { padding: 12px 16px; display: flex; flex-direction: column; gap: 8px; }
+.review-row { display: flex; align-items: flex-start; gap: 10px; }
+.review-verdict { width: 8px; height: 8px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+.review-verdict.good { background: #1D9E75; }
+.review-verdict.warn { background: #BA7517; }
+.review-verdict.miss { background: var(--red); }
+.review-summary { font-size: 12px; color: var(--black); font-weight: 300; line-height: 1.5; }
+.review-summary strong { font-weight: 500; }
+.review-nudge { margin: 0 16px 14px; background: #FFF8EE; border-radius: 8px; padding: 10px 14px; font-size: 12px; color: #7A4A00; line-height: 1.6; font-weight: 300; }
+
+/* ADD MORE + FOOTER */
+.add-more-btn { width: 100%; max-width: 580px; display: flex; align-items: center; justify-content: center; gap: 6px; border: 0.5px dashed var(--border); border-radius: 10px; padding: 9px 14px; font-size: 12px; color: var(--mid); cursor: pointer; background: none; font-family: 'Inter', sans-serif; margin-bottom: 12px; transition: border-color 0.15s, color 0.15s; }
+.add-more-btn:hover { border-color: var(--red); color: var(--red); }
+.input-footer { width: 100%; max-width: 580px; display: flex; align-items: center; justify-content: space-between; }
 </style>
 </head>
 <body>
@@ -497,30 +543,36 @@ input#brandname::placeholder { color: #bbb; }
     <img src="/images/Robot.png" class="dot-img" alt="Dot" onerror="this.style.display='none'"/>
   </div>
 
-  <div class="drop-card">
-    <div class="drop-tabs">
-      <div class="drop-tab on" onclick="switchTab('text')">Paste text</div>
-      <div class="drop-tab" onclick="switchTab('url')">Website URL</div>
-    </div>
+  <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()"
+    ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
+    <div class="drop-zone-icon">&#8613;</div>
+    <div class="drop-zone-label">Drop your brand files here &nbsp;or&nbsp; <span>browse</span></div>
+    <div class="drop-zone-types">PDF &nbsp;&middot;&nbsp; Word &nbsp;&middot;&nbsp; More coming</div>
+    <input type="file" id="fileInput" accept=".pdf,.doc,.docx" multiple style="display:none" onchange="handleFileSelect(event)"/>
+  </div>
 
-    <div class="tab-panel on" id="tab-text">
-      <textarea id="dump" placeholder="Drop anything in here. Brand guidelines, old emails, a website about page, a TOV doc, a deck — even a single paragraph you're proud of. Dot will find the voice."></textarea>
-    </div>
+  <div class="file-list" id="fileList"></div>
 
-    <div class="tab-panel" id="tab-url">
-      <div class="url-wrap">
-        <input type="text" id="url" placeholder="https://yourbrand.com" />
-        <div class="url-note">Dot will read your website and extract the brand voice from your copy. Works best with homepage, about page, and any brand story content.</div>
+  <div class="review-card" id="reviewCard" style="display:none">
+    <div class="review-header">
+      <div class="bubble" style="padding:5px 14px; margin:0">
+        <div class="bubble-text" style="font-size:14px; letter-spacing:2px">DOT'S READ</div>
       </div>
     </div>
+    <div class="review-items" id="reviewItems"></div>
+    <div class="review-nudge" id="reviewNudge"></div>
+  </div>
 
-    <div class="drop-footer">
-      <div class="brand-input-wrap">
-        <span class="brand-label-sm">Brand name</span>
-        <input type="text" id="brandname" placeholder="e.g. Tower" />
-      </div>
-      <button class="go-btn" id="goBtn" onclick="runPrompter()">EXTRACT</button>
+  <button class="add-more-btn" id="addMoreBtn" style="display:none" onclick="document.getElementById('fileInput').click()">
+    + Add more material
+  </button>
+
+  <div class="input-footer">
+    <div class="brand-input-wrap">
+      <span class="brand-label-sm">Brand name</span>
+      <input type="text" id="brandname" placeholder="e.g. Tower" />
     </div>
+    <button class="go-btn" id="goBtn" onclick="runPrompter()" disabled>EXTRACT</button>
   </div>
   <div class="error-msg" id="errorMsg"></div>
 </div>
@@ -568,58 +620,162 @@ input#brandname::placeholder { color: #bbb; }
 </div>
 
 <script>
-let currentTab = 'text';
+let uploadedFiles = [];   // [{filename, text, size}, ...]
 let profileData = null;
 let brandName = '';
 
-function switchTab(tab) {
-  currentTab = tab;
-  document.querySelectorAll('.drop-tab').forEach((t, i) => {
-    t.classList.toggle('on', (i === 0 && tab === 'text') || (i === 1 && tab === 'url'));
-  });
-  document.getElementById('tab-text').classList.toggle('on', tab === 'text');
-  document.getElementById('tab-url').classList.toggle('on', tab === 'url');
+// ── FILE HANDLING ──────────────────────────────────────────────
+
+function handleDragOver(e) {
+  e.preventDefault();
+  document.getElementById('dropZone').classList.add('drag-over');
 }
 
-function showScreen(n) {
-  document.querySelectorAll('.screen').forEach((s, i) => {
-    s.classList.toggle('active', i === n - 1);
-  });
+function handleDragLeave(e) {
+  document.getElementById('dropZone').classList.remove('drag-over');
 }
 
-async function runPrompter() {
-  const dump = document.getElementById('dump').value.trim();
-  const url = document.getElementById('url').value.trim();
-  brandName = document.getElementById('brandname').value.trim() || 'Brand';
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('dropZone').classList.remove('drag-over');
+  uploadFiles(Array.from(e.dataTransfer.files));
+}
 
-  const content = currentTab === 'text' ? dump : url;
-  if (!content) {
-    document.getElementById('errorMsg').textContent = currentTab === 'text'
-      ? 'Drop something in first — guidelines, emails, anything.'
-      : 'Enter a website URL first.';
+function handleFileSelect(e) {
+  uploadFiles(Array.from(e.target.files));
+  e.target.value = '';
+}
+
+async function uploadFiles(files) {
+  const allowed = files.filter(f => /\.(pdf|docx?)$/i.test(f.name));
+  if (!allowed.length) return;
+
+  for (const file of allowed) {
+    if (uploadedFiles.find(f => f.filename === file.name)) continue;
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const res = await fetch('/api/upload', { method: 'POST', body: formData });
+      const data = await res.json();
+      if (data.success) {
+        uploadedFiles.push({ filename: data.filename, text: data.text, size: file.size });
+      } else {
+        showError(data.error || 'Upload failed');
+      }
+    } catch (err) {
+      showError('Upload failed — try again.');
+    }
+  }
+
+  renderFileList();
+  if (uploadedFiles.length > 0) runReview();
+}
+
+function removeFile(filename) {
+  uploadedFiles = uploadedFiles.filter(f => f.filename !== filename);
+  renderFileList();
+  if (uploadedFiles.length > 0) runReview();
+  else hideReview();
+}
+
+function renderFileList() {
+  const list = document.getElementById('fileList');
+  const addMore = document.getElementById('addMoreBtn');
+  const goBtn = document.getElementById('goBtn');
+
+  if (!uploadedFiles.length) {
+    list.innerHTML = '';
+    addMore.style.display = 'none';
+    goBtn.disabled = true;
     return;
   }
 
-  document.getElementById('errorMsg').textContent = '';
+  list.innerHTML = uploadedFiles.map(f => {
+    const ext = f.filename.split('.').pop().toLowerCase();
+    const icon = ext === 'pdf' ? '&#128196;' : '&#128196;';
+    const size = f.size < 1024*1024
+      ? (f.size/1024).toFixed(0) + ' KB'
+      : (f.size/1024/1024).toFixed(1) + ' MB';
+    return `<div class="file-row">
+      <span class="file-row-icon">${icon}</span>
+      <span class="file-row-name">${escHtml(f.filename)}</span>
+      <span class="file-row-size">${size}</span>
+      <button class="file-row-remove" onclick="removeFile('${escHtml(f.filename)}')" title="Remove">&times;</button>
+    </div>`;
+  }).join('');
+
+  addMore.style.display = 'flex';
+  goBtn.disabled = false;
+}
+
+// ── DOT'S REVIEW ──────────────────────────────────────────────
+
+async function runReview() {
+  const card = document.getElementById('reviewCard');
+  const items = document.getElementById('reviewItems');
+  const nudge = document.getElementById('reviewNudge');
+
+  card.style.display = 'block';
+  items.innerHTML = '<div style="font-size:12px;color:var(--mid);padding:4px 0">Dot is reading your files...</div>';
+  nudge.textContent = '';
+
+  try {
+    const res = await fetch('/api/review', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ files: uploadedFiles.map(f => ({ filename: f.filename, text: f.text })) })
+    });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.error);
+
+    const review = data.review;
+
+    items.innerHTML = review.files.map(f => `
+      <div class="review-row">
+        <div class="review-verdict ${f.verdict}"></div>
+        <div class="review-summary"><strong>${escHtml(f.filename)}</strong> — ${escHtml(f.summary)}</div>
+      </div>`).join('');
+
+    nudge.textContent = review.nudge;
+
+  } catch (err) {
+    items.innerHTML = '<div style="font-size:12px;color:var(--mid)">Could not load review.</div>';
+  }
+}
+
+function hideReview() {
+  document.getElementById('reviewCard').style.display = 'none';
+  document.getElementById('addMoreBtn').style.display = 'none';
+}
+
+// ── EXTRACT ───────────────────────────────────────────────────
+
+async function runPrompter() {
+  brandName = document.getElementById('brandname').value.trim() || 'Brand';
+
+  if (!uploadedFiles.length) {
+    showError('Add at least one file first.');
+    return;
+  }
+
+  showError('');
   document.getElementById('goBtn').disabled = true;
   showScreen(2);
   animateSteps();
 
-  const userContent = currentTab === 'url'
-    ? `Brand name: ${brandName}\n\nWebsite URL to analyse: ${content}\n\nPlease extract the brand voice from this website's copy and produce the brand profile.`
-    : `Brand name: ${brandName}\n\nBrand material:\n\n${content}`;
-
   try {
-    const response = await fetch('/api/extract', {
+    const res = await fetch('/api/extract', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        content: userContent,
+        files: uploadedFiles.map(f => ({ filename: f.filename, text: f.text })),
         brandName: brandName
       })
     });
 
-    const data = await response.json();
+    const data = await res.json();
     if (!data.success) throw new Error(data.error);
     profileData = data.profile;
 
@@ -629,9 +785,21 @@ async function runPrompter() {
 
   } catch (err) {
     showScreen(1);
-    document.getElementById('errorMsg').textContent = 'Something went wrong. Try again.';
+    showError('Something went wrong. Try again.');
     document.getElementById('goBtn').disabled = false;
   }
+}
+
+// ── UI HELPERS ────────────────────────────────────────────────
+
+function showScreen(n) {
+  document.querySelectorAll('.screen').forEach((s, i) => {
+    s.classList.toggle('active', i === n - 1);
+  });
+}
+
+function showError(msg) {
+  document.getElementById('errorMsg').textContent = msg;
 }
 
 function animateSteps() {
@@ -657,19 +825,16 @@ function renderProfile(p) {
   const card = document.getElementById('profileCard');
   let html = '';
 
-  // BRAND
   html += `<div class="profile-section">
     <div class="section-label">Brand</div>
     <div class="section-body">${escHtml(p.brand)}</div>
   </div>`;
 
-  // CUSTOMER FEELS
   html += `<div class="profile-section">
     <div class="section-label">Customer Feels</div>
     <div class="section-body">${escHtml(p.customerFeels)}</div>
   </div>`;
 
-  // BEHAVIOURS
   html += `<div class="profile-section">
     <div class="section-label">Behaviours</div>
     <table class="profile-table">
@@ -678,7 +843,6 @@ function renderProfile(p) {
     </table>
   </div>`;
 
-  // EXAMPLES
   html += `<div class="profile-section">
     <div class="section-label">Examples</div>
     <table class="profile-table">
@@ -687,7 +851,6 @@ function renderProfile(p) {
     </table>
   </div>`;
 
-  // HOUSE RULES
   html += `<div class="profile-section">
     <div class="section-label">House Rules</div>
     <div class="rules-list">
@@ -729,13 +892,14 @@ function downloadProfile() {
 }
 
 function startAgain() {
-  document.getElementById('dump').value = '';
-  document.getElementById('url').value = '';
+  uploadedFiles = [];
+  profileData = null;
+  brandName = '';
   document.getElementById('brandname').value = '';
-  document.getElementById('goBtn').disabled = false;
-  document.querySelectorAll('.thinking-step').forEach(s => {
-    s.classList.remove('active','done');
-  });
+  document.getElementById('fileList').innerHTML = '';
+  document.getElementById('goBtn').disabled = true;
+  hideReview();
+  document.querySelectorAll('.thinking-step').forEach(s => s.classList.remove('active','done'));
   document.getElementById('step1').classList.add('active');
   showScreen(1);
 }
