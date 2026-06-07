@@ -8,371 +8,156 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
 :root {
-  --red: #ED1C24;
-  --ink: #1A1917;
-  --white: #FFFFFF;
-  --card-bg: #F5F3EF;
-  --card-border: #E8E5E0;
-  --mid: #9A9590;
-  --g: 32px;
+  --red: #ED1C24; --ink: #1A1917; --white: #FFFFFF;
+  --card-bg: #F5F3EF; --card-border: #E8E5E0; --mid: #9A9590; --g: 32px;
 }
+body { font-family: 'Inter', sans-serif; background: var(--red); min-height: 100vh; display: flex; flex-direction: column; }
 
-body {
-  font-family: 'Inter', sans-serif;
-  background: var(--red);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-/* ── TOPBAR ── */
-.topbar {
-  background: white;
-  padding: 13px var(--g);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-shrink: 0;
-}
+.topbar { background: white; padding: 13px var(--g); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
 .hai-logo { height: 26px; width: auto; }
 .suite-nav { display: flex; align-items: center; gap: 10px; }
 .suite-item { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: #C8C4BE; }
 .suite-item.active { color: var(--ink); }
 .suite-div { color: #D8D5D0; }
 
-/* ── MAIN ── */
-.main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  padding: 0 var(--g) 24px;
-  max-width: 640px;
-  width: 100%;
-  align-self: center;
-}
+.main { flex: 1; display: flex; flex-direction: column; padding: 0 var(--g) 24px; max-width: 640px; width: 100%; align-self: center; }
 
-/* ── HERO ── */
-.hero {
-  display: flex;
-  align-items: flex-end;
-  gap: 0;
-  padding-top: 32px;
-  padding-bottom: 0;
-}
-.dot-hero-img {
-  height: 148px;
-  width: auto;
-  flex-shrink: 0;
-  margin-bottom: 0;
-  margin-left: -8px;
-  order: 2;
-}
-.hero-copy {
-  padding-right: 8px;
-  padding-bottom: 16px;
-  flex: 1;
-  order: 1;
-}
-.hero-tag {
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: rgba(255,255,255,0.38);
-  margin-bottom: 8px;
-}
-.hero-hed {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 48px;
-  letter-spacing: 2px;
-  color: white;
-  line-height: 0.95;
-  margin-bottom: 10px;
-}
+/* HERO */
+.hero { display: flex; align-items: flex-end; gap: 0; padding-top: 32px; padding-bottom: 0; }
+.dot-hero-img { height: 148px; width: auto; flex-shrink: 0; margin-bottom: 0; margin-left: -8px; order: 2; }
+.hero-copy { padding-right: 8px; padding-bottom: 16px; flex: 1; order: 1; }
+.hero-tag { font-size: 10px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.38); margin-bottom: 8px; }
+.hero-hed { font-family: 'Bebas Neue', sans-serif; font-size: 48px; letter-spacing: 2px; color: white; line-height: 0.95; margin-bottom: 10px; }
 .hero-hed em { font-style: normal; opacity: 0.35; }
-.hero-sub {
-  font-size: 12px;
-  color: rgba(255,255,255,0.45);
-  line-height: 1.65;
-  font-weight: 300;
-}
+.hero-sub { font-size: 12px; color: rgba(255,255,255,0.45); line-height: 1.65; font-weight: 300; }
 
-/* ── INPUT ZONE ── */
-.input-zone {
-  background: white;
-  border-radius: 14px;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 8px;
+/* DOT OPENING */
+.dot-opening {
+  display: flex; align-items: flex-end; gap: 12px; margin-top: 12px; margin-bottom: 4px;
 }
+.dot-open-img { height: 48px; width: auto; flex-shrink: 0; }
+.dot-open-bubble {
+  background: white; border-radius: 16px 16px 16px 4px;
+  padding: 12px 16px; flex: 1;
+  animation: fadeUp 0.4s ease;
+}
+.dot-open-text { font-size: 13px; color: var(--ink); line-height: 1.65; font-weight: 300; }
+
+/* INPUT ZONE */
+.input-zone { background: white; border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
 
 .icon-row { display: flex; gap: 12px; }
-.icon-btn {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
-  opacity: 0.32;
-  transition: opacity 0.15s, transform 0.15s;
-}
+.icon-btn { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; opacity: 0.32; transition: opacity 0.15s, transform 0.15s; }
 .icon-btn.active { opacity: 1; }
 .icon-btn:hover { opacity: 0.62; transform: translateY(-1px); }
 .icon-btn.active:hover { opacity: 1; }
-.icircle {
-  width: 44px;
-  height: 44px;
-  background: var(--red);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+.icircle { width: 44px; height: 44px; background: var(--red); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
 .ilbl { font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--ink); }
 
 .tab-panel { display: none; flex-direction: column; gap: 8px; }
 .tab-panel.active { display: flex; }
 
-.drop-zone {
-  border: 1.5px dashed var(--card-border);
-  border-radius: 10px;
-  padding: 14px;
-  text-align: center;
-  cursor: pointer;
-  transition: border-color 0.15s;
-}
+.drop-zone { border: 1.5px dashed var(--card-border); border-radius: 10px; padding: 14px; text-align: center; cursor: pointer; transition: border-color 0.15s; }
 .drop-zone:hover, .drop-zone.drag-over { border-color: var(--red); }
 .drop-lbl { font-size: 12px; font-weight: 500; color: var(--ink); margin-bottom: 2px; }
-.drop-lbl u { color: var(--red); text-decoration-color: var(--red); }
+.drop-lbl u { color: var(--red); }
 .drop-sub { font-size: 9px; color: var(--mid); letter-spacing: 2px; text-transform: uppercase; }
 
 .weblink-row { display: flex; gap: 7px; }
-.weblink-input {
-  flex: 1; background: var(--card-bg); border: 0.5px solid var(--card-border);
-  border-radius: 8px; padding: 9px 12px; font-size: 12px; color: var(--ink);
-  font-family: 'Inter', sans-serif; outline: none;
-}
+.weblink-input { flex: 1; background: var(--card-bg); border: 0.5px solid var(--card-border); border-radius: 8px; padding: 9px 12px; font-size: 12px; color: var(--ink); font-family: 'Inter', sans-serif; outline: none; }
 .weblink-input::placeholder { color: var(--mid); }
 .weblink-input:focus { border-color: var(--red); }
-.weblink-btn {
-  background: var(--red); color: white; border: none; border-radius: 8px;
-  padding: 9px 14px; font-size: 11px; font-weight: 700; cursor: pointer;
-  font-family: 'Inter', sans-serif; white-space: nowrap;
-}
+.weblink-btn { background: var(--red); color: white; border: none; border-radius: 8px; padding: 9px 14px; font-size: 11px; font-weight: 700; cursor: pointer; font-family: 'Inter', sans-serif; white-space: nowrap; }
 .weblink-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 .weblink-note { font-size: 10px; color: var(--mid); line-height: 1.5; }
 
-.notes-textarea {
-  width: 100%; min-height: 80px; background: var(--card-bg);
-  border: 0.5px solid var(--card-border); border-radius: 8px;
-  padding: 10px 12px; font-size: 12px; color: var(--ink);
-  font-family: 'Inter', sans-serif; font-weight: 300; resize: none; outline: none;
-  line-height: 1.65;
-}
+.notes-textarea { width: 100%; min-height: 80px; background: var(--card-bg); border: 0.5px solid var(--card-border); border-radius: 8px; padding: 10px 12px; font-size: 12px; color: var(--ink); font-family: 'Inter', sans-serif; font-weight: 300; resize: none; outline: none; line-height: 1.65; }
 .notes-textarea::placeholder { color: var(--mid); }
 .notes-textarea:focus { border-color: var(--red); }
-.notes-add-btn {
-  background: var(--red); color: white; border: none; border-radius: 8px;
-  padding: 7px 16px; font-size: 11px; font-weight: 700; cursor: pointer;
-  font-family: 'Inter', sans-serif; align-self: flex-end;
-}
+.notes-add-btn { background: var(--red); color: white; border: none; border-radius: 8px; padding: 7px 16px; font-size: 11px; font-weight: 700; cursor: pointer; font-family: 'Inter', sans-serif; align-self: flex-end; }
 
-/* File list */
 .file-list { display: flex; flex-direction: column; gap: 5px; }
-.file-row {
-  display: flex; align-items: center; gap: 8px;
-  background: var(--card-bg); border-radius: 8px; padding: 7px 10px;
-  border: 0.5px solid var(--card-border);
-}
+.file-row { display: flex; align-items: center; gap: 8px; background: var(--card-bg); border-radius: 8px; padding: 7px 10px; border: 0.5px solid var(--card-border); }
 .file-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; background: var(--card-border); transition: background 0.3s; }
 .file-name { font-size: 12px; font-weight: 500; color: var(--ink); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .file-size { font-size: 10px; color: var(--mid); flex-shrink: 0; }
 .file-x { font-size: 14px; color: var(--mid); cursor: pointer; background: none; border: none; padding: 0; line-height: 1; font-family: inherit; transition: color 0.15s; }
 .file-x:hover { color: var(--red); }
 
-/* ── CONSULTATION ZONE ── */
-.consult-zone {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 10px;
+/* CONSULTATION */
+.consult-zone { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+
+/* Collapsed history */
+.history-collapsed {
+  font-size: 11px; color: rgba(255,255,255,0.45); font-weight: 400;
+  cursor: pointer; padding: 6px 0; display: flex; align-items: center; gap: 6px;
+  transition: color 0.15s; user-select: none;
+}
+.history-collapsed:hover { color: rgba(255,255,255,0.75); }
+.history-collapsed .arrow { font-size: 10px; transition: transform 0.2s; }
+.history-collapsed.open .arrow { transform: rotate(180deg); }
+
+.history-full { display: none; flex-direction: column; gap: 6px; margin-bottom: 4px; }
+.history-full.open { display: flex; }
+
+.history-dot-msg {
+  align-self: flex-start; background: rgba(255,255,255,0.15);
+  border-radius: 12px 12px 12px 3px; padding: 8px 12px;
+  font-size: 11px; color: rgba(255,255,255,0.8); font-weight: 300; max-width: 85%;
+}
+.history-user-msg {
+  align-self: flex-end; background: white;
+  border-radius: 12px 12px 3px 12px; padding: 8px 12px;
+  font-size: 11px; color: var(--ink); font-weight: 400; max-width: 80%;
 }
 
-.dot-row {
-  display: flex;
-  align-items: flex-end;
-  gap: 12px;
-}
-.dot-small-img {
-  height: 52px;
-  width: auto;
-  flex-shrink: 0;
-}
-.dot-message-bubble {
-  background: white;
-  border-radius: 16px 16px 16px 4px;
-  padding: 12px 16px;
-  flex: 1;
-  animation: fadeUp 0.3s ease;
-}
+/* Current Dot message */
+.dot-row { display: flex; align-items: flex-end; gap: 12px; }
+.dot-small-img { height: 48px; width: auto; flex-shrink: 0; }
+.dot-bubble { background: white; border-radius: 16px 16px 16px 4px; padding: 12px 16px; flex: 1; animation: fadeUp 0.3s ease; }
 @keyframes fadeUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-.dot-message-text {
-  font-size: 13px;
-  color: var(--ink);
-  line-height: 1.65;
-  font-weight: 300;
-}
-.dot-message-text.thinking {
-  color: var(--mid);
-  font-style: italic;
-}
+.dot-msg-text { font-size: 13px; color: var(--ink); line-height: 1.65; font-weight: 300; }
 
-.dot-thinking {
-  display: flex;
-  gap: 4px;
-  align-items: center;
-  padding: 4px 0;
-}
-.dot-thinking span {
-  width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.5);
-  animation: blink 1.2s ease-in-out infinite;
-}
+.dot-thinking { display: flex; gap: 4px; align-items: center; padding: 4px 0; }
+.dot-thinking span { width: 6px; height: 6px; border-radius: 50%; background: var(--card-border); animation: blink 1.2s ease-in-out infinite; }
 .dot-thinking span:nth-child(2) { animation-delay: 0.2s; }
 .dot-thinking span:nth-child(3) { animation-delay: 0.4s; }
-@keyframes blink { 0%,80%,100% { opacity: 0.2; } 40% { opacity: 1; } }
+@keyframes blink { 0%,80%,100% { opacity: 0.25; } 40% { opacity: 1; } }
 
 /* Options */
-.options-block {
-  background: white;
-  border-radius: 12px;
-  padding: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-  animation: fadeUp 0.3s ease;
-}
-.option-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 10px;
-  border-radius: 8px;
-  border: 0.5px solid var(--card-border);
-  cursor: pointer;
-  transition: border-color 0.15s, background 0.15s;
-  font-size: 12px;
-  color: var(--ink);
-  font-weight: 400;
-}
+.options-block { background: white; border-radius: 12px; padding: 10px; display: flex; flex-direction: column; gap: 6px; animation: fadeUp 0.3s ease; }
+.option-item { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; border: 0.5px solid var(--card-border); cursor: pointer; transition: border-color 0.15s, background 0.15s; font-size: 12px; color: var(--ink); }
 .option-item:hover { border-color: var(--red); background: rgba(237,28,36,0.02); }
 .option-item.selected { border-color: var(--red); background: rgba(237,28,36,0.04); }
-.option-radio {
-  width: 14px; height: 14px; border-radius: 50%;
-  border: 1.5px solid var(--card-border); flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center;
-  transition: border-color 0.15s;
-}
+.option-radio { width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid var(--card-border); flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: border-color 0.15s; }
 .option-item.selected .option-radio { border-color: var(--red); }
-.option-item.selected .option-radio::after {
-  content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--red);
-}
+.option-item.selected .option-radio::after { content:''; width: 6px; height: 6px; border-radius: 50%; background: var(--red); }
+.confirm-btn { background: var(--red); color: white; border: none; border-radius: 8px; padding: 9px; font-size: 12px; font-weight: 700; letter-spacing: 1px; width: 100%; cursor: pointer; font-family: inherit; margin-top: 2px; opacity: 0.4; transition: opacity 0.15s; }
+.confirm-btn:not(:disabled) { opacity: 1; }
 
-/* Free text reply */
 .reply-row { display: flex; gap: 7px; }
-.reply-input {
-  flex: 1; background: white; border: 0.5px solid var(--card-border);
-  border-radius: 20px; padding: 8px 14px; font-size: 12px; color: var(--ink);
-  font-family: 'Inter', sans-serif; outline: none;
-}
+.reply-input { flex: 1; background: white; border: 0.5px solid rgba(255,255,255,0.4); border-radius: 20px; padding: 9px 14px; font-size: 12px; color: var(--ink); font-family: 'Inter', sans-serif; outline: none; }
 .reply-input::placeholder { color: var(--mid); }
-.reply-input:focus { border-color: var(--red); }
-.reply-send {
-  background: white; color: var(--red); border: 0.5px solid var(--card-border);
-  border-radius: 20px; padding: 8px 14px; font-size: 11px; font-weight: 700;
-  cursor: pointer; font-family: 'Inter', sans-serif; white-space: nowrap;
-  transition: all 0.15s;
-}
-.reply-send:hover { background: var(--red); color: white; border-color: var(--red); }
+.reply-input:focus { border-color: white; }
+.reply-send { background: white; color: var(--red); border: none; border-radius: 20px; padding: 9px 16px; font-size: 11px; font-weight: 700; cursor: pointer; font-family: 'Inter', sans-serif; white-space: nowrap; transition: all 0.15s; }
+.reply-send:hover { background: var(--ink); color: white; }
 .reply-send:disabled { opacity: 0.4; cursor: not-allowed; }
 
-/* History */
-.history { display: flex; flex-direction: column; gap: 6px; }
-.history-user {
-  align-self: flex-end;
-  background: white;
-  border-radius: 12px 12px 3px 12px;
-  padding: 8px 12px;
-  font-size: 12px;
-  color: var(--ink);
-  font-weight: 400;
-  max-width: 80%;
-}
-.history-dot {
-  align-self: flex-start;
-  background: rgba(255,255,255,0.18);
-  border-radius: 12px 12px 12px 3px;
-  padding: 8px 12px;
-  font-size: 12px;
-  color: white;
-  font-weight: 300;
-  max-width: 80%;
-}
-
-/* Ready state */
-.ready-glow { border-color: rgba(255,255,255,0.6) !important; }
-
-/* ── LET'S GO ── */
-.go-wrap {
-  margin-top: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
+/* LET'S GO */
+.go-wrap { margin-top: 12px; display: flex; align-items: center; justify-content: space-between; }
 .material-count { font-size: 11px; color: rgba(255,255,255,0.4); font-weight: 300; }
-.go-btn {
-  background: white;
-  color: var(--red);
-  border: none;
-  border-radius: 8px;
-  padding: 12px 32px;
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 22px;
-  letter-spacing: 4px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
+.go-btn { background: white; color: var(--red); border: none; border-radius: 8px; padding: 12px 32px; font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 4px; cursor: pointer; transition: all 0.2s; }
 .go-btn:hover { background: #F0EDEA; }
 .go-btn:disabled { background: rgba(255,255,255,0.18); color: rgba(255,255,255,0.28); cursor: not-allowed; }
 .go-btn.ready { animation: readyPulse 2s ease-in-out infinite; }
 @keyframes readyPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(255,255,255,0.4); } 50% { box-shadow: 0 0 0 8px rgba(255,255,255,0); } }
-
 .error-msg { font-size: 11px; color: rgba(255,255,255,0.7); font-weight: 300; min-height: 14px; text-align: right; }
 
-/* ── PROFILE ── */
-.profile-zone {
-  background: white;
-  border-radius: 14px;
-  overflow: hidden;
-  margin-top: 10px;
-  animation: fadeUp 0.4s ease;
-}
-.profile-header {
-  padding: 14px 18px;
-  border-bottom: 0.5px solid var(--card-border);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.profile-title {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 22px;
-  letter-spacing: 3px;
-  color: var(--ink);
-}
+/* PROFILE */
+.profile-zone { background: white; border-radius: 14px; overflow: hidden; margin-top: 10px; animation: fadeUp 0.4s ease; }
+.profile-header { padding: 14px 18px; border-bottom: 0.5px solid var(--card-border); display: flex; align-items: center; justify-content: space-between; }
+.profile-title { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 3px; color: var(--ink); }
 .profile-title span { color: var(--red); }
 .profile-actions { display: flex; gap: 6px; }
 .pact { border: 0.5px solid var(--card-border); border-radius: 6px; padding: 5px 11px; font-size: 10px; color: var(--mid); background: none; cursor: pointer; font-family: inherit; transition: all 0.15s; }
@@ -380,7 +165,6 @@ body {
 .pact.copied { border-color: var(--red); color: var(--red); }
 .pact-solid { background: var(--ink); color: white; border: none; border-radius: 6px; padding: 5px 11px; font-size: 10px; cursor: pointer; font-family: inherit; }
 .pact-solid:hover { background: var(--red); }
-
 .psec { padding: 12px 18px; border-bottom: 0.5px solid var(--card-border); }
 .psec:last-of-type { border-bottom: none; }
 .plbl { font-size: 8px; font-weight: 700; color: var(--red); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 5px; }
@@ -395,36 +179,13 @@ body {
 .rules-list { display: flex; flex-direction: column; gap: 4px; margin-top: 3px; }
 .rule-item { display: flex; gap: 10px; font-size: 11px; line-height: 1.5; font-weight: 300; }
 .rule-key { font-weight: 600; min-width: 120px; color: var(--ink); flex-shrink: 0; }
-.rule-val { color: var(--ink); }
-
-.profile-footer {
-  padding: 10px 18px;
-  border-top: 0.5px solid var(--card-border);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
+.profile-footer { padding: 10px 18px; border-top: 0.5px solid var(--card-border); display: flex; align-items: center; justify-content: space-between; }
 .footer-note { font-size: 10px; color: var(--mid); }
 .start-again { font-size: 11px; color: var(--mid); text-decoration: underline; background: none; border: none; cursor: pointer; font-family: inherit; }
 .start-again:hover { color: var(--ink); }
 
-/* ── FOOTER ── */
-.page-footer {
-  padding: 8px var(--g) 16px;
-  text-align: center;
-}
-.page-footer span { font-size: 9px; color: rgba(255,255,255,0.25); letter-spacing: 1.5px; text-transform: uppercase; }
-
-/* ── THINKING SCREEN ── */
-.thinking-screen {
-  display: none;
-  flex: 1;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 22px;
-  padding: 40px var(--g);
-}
+/* THINKING */
+.thinking-screen { display: none; flex: 1; flex-direction: column; align-items: center; justify-content: center; gap: 22px; padding: 40px var(--g); }
 .thinking-screen.active { display: flex; }
 .thinking-dot-img { height: 90px; width: auto; }
 .thinking-label { font-family: 'Bebas Neue', sans-serif; font-size: 44px; letter-spacing: 6px; color: white; animation: pulse 1s ease-in-out infinite alternate; }
@@ -436,6 +197,9 @@ body {
 .step-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.18); flex-shrink: 0; transition: background 0.3s; }
 .thinking-step.done .step-dot { background: rgba(255,255,255,0.45); }
 .thinking-step.active .step-dot { background: white; }
+
+.page-footer { padding: 8px var(--g) 16px; text-align: center; }
+.page-footer span { font-size: 9px; color: rgba(255,255,255,0.25); letter-spacing: 1.5px; text-transform: uppercase; }
 </style>
 </head>
 <body>
@@ -451,11 +215,9 @@ body {
   </div>
 </div>
 
-<!-- MAIN PAGE -->
 <div class="main" id="mainPage">
 
-  <!-- HERO -->
-  <div class="hero">
+  <div class="hero" id="hero">
     <div class="hero-copy">
       <div class="hero-tag">Find your brand voice</div>
       <div class="hero-hed">Drop in your brand.<br><em>Draw out your voice.</em></div>
@@ -464,9 +226,16 @@ body {
     <img src="/images/Dot_Hello.png" class="dot-hero-img" alt="Dot" onerror="this.style.display='none'"/>
   </div>
 
+  <!-- DOT OPENS FIRST -->
+  <div class="dot-opening" id="dotOpening">
+    <img src="/images/Dot_White.png" class="dot-open-img" alt="Dot" onerror="this.style.display='none'"/>
+    <div class="dot-open-bubble">
+      <div class="dot-open-text" id="dotOpenText">...</div>
+    </div>
+  </div>
+
   <!-- INPUT ZONE -->
   <div class="input-zone" id="inputZone">
-
     <div class="icon-row">
       <div class="icon-btn active" id="btn-uploads" onclick="switchTab('uploads')">
         <div class="icircle">
@@ -507,7 +276,6 @@ body {
         <input type="file" id="fileInput" accept=".pdf,.doc,.docx" multiple style="display:none" onchange="handleFileSelect(event)"/>
       </div>
     </div>
-
     <div class="tab-panel" id="tab-weblinks">
       <div class="weblink-row">
         <input class="weblink-input" type="text" id="weblinkInput" placeholder="https://yourbrand.com/about" onkeydown="if(event.key==='Enter') fetchWeblink()"/>
@@ -515,34 +283,36 @@ body {
       </div>
       <div class="weblink-note">Dot will read the page and pull out the copy.</div>
     </div>
-
     <div class="tab-panel" id="tab-notes">
       <textarea class="notes-textarea" id="notesInput" placeholder="Paste anything — copy you love, words you hate, a brief, a rant."></textarea>
       <button class="notes-add-btn" onclick="addNotes()">Add these notes</button>
     </div>
 
     <div class="file-list" id="fileList"></div>
-
   </div>
 
   <!-- CONSULTATION ZONE -->
   <div class="consult-zone" id="consultZone" style="display:none;">
 
-    <!-- Dot's current message -->
-    <div class="dot-row" id="dotRow">
+    <!-- Collapsed history toggle -->
+    <div class="history-collapsed" id="historyToggle" style="display:none;" onclick="toggleHistory()">
+      <span class="arrow">&#8679;</span>
+      <span id="historyLabel">stuff we've covered ^</span>
+    </div>
+
+    <!-- Full history (hidden by default) -->
+    <div class="history-full" id="historyFull"></div>
+
+    <!-- Current Dot message -->
+    <div class="dot-row">
       <img src="/images/Dot_White.png" class="dot-small-img" alt="Dot" onerror="this.style.display='none'"/>
-      <div class="dot-message-bubble" id="dotBubble">
-        <div class="dot-thinking" id="dotThinking">
-          <span></span><span></span><span></span>
-        </div>
-        <div class="dot-message-text" id="dotMessageText" style="display:none;"></div>
+      <div class="dot-bubble" id="dotBubble">
+        <div class="dot-thinking" id="dotThinking"><span></span><span></span><span></span></div>
+        <div class="dot-msg-text" id="dotMsgText" style="display:none;"></div>
       </div>
     </div>
 
-    <!-- Conversation history (previous exchanges) -->
-    <div class="history" id="historyEl"></div>
-
-    <!-- Options or free text reply -->
+    <!-- Response area -->
     <div id="responseArea"></div>
 
   </div>
@@ -563,7 +333,7 @@ body {
 
 <!-- THINKING SCREEN -->
 <div class="thinking-screen" id="thinkingScreen">
-  <img src="/images/Robot.png" class="thinking-dot-img" alt="Dot" onerror="this.style.display='none'"/>
+  <img src="/images/Dot_White.png" class="thinking-dot-img" alt="Dot" onerror="this.style.display='none'"/>
   <div class="thinking-label" id="thinkingLabel">READING</div>
   <div class="thinking-steps">
     <div class="thinking-step active" id="step1"><div class="step-dot"></div>Reading your material</div>
@@ -585,8 +355,23 @@ let consultHistory = [];
 let notesCounter = 0;
 let dotReady = false;
 let selectedOption = null;
+let exchangeCount = 0;
+let historyOpen = false;
 
-// ── TABS ──────────────────────────────────────────────────
+// Load opening message on page load
+window.addEventListener('load', async () => {
+  try {
+    const res = await fetch('/api/opening');
+    const data = await res.json();
+    if (data.success) {
+      document.getElementById('dotOpenText').textContent = data.message;
+    }
+  } catch {
+    document.getElementById('dotOpenText').textContent = "How you talk is who you are. Drop in your guidelines, some copy you love, a website — whatever you've got.";
+  }
+});
+
+// TABS
 function switchTab(name) {
   ['uploads','weblinks','notes'].forEach(t => {
     document.getElementById('tab-' + t).classList.toggle('active', t === name);
@@ -594,7 +379,7 @@ function switchTab(name) {
   });
 }
 
-// ── FILE HANDLING ────────────────────────────────────────
+// FILE HANDLING
 function handleDragOver(e) { e.preventDefault(); document.getElementById('dropZone').classList.add('drag-over'); }
 function handleDragLeave() { document.getElementById('dropZone').classList.remove('drag-over'); }
 function handleDrop(e) { e.preventDefault(); document.getElementById('dropZone').classList.remove('drag-over'); uploadFiles(Array.from(e.dataTransfer.files)); }
@@ -652,8 +437,8 @@ function removeFile(filename) {
     document.getElementById('consultZone').style.display = 'none';
     document.getElementById('goWrap').style.display = 'none';
     document.getElementById('goBtn').disabled = true;
-    consultHistory = [];
-    dotReady = false;
+    consultHistory = []; dotReady = false; exchangeCount = 0;
+    resetHistoryUI();
   }
 }
 
@@ -678,7 +463,6 @@ function renderFileList() {
       <button class="file-x" onclick="removeFile('${escHtml(f.filename)}')">&times;</button>
     </div>`;
   }).join('');
-  // Animate dots green after a moment
   setTimeout(() => {
     uploadedFiles.forEach(f => {
       const dot = document.getElementById('fdot-' + CSS.escape(f.filename));
@@ -694,8 +478,10 @@ function updateGoBtn() {
   document.getElementById('goWrap').style.display = 'flex';
 }
 
-// ── CONSULTATION ─────────────────────────────────────────
+// CONSULTATION
 async function startConsultation() {
+  // Hide the opening bubble — Dot is now in the consult zone
+  document.getElementById('dotOpening').style.display = 'none';
   document.getElementById('consultZone').style.display = 'flex';
   document.getElementById('goWrap').style.display = 'flex';
   updateGoBtn();
@@ -717,69 +503,65 @@ async function runConsult() {
     const data = await res.json();
     if (!data.success) throw new Error(data.error);
 
-    // Add Dot's message to history
     consultHistory.push({ role: 'assistant', content: data.message });
-
     showDotMessage(data.message);
     dotReady = data.ready;
 
     if (dotReady) {
       document.getElementById('goBtn').classList.add('ready');
-      renderResponseArea([], true);
+      document.getElementById('responseArea').innerHTML = '';
     } else {
-      renderResponseArea(data.options || [], false);
+      renderResponseArea(data.options || []);
     }
-
-  } catch (err) {
-    showDotMessage("I had trouble reading that. Try adding your material again.");
-    renderResponseArea([], false);
+  } catch {
+    showDotMessage("I had a bit of trouble there. Try adding your material again.");
+    renderResponseArea([]);
   }
 }
 
 function showDotThinking() {
   document.getElementById('dotThinking').style.display = 'flex';
-  document.getElementById('dotMessageText').style.display = 'none';
+  document.getElementById('dotMsgText').style.display = 'none';
 }
 
 function showDotMessage(text) {
   document.getElementById('dotThinking').style.display = 'none';
-  const el = document.getElementById('dotMessageText');
+  const el = document.getElementById('dotMsgText');
   el.style.display = 'block';
   el.textContent = text;
-  el.classList.remove('thinking');
+  // Re-trigger animation
+  const bubble = document.getElementById('dotBubble');
+  bubble.style.animation = 'none';
+  bubble.offsetHeight;
+  bubble.style.animation = 'fadeUp 0.3s ease';
 }
 
-function renderResponseArea(options, ready) {
+function renderResponseArea(options) {
   const area = document.getElementById('responseArea');
   selectedOption = null;
 
-  if (ready) {
-    area.innerHTML = '';
-    return;
-  }
-
   if (options.length > 0) {
-    area.innerHTML = `<div class="options-block" id="optionsBlock">
+    area.innerHTML = `<div class="options-block">
       ${options.map((opt, i) => `
         <div class="option-item" onclick="selectOption(${i}, '${escHtml(opt)}')" id="opt-${i}">
           <div class="option-radio" id="radio-${i}"></div>
           ${escHtml(opt)}
         </div>`).join('')}
-      <button class="reply-send" id="confirmBtn" onclick="submitResponse()" style="margin-top:4px;border-radius:8px;width:100%;padding:9px;font-size:12px;letter-spacing:1px;" disabled>That's right</button>
+      <button class="confirm-btn" id="confirmBtn" onclick="submitResponse()" disabled>That's right</button>
     </div>`;
   } else {
     area.innerHTML = `<div class="reply-row">
-      <input class="reply-input" type="text" id="replyInput" placeholder="Type your answer..." onkeydown="if(event.key==='Enter') submitResponse()"/>
+      <input class="reply-input" type="text" id="replyInput" placeholder="Type your reply..." onkeydown="if(event.key==='Enter'&&!event.shiftKey) submitResponse()"/>
       <button class="reply-send" id="replySend" onclick="submitResponse()">Send</button>
     </div>`;
+    // Focus the input
+    setTimeout(() => { const el = document.getElementById('replyInput'); if (el) el.focus(); }, 100);
   }
 }
 
 function selectOption(idx, value) {
   selectedOption = value;
-  document.querySelectorAll('.option-item').forEach((el, i) => {
-    el.classList.toggle('selected', i === idx);
-  });
+  document.querySelectorAll('.option-item').forEach((el, i) => el.classList.toggle('selected', i === idx));
   const btn = document.getElementById('confirmBtn');
   if (btn) btn.disabled = false;
 }
@@ -792,33 +574,55 @@ async function submitResponse() {
   }
   if (!userReply) return;
 
-  // Push to history
-  consultHistory.push({ role: 'user', content: userReply });
+  // Get current Dot message before pushing to history
+  const dotMsg = document.getElementById('dotMsgText').textContent;
 
-  // Move current exchange to history display
-  const currentMsg = document.getElementById('dotMessageText').textContent;
-  addToHistory(currentMsg, userReply);
+  // Add to conversation history
+  consultHistory.push({ role: 'user', content: userReply });
+  exchangeCount++;
+
+  // Archive to history UI
+  archiveExchange(dotMsg, userReply);
 
   // Clear response area
   document.getElementById('responseArea').innerHTML = '';
 
-  // Run next consult round
+  // Next round
   await runConsult();
 }
 
-function addToHistory(dotMsg, userMsg) {
-  const hist = document.getElementById('historyEl');
-  const dotDiv = document.createElement('div');
-  dotDiv.className = 'history-dot';
-  dotDiv.textContent = dotMsg;
-  const userDiv = document.createElement('div');
-  userDiv.className = 'history-user';
-  userDiv.textContent = userMsg;
-  hist.appendChild(dotDiv);
-  hist.appendChild(userDiv);
+function archiveExchange(dotMsg, userMsg) {
+  const hist = document.getElementById('historyFull');
+  const dDiv = document.createElement('div');
+  dDiv.className = 'history-dot-msg';
+  dDiv.textContent = dotMsg;
+  const uDiv = document.createElement('div');
+  uDiv.className = 'history-user-msg';
+  uDiv.textContent = userMsg;
+  hist.appendChild(dDiv);
+  hist.appendChild(uDiv);
+
+  // Show/update the toggle
+  const toggle = document.getElementById('historyToggle');
+  toggle.style.display = 'flex';
+  document.getElementById('historyLabel').textContent = `stuff we've covered ^ (${exchangeCount})`;
 }
 
-// ── EXTRACT ──────────────────────────────────────────────
+function toggleHistory() {
+  historyOpen = !historyOpen;
+  document.getElementById('historyFull').classList.toggle('open', historyOpen);
+  document.getElementById('historyToggle').classList.toggle('open', historyOpen);
+}
+
+function resetHistoryUI() {
+  document.getElementById('historyFull').innerHTML = '';
+  document.getElementById('historyToggle').style.display = 'none';
+  document.getElementById('historyToggle').classList.remove('open');
+  document.getElementById('historyFull').classList.remove('open');
+  exchangeCount = 0; historyOpen = false;
+}
+
+// EXTRACT
 async function runExtract() {
   if (!uploadedFiles.length) return;
   showError('');
@@ -843,17 +647,16 @@ async function runExtract() {
     document.getElementById('thinkingScreen').classList.remove('active');
     document.getElementById('mainPage').style.display = 'flex';
     document.getElementById('pageFooter').style.display = 'block';
-
-    // Hide input and consult zones, show profile
+    document.getElementById('hero').style.display = 'none';
+    document.getElementById('dotOpening').style.display = 'none';
     document.getElementById('inputZone').style.display = 'none';
     document.getElementById('consultZone').style.display = 'none';
     document.getElementById('goWrap').style.display = 'none';
-    document.getElementById('hero').style.display = 'none';
 
     renderProfileZone(profileData);
     document.getElementById('profileZone').style.display = 'block';
 
-  } catch (err) {
+  } catch {
     document.getElementById('thinkingScreen').classList.remove('active');
     document.getElementById('mainPage').style.display = 'flex';
     document.getElementById('pageFooter').style.display = 'block';
@@ -873,18 +676,12 @@ function renderProfileZone(p) {
         <button class="pact-solid" onclick="downloadMd()">Download prompt</button>
       </div>
     </div>`;
-
   html += `<div class="psec"><div class="plbl">Brand</div><div class="pbody">${escHtml(p.brand)}</div></div>`;
   html += `<div class="psec"><div class="plbl">Customer Feels</div><div class="pbody">${escHtml(p.customerFeels)}</div></div>`;
   html += `<div class="psec"><div class="plbl">Behaviours</div><table class="ptable"><tr><th>We are</th><th>We are not</th></tr>${p.behaviours.map(b=>`<tr><td>${escHtml(b.we)}</td><td>${escHtml(b.not)}</td></tr>`).join('')}</table></div>`;
   html += `<div class="psec"><div class="plbl">Examples</div><table class="ptable"><tr><th>More this</th><th>Less this</th></tr>${p.examples.map(e=>`<tr><td>${escHtml(e.more)}</td><td class="less">${escHtml(e.less)}</td></tr>`).join('')}</table></div>`;
   html += `<div class="psec"><div class="plbl">House Rules</div><div class="rules-list">${p.houseRules.map(r=>`<div class="rule-item"><span class="rule-key">${escHtml(r.key)}</span><span class="rule-val">${escHtml(r.rule)}</span></div>`).join('')}</div></div>`;
-
-  html += `<div class="profile-footer">
-    <span class="footer-note">Produced by Prompter — a Hunch product &nbsp;·&nbsp; Review before use</span>
-    <button class="start-again" onclick="startAgain()">Start again</button>
-  </div></div>`;
-
+  html += `<div class="profile-footer"><span class="footer-note">Produced by Prompter — a Hunch product &nbsp;·&nbsp; Review before use</span><button class="start-again" onclick="startAgain()">Start again</button></div></div>`;
   document.getElementById('profileZone').innerHTML = html;
 }
 
@@ -892,7 +689,6 @@ function startAgain() {
   uploadedFiles = []; profileData = null; consultHistory = [];
   notesCounter = 0; dotReady = false; selectedOption = null;
   document.getElementById('fileList').innerHTML = '';
-  document.getElementById('historyEl').innerHTML = '';
   document.getElementById('responseArea').innerHTML = '';
   document.getElementById('profileZone').style.display = 'none';
   document.getElementById('profileZone').innerHTML = '';
@@ -900,15 +696,17 @@ function startAgain() {
   document.getElementById('consultZone').style.display = 'none';
   document.getElementById('goWrap').style.display = 'none';
   document.getElementById('hero').style.display = 'flex';
+  document.getElementById('dotOpening').style.display = 'flex';
   document.getElementById('goBtn').disabled = true;
   document.getElementById('goBtn').classList.remove('ready');
-  document.getElementById('dotMessageText').style.display = 'none';
+  document.getElementById('dotMsgText').style.display = 'none';
   document.getElementById('dotThinking').style.display = 'flex';
+  resetHistoryUI();
   showError('');
   switchTab('uploads');
 }
 
-// ── HELPERS ──────────────────────────────────────────────
+// HELPERS
 function animateSteps() {
   const steps = ['step1','step2','step3','step4','step5'];
   const labels = ['READING','LISTENING','WRITING','EXAMPLES','LOCKING'];
@@ -968,10 +766,6 @@ function copyPrompt() {
     setTimeout(() => { btn.textContent = 'Copy prompt'; btn.classList.remove('copied'); }, 2000);
   });
 }
-
-// Fix hero reference
-document.querySelector('.hero').id = 'hero';
 </script>
-
 </body>
 </html>
