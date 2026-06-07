@@ -1,6 +1,7 @@
 """
-Prompter v2
-Flask server with file upload, per-file review, and brand profile extraction.
+Prompter v3
+Flask server — upload, fetch, review, extract.
+Brand name inferred by Claude from material.
 """
 
 from flask import Flask, jsonify, request, send_from_directory
@@ -9,17 +10,21 @@ import anthropic
 import os
 import json
 import io
+import requests
+from bs4 import BeautifulSoup
 
 app = Flask(__name__, static_folder='.', static_url_path='')
 CORS(app)
 
 ANTHROPIC_API_KEY = os.environ.get('ANTHROPIC_API_KEY')
 
-EXTRACT_PROMPT = """You are the Prompter InputBot. Your job is to read any brand material and produce a structured one-page brand profile.
+EXTRACT_PROMPT = """You are the Prompter InputBot. Your job is to read brand material and produce a structured one-page brand profile.
 
 This document will be used by both humans and AI to write on-brand communications. Every line must be useful to both audiences simultaneously. Write with precision, not length. If it doesn't change how something gets written, leave it out.
 
-Output exactly five sections as a JSON object with these exact keys: brand, customerFeels, behaviours, examples, houseRules.
+Output a JSON object with these exact keys: brandName, brand, customerFeels, behaviours, examples, houseRules.
+
+BRAND_NAME: Infer the brand name from the material. Just the name — no tagline, no descriptor. If genuinely unclear, use "Unknown Brand".
 
 BRAND: One short paragraph. Who this brand is, what they stand for, and what that means for the writing. End with a single direction sentence. Maximum four sentences.
 
@@ -37,13 +42,12 @@ Ignore: photography, logos, colours, internal values, mission statements — any
 
 Respond ONLY with valid JSON. No markdown. No backticks. No preamble."""
 
-REVIEW_PROMPT = """You are Dot, the Prompter review bot. You've just received a set of brand files. Your job is to give a quick, honest read on each one and tell the user what you have, what's missing, and whether it's enough to produce a great brand profile.
+REVIEW_PROMPT = """You are Dot, the Prompter review bot. You've received a set of brand material. Give a quick, honest read on each piece and tell the user what you have, what's missing, and whether it's enough to produce a great brand profile.
 
 For each file, assess:
-- What type of material it is (brand guidelines, TOV doc, copy examples, emails, website copy, etc.)
-- How useful it is for extracting writing voice (not design, not values — writing)
-- What's strong about it
-- What's missing
+- What type of material it is (brand guidelines, TOV doc, copy examples, website copy, notes, etc.)
+- How useful it is for extracting writing voice — not design, not values, writing
+- What's strong and what's missing
 
 Then give an overall nudge: what one thing would most improve the profile if added?
 
@@ -70,6 +74,29 @@ def extract_text_from_docx(file_bytes):
     doc = Document(io.BytesIO(file_bytes))
     paragraphs = [p.text for p in doc.paragraphs if p.text.strip()]
     return '\n\n'.join(paragraphs)
+
+
+def extract_text_from_url(url):
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (compatible; Prompter/1.0)'
+    }
+    resp = requests.get(url, headers=headers, timeout=12)
+    resp.raise_for_status()
+
+    soup = BeautifulSoup(resp.text, 'lxml')
+
+    # Remove noise
+    for tag in soup(['script', 'style', 'nav', 'footer', 'header', 'aside', 'form', 'iframe']):
+        tag.decompose()
+
+    # Pull meaningful text blocks
+    blocks = []
+    for tag in soup.find_all(['h1','h2','h3','h4','p','li','blockquote']):
+        text = tag.get_text(strip=True)
+        if text and len(text) > 20:
+            blocks.append(text)
+
+    return '\n\n'.join(blocks)
 
 
 @app.route('/api/upload', methods=['POST'])
@@ -100,10 +127,43 @@ def upload():
         return jsonify({'error': str(e)}), 500
 
 
+@app.route('/api/fetch', methods=['POST'])
+def fetch_url():
+    data = request.get_json() or {}
+    url = (data.get('url') or '').strip()
+
+    if not url:
+        return jsonify({'error': 'No URL provided'}), 400
+
+    if not url.startswith('http'):
+        url = 'https://' + url
+
+    try:
+        text = extract_text_from_url(url)
+
+        if not text.strip():
+            return jsonify({'error': 'Could not extract text from that URL'}), 400
+
+        # Use domain as filename label
+        from urllib.parse import urlparse
+        domain = urlparse(url).netloc.replace('www.', '')
+        filename = f'{domain} (website)'
+
+        return jsonify({'success': True, 'filename': filename, 'text': text})
+
+    except requests.exceptions.Timeout:
+        return jsonify({'error': 'That URL timed out. Try another page.'}), 400
+    except requests.exceptions.RequestException as e:
+        return jsonify({'error': f'Could not reach that URL: {str(e)}'}), 400
+    except Exception as e:
+        print(f'[Prompter] Fetch error: {e}')
+        return jsonify({'error': str(e)}), 500
+
+
 @app.route('/api/review', methods=['POST'])
 def review():
     data = request.get_json() or {}
-    files = data.get('files', [])  # [{filename, text}, ...]
+    files = data.get('files', [])
 
     if not files:
         return jsonify({'error': 'No files to review'}), 400
@@ -116,7 +176,6 @@ def review():
 
         file_summaries = []
         for f in files:
-            # Truncate each file to ~2000 chars for the review call
             preview = f['text'][:2000]
             file_summaries.append(f"--- FILE: {f['filename']} ---\n{preview}")
 
@@ -138,7 +197,6 @@ def review():
     except json.JSONDecodeError as e:
         print(f'[Prompter] Review JSON parse error: {e}')
         return jsonify({'error': 'Could not parse review response'}), 500
-
     except Exception as e:
         print(f'[Prompter] Review error: {e}')
         return jsonify({'error': str(e)}), 500
@@ -147,8 +205,7 @@ def review():
 @app.route('/api/extract', methods=['POST'])
 def extract():
     data = request.get_json() or {}
-    files = data.get('files', [])  # [{filename, text}, ...]
-    brand_name = (data.get('brandName') or 'Brand').strip()
+    files = data.get('files', [])
 
     if not files:
         return jsonify({'error': 'No content provided'}), 400
@@ -159,16 +216,15 @@ def extract():
     try:
         client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
 
-        # Keep files labelled and separate
         labelled = []
         for f in files:
             labelled.append(f"--- SOURCE: {f['filename']} ---\n{f['text']}")
 
-        user_content = f"Brand name: {brand_name}\n\n" + "\n\n".join(labelled)
+        user_content = "\n\n".join(labelled)
 
         message = client.messages.create(
             model="claude-sonnet-4-20250514",
-            max_tokens=1024,
+            max_tokens=1500,
             system=EXTRACT_PROMPT,
             messages=[{'role': 'user', 'content': user_content}]
         )
@@ -177,12 +233,13 @@ def extract():
         clean = raw.replace('```json', '').replace('```', '').strip()
         profile = json.loads(clean)
 
+        brand_name = profile.get('brandName', 'Brand')
+
         return jsonify({'success': True, 'profile': profile, 'brandName': brand_name})
 
     except json.JSONDecodeError as e:
         print(f'[Prompter] JSON parse error: {e}')
         return jsonify({'error': 'Could not parse AI response'}), 500
-
     except Exception as e:
         print(f'[Prompter] Error: {e}')
         return jsonify({'error': str(e)}), 500

@@ -4,3 +4,5 @@ requests
 anthropic
 pdfplumber
 python-docx
+beautifulsoup4
+lxml

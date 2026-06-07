@@ -11,208 +11,296 @@
 
 :root {
   --red: #ED1C24;
-  --red-dark: #C8141B;
-  --red-deep: rgba(0,0,0,0.14);
-  --white: #FFFFFF;
   --ink: #1A1917;
-  --mid: rgba(255,255,255,0.45);
-  --faint: rgba(255,255,255,0.18);
-  --border-light: rgba(255,255,255,0.15);
+  --white: #FFFFFF;
   --card-bg: #F5F3EF;
   --card-border: #E8E5E0;
   --card-mid: #9A9590;
 }
 
 body {
-  background: var(--red);
   font-family: 'Inter', sans-serif;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  background: var(--red);
 }
 
 /* ── TOPBAR ── */
 .topbar {
-  padding: 16px 32px;
+  background: white;
+  padding: 14px 32px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 0.5px solid var(--border-light);
-}
-
-.hai-logo {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  text-decoration: none;
-}
-
-.hai-circle {
-  width: 26px;
-  height: 26px;
-  background: white;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   flex-shrink: 0;
 }
 
-.hai-h {
-  font-size: 15px;
-  font-weight: 800;
-  color: var(--red);
-  font-style: italic;
-  line-height: 1;
-}
-
-.hai-rest {
-  font-size: 16px;
-  font-weight: 700;
-  color: white;
-  line-height: 1;
-}
-
-.hai-sup {
-  font-size: 10px;
-  font-weight: 700;
-  color: var(--red);
-  background: white;
-  border-radius: 2px;
-  padding: 0 1px;
-  vertical-align: super;
-  line-height: 0;
+.hai-logo {
+  height: 28px;
+  width: auto;
 }
 
 .suite-nav {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
 .suite-item {
   font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 1.5px;
+  font-weight: 600;
+  letter-spacing: 2px;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.3);
+  color: #C8C4BE;
   cursor: default;
 }
 
-.suite-item.active {
-  color: white;
-}
-
-.suite-div {
-  color: rgba(255,255,255,0.2);
-  font-size: 11px;
-}
+.suite-item.active { color: var(--ink); }
+.suite-div { color: #D8D5D0; font-size: 11px; }
 
 /* ── SCREENS ── */
 .screen { display: none; flex: 1; flex-direction: column; }
 .screen.active { display: flex; }
 
-/* ── SCREEN 1: INPUT ── */
+/* ── SCREEN 1 ── */
 .s1-hero {
   display: flex;
   align-items: flex-end;
-  padding: 0 32px;
-  gap: 4px;
+  padding: 0 40px;
+  gap: 0;
 }
 
 .dot-hero-img {
-  height: 180px;
+  height: 200px;
   width: auto;
   flex-shrink: 0;
-  margin-bottom: -4px;
 }
 
 .hero-copy {
-  padding-bottom: 28px;
-  padding-left: 12px;
+  padding-bottom: 32px;
+  padding-left: 16px;
 }
 
 .hero-tag {
   font-size: 10px;
   font-weight: 600;
-  letter-spacing: 2.5px;
+  letter-spacing: 3px;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.45);
-  margin-bottom: 10px;
+  color: rgba(255,255,255,0.4);
+  margin-bottom: 12px;
 }
 
 .hero-headline {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 42px;
+  font-size: 52px;
   letter-spacing: 2px;
   color: white;
-  line-height: 1.0;
-  margin-bottom: 10px;
+  line-height: 0.95;
+  margin-bottom: 14px;
 }
 
 .hero-headline em {
   font-style: normal;
-  opacity: 0.45;
+  opacity: 0.38;
 }
 
 .hero-sub {
-  font-size: 12px;
-  color: rgba(255,255,255,0.5);
-  line-height: 1.65;
-  max-width: 260px;
+  font-size: 13px;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.7;
+  max-width: 320px;
   font-weight: 300;
 }
 
 .s1-body {
-  padding: 0 32px 40px;
+  padding: 4px 40px 48px;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  max-width: 680px;
+  max-width: 720px;
   width: 100%;
 }
 
-/* Drop zone */
-.drop-zone {
-  border: 2px dashed rgba(255,255,255,0.28);
-  border-radius: 16px;
-  padding: 32px 24px;
+/* ── INPUT TABS ── */
+.input-tabs {
+  display: flex;
+  gap: 0;
+  background: rgba(0,0,0,0.15);
+  border-radius: 12px 12px 0 0;
+  overflow: hidden;
+}
+
+.input-tab {
+  flex: 1;
+  padding: 11px 16px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+  cursor: pointer;
+  text-align: center;
+  border-bottom: 2px solid transparent;
+  transition: all 0.15s;
+}
+
+.input-tab.active {
+  color: white;
+  border-bottom-color: white;
+  background: rgba(255,255,255,0.08);
+}
+
+.input-tab:hover:not(.active) {
+  color: rgba(255,255,255,0.65);
+}
+
+/* Tab panels */
+.tab-panels {
+  background: rgba(0,0,0,0.12);
+  border-radius: 0 0 12px 12px;
+  overflow: hidden;
+}
+
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* UPLOADS panel */
+.upload-drop {
+  border: 2px dashed rgba(255,255,255,0.22);
+  border-radius: 10px;
+  margin: 16px;
+  padding: 28px 20px;
   text-align: center;
   cursor: pointer;
   transition: border-color 0.15s, background 0.1s;
 }
 
-.drop-zone:hover,
-.drop-zone.drag-over {
-  border-color: rgba(255,255,255,0.65);
-  background: rgba(0,0,0,0.08);
+.upload-drop:hover,
+.upload-drop.drag-over {
+  border-color: rgba(255,255,255,0.6);
+  background: rgba(255,255,255,0.05);
 }
 
-.drop-zone-icon {
-  font-size: 30px;
-  color: rgba(255,255,255,0.45);
-  margin-bottom: 10px;
+.upload-drop-icon {
+  font-size: 26px;
+  color: rgba(255,255,255,0.4);
+  margin-bottom: 8px;
 }
 
-.drop-zone-label {
-  font-size: 14px;
+.upload-drop-label {
+  font-size: 13px;
   font-weight: 500;
   color: white;
-  margin-bottom: 4px;
+  margin-bottom: 3px;
 }
 
-.drop-zone-label u {
-  opacity: 0.6;
-}
+.upload-drop-label u { opacity: 0.55; }
 
-.drop-zone-types {
+.upload-drop-types {
   font-size: 10px;
-  color: rgba(255,255,255,0.35);
+  color: rgba(255,255,255,0.3);
   letter-spacing: 2px;
   text-transform: uppercase;
 }
 
-/* File list */
+/* WEBLINKS panel */
+.weblink-wrap {
+  padding: 18px 16px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.weblink-input {
+  flex: 1;
+  background: rgba(255,255,255,0.12);
+  border: 0.5px solid rgba(255,255,255,0.2);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: white;
+  font-family: 'Inter', sans-serif;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.weblink-input::placeholder { color: rgba(255,255,255,0.28); }
+.weblink-input:focus { border-color: rgba(255,255,255,0.55); }
+
+.weblink-btn {
+  background: white;
+  color: var(--red);
+  border: none;
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+
+.weblink-btn:hover { background: #F0EDEA; }
+.weblink-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.weblink-note {
+  padding: 0 16px 14px;
+  font-size: 11px;
+  color: rgba(255,255,255,0.35);
+  line-height: 1.5;
+}
+
+/* NOTES panel */
+.notes-wrap {
+  padding: 4px 16px 16px;
+}
+
+.notes-textarea {
+  width: 100%;
+  min-height: 130px;
+  background: rgba(255,255,255,0.08);
+  border: 0.5px solid rgba(255,255,255,0.15);
+  border-radius: 8px;
+  padding: 14px 16px;
+  font-size: 13px;
+  color: white;
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+  resize: none;
+  outline: none;
+  line-height: 1.7;
+  caret-color: white;
+  transition: border-color 0.15s;
+}
+
+.notes-textarea::placeholder { color: rgba(255,255,255,0.25); }
+.notes-textarea:focus { border-color: rgba(255,255,255,0.4); }
+
+.notes-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+.notes-add-btn {
+  background: white;
+  color: var(--red);
+  border: none;
+  border-radius: 8px;
+  padding: 8px 18px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+}
+
+.notes-add-btn:hover { background: #F0EDEA; }
+
+/* ── FILE LIST ── */
 .file-list {
   display: flex;
   flex-direction: column;
@@ -228,44 +316,13 @@ body {
   padding: 10px 14px;
 }
 
-.file-row-icon {
-  font-size: 18px;
-  color: rgba(255,255,255,0.65);
-  flex-shrink: 0;
-}
-
-.file-row-name {
-  font-size: 13px;
-  font-weight: 500;
-  color: white;
-  flex: 1;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.file-row-size {
-  font-size: 11px;
-  color: rgba(255,255,255,0.35);
-  flex-shrink: 0;
-}
-
-.file-row-remove {
-  font-size: 16px;
-  color: rgba(255,255,255,0.3);
-  cursor: pointer;
-  flex-shrink: 0;
-  background: none;
-  border: none;
-  font-family: inherit;
-  padding: 0;
-  line-height: 1;
-  transition: color 0.15s;
-}
-
+.file-row-icon { font-size: 16px; color: rgba(255,255,255,0.55); flex-shrink: 0; }
+.file-row-name { font-size: 13px; font-weight: 500; color: white; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.file-row-size { font-size: 11px; color: rgba(255,255,255,0.32); flex-shrink: 0; }
+.file-row-remove { font-size: 16px; color: rgba(255,255,255,0.28); cursor: pointer; flex-shrink: 0; background: none; border: none; font-family: inherit; padding: 0; line-height: 1; transition: color 0.15s; }
 .file-row-remove:hover { color: white; }
 
-/* Review card */
+/* ── REVIEW CARD ── */
 .review-card {
   background: rgba(0,0,0,0.14);
   border-radius: 14px;
@@ -292,126 +349,51 @@ body {
   text-transform: uppercase;
 }
 
-.review-items {
-  padding: 12px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.review-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-}
-
-.review-verdict {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  margin-top: 5px;
-  flex-shrink: 0;
-}
-
+.review-items { padding: 12px 16px; display: flex; flex-direction: column; gap: 8px; }
+.review-row { display: flex; align-items: flex-start; gap: 10px; }
+.review-verdict { width: 8px; height: 8px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
 .review-verdict.good { background: #4ADE80; }
 .review-verdict.warn { background: #FCD34D; }
-.review-verdict.miss { background: rgba(255,255,255,0.4); }
-
-.review-summary {
-  font-size: 12px;
-  color: rgba(255,255,255,0.8);
-  font-weight: 300;
-  line-height: 1.55;
-}
-
+.review-verdict.miss { background: rgba(255,255,255,0.35); }
+.review-summary { font-size: 12px; color: rgba(255,255,255,0.78); font-weight: 300; line-height: 1.55; }
 .review-summary strong { font-weight: 600; color: white; }
+.review-nudge { margin: 0 16px 14px; background: rgba(0,0,0,0.14); border-radius: 8px; padding: 10px 14px; font-size: 12px; color: rgba(255,255,255,0.62); line-height: 1.65; font-weight: 300; }
 
-.review-nudge {
-  margin: 0 16px 14px;
-  background: rgba(0,0,0,0.14);
-  border-radius: 8px;
-  padding: 10px 14px;
-  font-size: 12px;
-  color: rgba(255,255,255,0.65);
-  line-height: 1.65;
-  font-weight: 300;
-}
-
-/* Add more */
-.add-more-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  border: 0.5px dashed rgba(255,255,255,0.25);
-  border-radius: 10px;
-  padding: 9px;
-  font-size: 12px;
-  color: rgba(255,255,255,0.5);
-  cursor: pointer;
-  background: none;
-  font-family: 'Inter', sans-serif;
-  width: 100%;
-  transition: border-color 0.15s, color 0.15s;
-}
-
-.add-more-btn:hover { border-color: rgba(255,255,255,0.6); color: white; }
-
-/* Footer row */
-.input-footer {
+/* ── CTA ROW ── */
+.cta-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-.brand-input-wrap {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.brand-label-sm {
-  font-size: 11px;
-  color: rgba(255,255,255,0.4);
-}
-
-input#brandname {
-  background: rgba(255,255,255,0.12);
-  border: 0.5px solid rgba(255,255,255,0.22);
-  border-radius: 20px;
-  padding: 6px 14px;
+.material-count {
   font-size: 12px;
-  color: white;
-  font-family: 'Inter', sans-serif;
-  outline: none;
-  width: 140px;
-  transition: border-color 0.15s;
+  color: rgba(255,255,255,0.4);
+  font-weight: 300;
 }
-
-input#brandname::placeholder { color: rgba(255,255,255,0.28); }
-input#brandname:focus { border-color: rgba(255,255,255,0.55); }
 
 .go-btn {
   background: white;
   color: var(--red);
   border: none;
   border-radius: 8px;
-  padding: 10px 26px;
+  padding: 12px 32px;
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 18px;
-  letter-spacing: 3px;
+  font-size: 22px;
+  letter-spacing: 4px;
   cursor: pointer;
   transition: all 0.15s;
 }
 
 .go-btn:hover { background: #F0EDEA; }
-.go-btn:disabled { background: rgba(255,255,255,0.2); color: rgba(255,255,255,0.35); cursor: not-allowed; }
+.go-btn:disabled { background: rgba(255,255,255,0.18); color: rgba(255,255,255,0.3); cursor: not-allowed; }
 
 .error-msg {
   font-size: 12px;
-  color: rgba(255,255,255,0.75);
+  color: rgba(255,255,255,0.7);
   text-align: center;
   font-weight: 300;
+  min-height: 18px;
 }
 
 /* ── SCREEN 2: THINKING ── */
@@ -425,20 +407,17 @@ input#brandname:focus { border-color: rgba(255,255,255,0.55); }
   gap: 24px;
 }
 
-.thinking-dot-img {
-  height: 100px;
-  width: auto;
-}
+.thinking-dot-img { height: 100px; width: auto; }
 
 .thinking-label {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 42px;
+  font-size: 46px;
   letter-spacing: 6px;
   color: white;
   animation: pulse 1s ease-in-out infinite alternate;
 }
 
-@keyframes pulse { from { opacity: 0.3; } to { opacity: 1; } }
+@keyframes pulse { from { opacity: 0.25; } to { opacity: 1; } }
 
 .thinking-steps {
   display: flex;
@@ -457,31 +436,15 @@ input#brandname:focus { border-color: rgba(255,255,255,0.55); }
   background: rgba(0,0,0,0.1);
   border: 0.5px solid rgba(255,255,255,0.1);
   font-size: 12px;
-  color: rgba(255,255,255,0.35);
+  color: rgba(255,255,255,0.3);
   transition: all 0.3s;
 }
 
-.thinking-step.done {
-  color: rgba(255,255,255,0.6);
-  border-color: rgba(255,255,255,0.2);
-}
+.thinking-step.done { color: rgba(255,255,255,0.55); border-color: rgba(255,255,255,0.18); }
+.thinking-step.active { color: white; border-color: rgba(255,255,255,0.5); background: rgba(255,255,255,0.1); }
 
-.thinking-step.active {
-  color: white;
-  border-color: rgba(255,255,255,0.5);
-  background: rgba(255,255,255,0.1);
-}
-
-.step-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.2);
-  flex-shrink: 0;
-  transition: background 0.3s;
-}
-
-.thinking-step.done .step-dot { background: rgba(255,255,255,0.5); }
+.step-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.18); flex-shrink: 0; transition: background 0.3s; }
+.thinking-step.done .step-dot { background: rgba(255,255,255,0.45); }
 .thinking-step.active .step-dot { background: white; }
 
 /* ── SCREEN 3: OUTPUT ── */
@@ -489,10 +452,9 @@ input#brandname:focus { border-color: rgba(255,255,255,0.55); }
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 28px 32px 48px;
-  max-width: 720px;
+  padding: 28px 40px 52px;
+  max-width: 760px;
   width: 100%;
-  gap: 0;
 }
 
 .output-header {
@@ -504,25 +466,22 @@ input#brandname:focus { border-color: rgba(255,255,255,0.55); }
 
 .output-title {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 32px;
+  font-size: 34px;
   letter-spacing: 4px;
   color: white;
 }
 
-.output-title span { opacity: 0.5; }
+.output-title span { opacity: 0.45; }
 
-.output-actions {
-  display: flex;
-  gap: 6px;
-}
+.output-actions { display: flex; gap: 6px; }
 
 .btn-outline {
-  border: 0.5px solid rgba(255,255,255,0.3);
+  border: 0.5px solid rgba(255,255,255,0.28);
   border-radius: 8px;
   padding: 7px 14px;
   font-size: 11px;
   font-family: 'Inter', sans-serif;
-  color: rgba(255,255,255,0.7);
+  color: rgba(255,255,255,0.65);
   background: none;
   cursor: pointer;
   letter-spacing: 0.3px;
@@ -541,96 +500,32 @@ input#brandname:focus { border-color: rgba(255,255,255,0.55); }
   color: var(--red);
   background: white;
   cursor: pointer;
-  letter-spacing: 0.3px;
   font-weight: 600;
+  letter-spacing: 0.3px;
   transition: all 0.15s;
 }
 
 .btn-solid:hover { background: #F0EDEA; }
 
-/* Profile card */
-.profile-card {
-  background: white;
-  border-radius: 16px;
-  overflow: hidden;
-}
+.profile-card { background: white; border-radius: 16px; overflow: hidden; }
 
-.profile-section {
-  padding: 16px 22px;
-  border-bottom: 0.5px solid var(--card-border);
-}
-
+.profile-section { padding: 16px 22px; border-bottom: 0.5px solid var(--card-border); }
 .profile-section:last-child { border-bottom: none; }
 
-.section-label {
-  font-size: 9px;
-  font-weight: 700;
-  color: var(--red);
-  letter-spacing: 2.5px;
-  text-transform: uppercase;
-  margin-bottom: 8px;
-}
+.section-label { font-size: 9px; font-weight: 700; color: var(--red); letter-spacing: 2.5px; text-transform: uppercase; margin-bottom: 8px; }
+.section-body { font-size: 13px; line-height: 1.75; color: var(--ink); font-weight: 300; }
 
-.section-body {
-  font-size: 13px;
-  line-height: 1.75;
-  color: var(--ink);
-  font-weight: 300;
-}
-
-.profile-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 4px;
-}
-
-.profile-table th {
-  font-size: 9px;
-  font-weight: 600;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  padding: 6px 10px;
-  background: var(--ink);
-  color: white;
-  text-align: left;
-}
-
-.profile-table td {
-  font-size: 12px;
-  padding: 7px 10px;
-  border-bottom: 0.5px solid var(--card-border);
-  font-weight: 300;
-  color: var(--ink);
-  line-height: 1.5;
-}
-
+.profile-table { width: 100%; border-collapse: collapse; margin-top: 4px; }
+.profile-table th { font-size: 9px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; padding: 6px 10px; background: var(--ink); color: white; text-align: left; }
+.profile-table td { font-size: 12px; padding: 7px 10px; border-bottom: 0.5px solid var(--card-border); font-weight: 300; color: var(--ink); line-height: 1.5; }
 .profile-table tr:nth-child(even) td { background: var(--card-bg); }
 .profile-table tr:last-child td { border-bottom: none; }
 .profile-table td:first-child { font-weight: 500; }
 .profile-table td.less { color: var(--card-mid); }
 
-.rules-list {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  margin-top: 4px;
-}
-
-.rule-item {
-  display: flex;
-  gap: 12px;
-  font-size: 12px;
-  line-height: 1.55;
-  font-weight: 300;
-}
-
-.rule-key {
-  font-weight: 600;
-  min-width: 130px;
-  color: var(--ink);
-  flex-shrink: 0;
-}
-
+.rules-list { display: flex; flex-direction: column; gap: 5px; margin-top: 4px; }
+.rule-item { display: flex; gap: 12px; font-size: 12px; line-height: 1.55; font-weight: 300; }
+.rule-key { font-weight: 600; min-width: 130px; color: var(--ink); flex-shrink: 0; }
 .rule-val { color: var(--ink); }
 
 .output-footer {
@@ -641,33 +536,16 @@ input#brandname:focus { border-color: rgba(255,255,255,0.55); }
   padding: 0 2px;
 }
 
-.footer-note {
-  font-size: 10px;
-  color: rgba(255,255,255,0.35);
-  letter-spacing: 0.3px;
-}
-
-.start-again {
-  font-size: 11px;
-  color: rgba(255,255,255,0.45);
-  cursor: pointer;
-  text-decoration: underline;
-  background: none;
-  border: none;
-  font-family: 'Inter', sans-serif;
-  transition: color 0.15s;
-}
-
+.footer-note { font-size: 10px; color: rgba(255,255,255,0.3); letter-spacing: 0.2px; }
+.start-again { font-size: 11px; color: rgba(255,255,255,0.4); cursor: pointer; text-decoration: underline; background: none; border: none; font-family: 'Inter', sans-serif; transition: color 0.15s; }
 .start-again:hover { color: white; }
 </style>
 </head>
 <body>
 
+<!-- TOPBAR -->
 <div class="topbar">
-  <div class="hai-logo">
-    <div class="hai-circle"><span class="hai-h">h</span></div>
-    <span class="hai-rest">ai<sup class="hai-sup">2</sup></span>
-  </div>
+  <img src="/images/ai2-logo.png" class="hai-logo" alt="hai2" onerror="this.style.display='none'"/>
   <div class="suite-nav">
     <span class="suite-item active">Prompter</span>
     <span class="suite-div">|</span>
@@ -684,19 +562,54 @@ input#brandname:focus { border-color: rgba(255,255,255,0.55); }
     <img src="/images/Dotandhello.png" class="dot-hero-img" alt="Dot" onerror="this.style.display='none'"/>
     <div class="hero-copy">
       <div class="hero-tag">Find your brand voice</div>
-      <div class="hero-headline">Drop in your brand.<br><em>Pull out your voice.</em></div>
-      <div class="hero-sub">Dot reads your brand files and pulls out a one-page voice profile — ready for humans and AI alike.</div>
+      <div class="hero-headline">Drop in your brand.<br><em>Draw out your voice.</em></div>
+      <div class="hero-sub">Share your guidelines, your brand rules and some killer examples you love. Get a one page profile and a robot prompt.</div>
     </div>
   </div>
 
   <div class="s1-body">
 
-    <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()"
-      ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
-      <div class="drop-zone-icon">&#8613;</div>
-      <div class="drop-zone-label">Drop your brand files here &nbsp;or&nbsp; <u>browse</u></div>
-      <div class="drop-zone-types">PDF &nbsp;·&nbsp; Word &nbsp;·&nbsp; More coming</div>
-      <input type="file" id="fileInput" accept=".pdf,.doc,.docx" multiple style="display:none" onchange="handleFileSelect(event)"/>
+    <div class="input-tabs">
+      <div class="input-tab active" onclick="switchTab('uploads')">Uploads</div>
+      <div class="input-tab" onclick="switchTab('weblinks')">Weblinks</div>
+      <div class="input-tab" onclick="switchTab('notes')">Notes</div>
+    </div>
+
+    <div class="tab-panels">
+
+      <!-- UPLOADS -->
+      <div class="tab-panel active" id="tab-uploads">
+        <div class="upload-drop" id="dropZone"
+          onclick="document.getElementById('fileInput').click()"
+          ondragover="handleDragOver(event)"
+          ondragleave="handleDragLeave(event)"
+          ondrop="handleDrop(event)">
+          <div class="upload-drop-icon">&#8613;</div>
+          <div class="upload-drop-label">Drop files here &nbsp;or&nbsp; <u>browse</u></div>
+          <div class="upload-drop-types">PDF &nbsp;·&nbsp; Word</div>
+          <input type="file" id="fileInput" accept=".pdf,.doc,.docx" multiple style="display:none" onchange="handleFileSelect(event)"/>
+        </div>
+      </div>
+
+      <!-- WEBLINKS -->
+      <div class="tab-panel" id="tab-weblinks">
+        <div class="weblink-wrap">
+          <input class="weblink-input" type="text" id="weblinkInput" placeholder="https://yourbrand.com/about" onkeydown="if(event.key==='Enter') fetchWeblink()"/>
+          <button class="weblink-btn" id="weblinkBtn" onclick="fetchWeblink()">Fetch</button>
+        </div>
+        <div class="weblink-note">Dot will read the page and extract copy. Works best with About, brand story, or product pages.</div>
+      </div>
+
+      <!-- NOTES -->
+      <div class="tab-panel" id="tab-notes">
+        <div class="notes-wrap">
+          <textarea class="notes-textarea" id="notesInput" placeholder="Paste anything — a paragraph you love, an email that nailed it, a list of words you never want to see. Dot will work with whatever you give her."></textarea>
+          <div class="notes-footer">
+            <button class="notes-add-btn" onclick="addNotes()">Add these notes</button>
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <div class="file-list" id="fileList"></div>
@@ -709,16 +622,9 @@ input#brandname:focus { border-color: rgba(255,255,255,0.55); }
       <div class="review-nudge" id="reviewNudge"></div>
     </div>
 
-    <button class="add-more-btn" id="addMoreBtn" style="display:none" onclick="document.getElementById('fileInput').click()">
-      + Add more material
-    </button>
-
-    <div class="input-footer">
-      <div class="brand-input-wrap">
-        <span class="brand-label-sm">Brand name</span>
-        <input type="text" id="brandname" placeholder="e.g. Tower" />
-      </div>
-      <button class="go-btn" id="goBtn" onclick="runPrompter()" disabled>EXTRACT</button>
+    <div class="cta-row">
+      <div class="material-count" id="materialCount"></div>
+      <button class="go-btn" id="goBtn" onclick="runPrompter()" disabled>LET'S GO</button>
     </div>
 
     <div class="error-msg" id="errorMsg"></div>
@@ -752,9 +658,7 @@ input#brandname:focus { border-color: rgba(255,255,255,0.55); }
         <button class="btn-solid" onclick="downloadMd()">Download prompt</button>
       </div>
     </div>
-
     <div class="profile-card" id="profileCard"></div>
-
     <div class="output-footer">
       <div class="footer-note">Produced by Prompter — a Hunch product &nbsp;·&nbsp; Review before use</div>
       <button class="start-again" onclick="startAgain()">Start again</button>
@@ -765,7 +669,18 @@ input#brandname:focus { border-color: rgba(255,255,255,0.55); }
 <script>
 let uploadedFiles = [];
 let profileData = null;
-let brandName = '';
+let notesCounter = 0;
+
+function switchTab(name) {
+  document.querySelectorAll('.input-tab').forEach((t, i) => {
+    const names = ['uploads','weblinks','notes'];
+    t.classList.toggle('active', names[i] === name);
+  });
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+}
+
+// ── FILE UPLOAD ──────────────────────────────────────────
 
 function handleDragOver(e) {
   e.preventDefault();
@@ -807,10 +722,63 @@ async function uploadFiles(files) {
       showError('Upload failed — try again.');
     }
   }
-
   renderFileList();
   if (uploadedFiles.length > 0) runReview();
 }
+
+// ── WEBLINK FETCH ────────────────────────────────────────
+
+async function fetchWeblink() {
+  const input = document.getElementById('weblinkInput');
+  const btn = document.getElementById('weblinkBtn');
+  const url = input.value.trim();
+  if (!url) return;
+
+  btn.disabled = true;
+  btn.textContent = 'Fetching...';
+  showError('');
+
+  try {
+    const res = await fetch('/api/fetch', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url })
+    });
+    const data = await res.json();
+    if (data.success) {
+      if (!uploadedFiles.find(f => f.filename === data.filename)) {
+        uploadedFiles.push({ filename: data.filename, text: data.text, size: data.text.length });
+      }
+      input.value = '';
+      renderFileList();
+      if (uploadedFiles.length > 0) runReview();
+    } else {
+      showError(data.error || 'Could not fetch that URL.');
+    }
+  } catch (err) {
+    showError('Fetch failed — check the URL and try again.');
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Fetch';
+}
+
+// ── NOTES ────────────────────────────────────────────────
+
+function addNotes() {
+  const textarea = document.getElementById('notesInput');
+  const text = textarea.value.trim();
+  if (!text) return;
+
+  notesCounter++;
+  const filename = `Notes ${notesCounter}`;
+  uploadedFiles.push({ filename, text, size: text.length });
+  textarea.value = '';
+  renderFileList();
+  if (uploadedFiles.length > 0) runReview();
+}
+
+// ── FILE LIST ────────────────────────────────────────────
 
 function removeFile(filename) {
   uploadedFiles = uploadedFiles.filter(f => f.filename !== filename);
@@ -821,17 +789,18 @@ function removeFile(filename) {
 
 function renderFileList() {
   const list = document.getElementById('fileList');
-  const addMore = document.getElementById('addMoreBtn');
   const goBtn = document.getElementById('goBtn');
+  const count = document.getElementById('materialCount');
 
   if (!uploadedFiles.length) {
     list.innerHTML = '';
-    addMore.style.display = 'none';
     goBtn.disabled = true;
+    count.textContent = '';
     return;
   }
 
   list.innerHTML = uploadedFiles.map(f => {
+    const isText = typeof f.size === 'number' && f.size < 10000 && !f.filename.match(/\.(pdf|docx?)$/i);
     const size = f.size < 1024*1024
       ? (f.size/1024).toFixed(0) + ' KB'
       : (f.size/1024/1024).toFixed(1) + ' MB';
@@ -843,9 +812,12 @@ function renderFileList() {
     </div>`;
   }).join('');
 
-  addMore.style.display = 'flex';
+  const n = uploadedFiles.length;
+  count.textContent = `${n} piece${n !== 1 ? 's' : ''} of material`;
   goBtn.disabled = false;
 }
+
+// ── DOT'S REVIEW ────────────────────────────────────────
 
 async function runReview() {
   const card = document.getElementById('reviewCard');
@@ -853,7 +825,7 @@ async function runReview() {
   const nudge = document.getElementById('reviewNudge');
 
   card.style.display = 'block';
-  items.innerHTML = '<div style="font-size:12px;color:rgba(255,255,255,0.45);padding:4px 0">Dot is reading your files...</div>';
+  items.innerHTML = '<div style="font-size:12px;color:rgba(255,255,255,0.4);padding:4px 0">Dot is reading your material...</div>';
   nudge.textContent = '';
 
   try {
@@ -874,20 +846,19 @@ async function runReview() {
     nudge.textContent = review.nudge;
 
   } catch (err) {
-    items.innerHTML = '<div style="font-size:12px;color:rgba(255,255,255,0.45)">Could not load review.</div>';
+    items.innerHTML = '<div style="font-size:12px;color:rgba(255,255,255,0.38)">Could not load review.</div>';
   }
 }
 
 function hideReview() {
   document.getElementById('reviewCard').style.display = 'none';
-  document.getElementById('addMoreBtn').style.display = 'none';
 }
 
-async function runPrompter() {
-  brandName = document.getElementById('brandname').value.trim() || 'Brand';
+// ── EXTRACT ──────────────────────────────────────────────
 
+async function runPrompter() {
   if (!uploadedFiles.length) {
-    showError('Add at least one file first.');
+    showError('Add some material first.');
     return;
   }
 
@@ -901,8 +872,7 @@ async function runPrompter() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        files: uploadedFiles.map(f => ({ filename: f.filename, text: f.text })),
-        brandName: brandName
+        files: uploadedFiles.map(f => ({ filename: f.filename, text: f.text }))
       })
     });
 
@@ -910,8 +880,9 @@ async function runPrompter() {
     if (!data.success) throw new Error(data.error);
     profileData = data.profile;
 
-    renderProfile(profileData);
+    const brandName = profileData.brandName || 'Brand';
     document.getElementById('outputBrandName').textContent = brandName.toUpperCase();
+    renderProfile(profileData);
     showScreen(3);
 
   } catch (err) {
@@ -920,6 +891,8 @@ async function runPrompter() {
     document.getElementById('goBtn').disabled = false;
   }
 }
+
+// ── UI HELPERS ───────────────────────────────────────────
 
 function showScreen(n) {
   document.querySelectorAll('.screen').forEach((s, i) => {
@@ -1002,7 +975,8 @@ function escHtml(str) {
 function copyProfile() {
   if (!profileData) return;
   const p = profileData;
-  let text = `${brandName.toUpperCase()} — BRAND PROFILE\n\n`;
+  const bn = p.brandName || 'Brand';
+  let text = `${bn.toUpperCase()} — BRAND PROFILE\n\n`;
   text += `BRAND\n${p.brand}\n\n`;
   text += `CUSTOMER FEELS\n${p.customerFeels}\n\n`;
   text += `BEHAVIOURS\n${p.behaviours.map(b => `We are: ${b.we} / Not: ${b.not}`).join('\n')}\n\n`;
@@ -1019,7 +993,7 @@ function copyProfile() {
 function buildPromptMd() {
   if (!profileData) return '';
   const p = profileData;
-  const bn = brandName || 'this brand';
+  const bn = p.brandName || 'this brand';
   let md = '';
   md += `You are an experienced copywriter crafting communications for **${bn}**. `;
   md += `Your job is to write in their exact voice — not approximately, exactly.\n\n`;
@@ -1040,11 +1014,12 @@ function buildPromptMd() {
 function downloadMd() {
   const md = buildPromptMd();
   if (!md) return;
+  const bn = (profileData && profileData.brandName) || 'brand';
   const blob = new Blob([md], { type: 'text/markdown' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = (brandName || 'brand').toLowerCase().replace(/\s+/g, '-') + '-voice-prompt.md';
+  a.download = bn.toLowerCase().replace(/\s+/g, '-') + '-voice-prompt.md';
   a.click();
   URL.revokeObjectURL(url);
 }
@@ -1063,13 +1038,16 @@ function copyPrompt() {
 function startAgain() {
   uploadedFiles = [];
   profileData = null;
-  brandName = '';
-  document.getElementById('brandname').value = '';
+  notesCounter = 0;
   document.getElementById('fileList').innerHTML = '';
+  document.getElementById('materialCount').textContent = '';
   document.getElementById('goBtn').disabled = true;
+  document.getElementById('notesInput').value = '';
+  document.getElementById('weblinkInput').value = '';
   hideReview();
   document.querySelectorAll('.thinking-step').forEach(s => s.classList.remove('active','done'));
   document.getElementById('step1').classList.add('active');
+  switchTab('uploads');
   showScreen(1);
 }
 </script>
