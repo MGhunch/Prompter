@@ -256,6 +256,29 @@ body { font-family: 'Inter', sans-serif; background: var(--red); min-height: 100
 .sc-question.fade { opacity: 0; }
 .sc-question strong { color: var(--ink); font-weight: 600; }
 
+/* BOUNDARY CHECK */
+.sc-boundary { display: flex; flex-direction: column; gap: 14px; }
+.sc-boundary-stem {
+  font-size: 18px; font-weight: 300; color: var(--ink); line-height: 1.5;
+}
+.sc-boundary-stem strong { font-weight: 700; }
+.sc-options { display: flex; gap: 10px; }
+.sc-option {
+  flex: 1; padding: 14px 12px; border-radius: var(--radius-md);
+  border: 1.5px solid var(--card-border); cursor: pointer;
+  text-align: center; font-size: 14px; font-weight: 500; color: var(--ink);
+  transition: all 0.15s; background: white;
+}
+.sc-option:hover { border-color: var(--red); }
+.sc-option.selected { border-color: var(--red); background: rgba(237,28,36,0.04); color: var(--red); }
+
+/* FEELING CHECK */
+.sc-feeling { display: flex; flex-direction: column; gap: 14px; }
+.sc-feeling-stem {
+  font-size: 16px; font-weight: 300; color: var(--ink); line-height: 1.6;
+}
+.sc-feeling-stem em { font-style: normal; color: var(--mid); }
+
 .sc-pair { display: flex; flex-direction: row; gap: 12px; }
 
 .sc-sent {
@@ -987,14 +1010,31 @@ function renderSenseCheck(idx) {
   const check = confirmChecks[idx];
   checkMoved = false;
 
-  inner.innerHTML = `
+  const isLast = idx === confirmChecks.length - 1;
+  const nextLabel = isLast ? 'Build my profile' : 'Next';
+  const pips = confirmChecks.map((_,i) => `<div class="sc-pip${i===idx?' on':''}"></div>`).join('');
+
+  const eyebrow = `
     <div class="sc-eyebrow">
       <div class="sc-label">Quick sense check</div>
-      <div class="sc-progress">
-        ${confirmChecks.map((_,i) => `<div class="sc-pip${i===idx?' on':''}"></div>`).join('')}
-      </div>
-    </div>
-    <div class="sc-card">
+      <div class="sc-progress">${pips}</div>
+    </div>`;
+
+  let cardBody = '';
+
+  if (check.type === 'boundary') {
+    cardBody = `
+      <div class="sc-boundary">
+        <div class="sc-boundary-stem">We're <strong>${escHtml(check.trait)}</strong>, but not...</div>
+        <div class="sc-options">
+          ${check.options.map((opt, i) => `
+            <div class="sc-option" id="scOpt${i}" onclick="selectBoundary(${i})">${escHtml(opt)}</div>
+          `).join('')}
+        </div>
+      </div>`;
+
+  } else if (check.type === 'sentence') {
+    cardBody = `
       <div class="sc-question" id="scQuestion">Which sounds more like you?</div>
       <div class="sc-pair">
         <div class="sc-sent" id="scSentA">
@@ -1010,15 +1050,48 @@ function renderSenseCheck(idx) {
         <div class="sc-track"><div class="sc-fill" id="scFill"></div></div>
         <input class="sc-range" type="range" min="0" max="100" value="50" step="1"
           id="scSlider" oninput="updateSenseCheck(this.value)"/>
-      </div>
+      </div>`;
+
+  } else if (check.type === 'feeling') {
+    cardBody = `
+      <div class="sc-feeling">
+        <div class="sc-feeling-stem">When people read our stuff they should feel... <em>pick one</em></div>
+        <div class="sc-options">
+          ${check.options.map((opt, i) => `
+            <div class="sc-option" id="scOpt${i}" onclick="selectFeeling(${i})">${escHtml(opt)}</div>
+          `).join('')}
+        </div>
+      </div>`;
+  }
+
+  inner.innerHTML = `
+    ${eyebrow}
+    <div class="sc-card">
+      ${cardBody}
       <div class="sc-actions">
         <button class="btn-ghost" onclick="skipSenseCheck()" style="color:var(--white-mid);">Skip</button>
-        <button class="btn-primary" id="scNextBtn" onclick="nextSenseCheck()">
-          ${idx < confirmChecks.length - 1 ? 'Next' : 'Build my profile'}
-        </button>
+        <button class="btn-primary" id="scNextBtn" onclick="nextSenseCheck()" ${check.type !== 'sentence' ? 'disabled' : ''}>${nextLabel}</button>
       </div>
-    </div>
-  `;
+    </div>`;
+}
+
+let selectedBoundary = null;
+let selectedFeeling = null;
+
+function selectBoundary(idx) {
+  selectedBoundary = idx;
+  document.querySelectorAll('.sc-option').forEach((el, i) => {
+    el.classList.toggle('selected', i === idx);
+  });
+  document.getElementById('scNextBtn').disabled = false;
+}
+
+function selectFeeling(idx) {
+  selectedFeeling = idx;
+  document.querySelectorAll('.sc-option').forEach((el, i) => {
+    el.classList.toggle('selected', i === idx);
+  });
+  document.getElementById('scNextBtn').disabled = false;
 }
 
 function updateSenseCheck(v) {
@@ -1043,7 +1116,6 @@ function updateSenseCheck(v) {
     return;
   }
   updateSenseCheckQuestion(v, check);
-
   if (v < 38) { a.classList.add('leaning-a'); b.classList.add('dim'); }
   else if (v > 62) { b.classList.add('leaning-b'); a.classList.add('dim'); }
 }
@@ -1057,14 +1129,26 @@ function updateSenseCheckQuestion(v, check) {
 }
 
 function nextSenseCheck() {
-  const v = parseInt(document.getElementById('scSlider').value);
   const check = confirmChecks[currentCheck];
-  confirmResults.push({
-    dimension: check.dimension,
-    sentenceA: check.sentenceA,
-    sentenceB: check.sentenceB,
-    value: v
-  });
+  let result = { type: check.type, dimension: check.dimension };
+
+  if (check.type === 'boundary') {
+    result.trait = check.trait;
+    result.options = check.options;
+    result.selected = selectedBoundary;
+    selectedBoundary = null;
+  } else if (check.type === 'sentence') {
+    const v = parseInt(document.getElementById('scSlider').value);
+    result.sentenceA = check.sentenceA;
+    result.sentenceB = check.sentenceB;
+    result.value = v;
+  } else if (check.type === 'feeling') {
+    result.options = check.options;
+    result.selected = selectedFeeling;
+    selectedFeeling = null;
+  }
+
+  confirmResults.push(result);
 
   if (currentCheck < confirmChecks.length - 1) {
     currentCheck++;
@@ -1078,13 +1162,19 @@ function nextSenseCheck() {
 
 function skipSenseCheck() {
   const check = confirmChecks[currentCheck];
-  confirmResults.push({
-    dimension: check.dimension,
-    sentenceA: check.sentenceA,
-    sentenceB: check.sentenceB,
-    value: 50
-  });
-  // Count as moved so next check starts fresh
+  let result = { type: check.type, dimension: check.dimension, skipped: true };
+
+  if (check.type === 'boundary') {
+    result.trait = check.trait; result.options = check.options; result.selected = null;
+    selectedBoundary = null;
+  } else if (check.type === 'sentence') {
+    result.sentenceA = check.sentenceA; result.sentenceB = check.sentenceB; result.value = 50;
+  } else if (check.type === 'feeling') {
+    result.options = check.options; result.selected = null;
+    selectedFeeling = null;
+  }
+
+  confirmResults.push(result);
   currentCheck < confirmChecks.length - 1
     ? (currentCheck++, checkMoved = false, renderSenseCheck(currentCheck))
     : (hideSenseCheckScreen(), runExtractWithCalibration());

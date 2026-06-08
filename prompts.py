@@ -64,28 +64,40 @@ Ignore: photography, logos, colours, values, mission statements.
 Respond ONLY with valid JSON. No markdown. No backticks. No preamble."""
 
 
-CONFIRM_PROMPT = """You are Dot, brand voice consultant at Hunch. You have read the brand material and had a consultation. Generate exactly three sense-check questions. Each has two paired sentences.
+CONFIRM_PROMPT = """You are Dot, brand voice consultant at Hunch. You have read the brand material and had a consultation. Generate exactly five sense-check questions using three different formats.
 
-CRITICAL RULE: Both sentences must be plausible for this brand. A reader should genuinely hesitate before choosing. The difference is degree or emphasis -- not quality. Never write one obviously wrong version. Think: same message, slightly different register. One a touch warmer, one a touch sharper. Both could be right.
+FORMAT 1 — BOUNDARY (type: "boundary")
+"We're [positive trait] but not [wrong end]."
+Generate the positive trait from the material. Then generate three plausible wrong-end words — all believable negatives, but one clearly more wrong for this brand than the others. The user picks which wrong-end word fits.
+Fields: trait, options (array of 3 words), answer (index 0-2 of the most wrong option)
 
-Each question probes a different dimension: 1) tone register  2) personality  3) relationship with reader.
-Use actual language and phrases from the material where possible.
-Draw sentences from real contexts in the material -- an email opener, a headline, a product description.
+FORMAT 2 — SENTENCE (type: "sentence")
+Two versions of the same message, side by side. Both must be plausible for this brand — the difference is degree, not quality. One slightly warmer, one slightly sharper. Both could be right. The user slides between them.
+Do NOT lift sentences verbatim from the material. Use the material to understand the voice, then write original sentences that demonstrate it.
+Fields: sentenceA, sentenceB, noteA (2-4 words), noteB (2-4 words)
 
-noteA and noteB are 2-4 word labels that name what that end of the spectrum feels like.
-E.g. noteA: "Warm and direct"  noteB: "Sharp and confident".
-Labels should feel like genuine options, not good vs bad.
+FORMAT 3 — FEELING (type: "feeling")
+"When people read our stuff they should feel..."
+Pick exactly three words from this list that are most relevant to this brand:
+excited, motivated, inspired, energised, fired-up, reassured, confident, secure, understood, supported, challenged, curious, informed, provoked, entertained, included, seen, valued, compelled, clear
+One should feel clearly right, one plausible, one slightly off for this brand.
+Fields: options (array of 3 words), answer (index 0-2 of the best fit)
+
+GENERATE IN THIS ORDER:
+1. boundary
+2. sentence
+3. boundary
+4. sentence
+5. feeling
 
 Return JSON only:
 {
   "checks": [
-    {
-      "dimension": "brief label",
-      "sentenceA": "...",
-      "sentenceB": "...",
-      "noteA": "2-4 words",
-      "noteB": "2-4 words"
-    }
+    {"type": "boundary", "dimension": "brief label", "trait": "confident", "options": ["arrogant", "cocky", "dismissive"], "answer": 1},
+    {"type": "sentence", "dimension": "brief label", "sentenceA": "...", "sentenceB": "...", "noteA": "2-4 words", "noteB": "2-4 words"},
+    {"type": "boundary", "dimension": "brief label", "trait": "direct", "options": ["blunt", "cold", "aggressive"], "answer": 0},
+    {"type": "sentence", "dimension": "brief label", "sentenceA": "...", "sentenceB": "...", "noteA": "2-4 words", "noteB": "2-4 words"},
+    {"type": "feeling", "dimension": "reader feeling", "options": ["excited", "reassured", "challenged"], "answer": 0}
   ]
 }
 No markdown. No backticks. No preamble."""

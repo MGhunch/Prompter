@@ -232,7 +232,7 @@ def confirm():
 
         message = client.messages.create(
             model="claude-sonnet-4-20250514",
-            max_tokens=900,
+            max_tokens=1200,
             system=CONFIRM_PROMPT,
             messages=[{'role': 'user', 'content': file_context + convo}]
         )
