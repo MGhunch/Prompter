@@ -9,17 +9,32 @@
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
-  --red: #ED1C24; --ink: #1A1917; --white: #FFFFFF;
-  --card-bg: #F5F3EF; --card-border: #E8E5E0; --mid: #9A9590; --g: 32px;
+  /* Core palette */
+  --red: #ED1C24; --red-dark: #C8141B;
+  --ink: #1A1917; --white: #FFFFFF;
+  --card-bg: #F5F3EF; --card-border: #E8E5E0; --mid: #9A9590;
+
+  /* White-on-red overlays */
+  --white-hi:  rgba(255,255,255,0.75);
+  --white-mid: rgba(255,255,255,0.45);
+  --white-lo:  rgba(255,255,255,0.20);
+  --white-dim: rgba(255,255,255,0.12);
+
+  /* Dim tones (topbar, dividers) */
+  --dim: #C8C4BE; --divider: #D8D5D0;
+
+  /* Layout */
+  --g: 32px;
+  --radius-sm: 8px; --radius-md: 12px; --radius-lg: 14px; --radius-pill: 100px;
 }
 body { font-family: 'Inter', sans-serif; background: var(--red); min-height: 100vh; display: flex; flex-direction: column; }
 
 .topbar { background: white; padding: 13px var(--g); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
 .hai-logo { height: 26px; width: auto; }
 .suite-nav { display: flex; align-items: center; gap: 10px; }
-.suite-item { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: #C8C4BE; }
+.suite-item { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--dim); }
 .suite-item.active { color: var(--ink); }
-.suite-div { color: #D8D5D0; }
+.suite-div { color: var(--divider); }
 
 .main { flex: 1; display: flex; flex-direction: column; padding: 0 var(--g) 24px; max-width: 640px; width: 100%; align-self: center; }
 
@@ -27,10 +42,10 @@ body { font-family: 'Inter', sans-serif; background: var(--red); min-height: 100
 .hero { display: flex; align-items: flex-end; gap: 0; padding-top: 24px; padding-bottom: 0; }
 .dot-hero-img { height: 141px; width: auto; flex-shrink: 0; margin-bottom: 8px; margin-left: -49px; order: 2; }
 .hero-copy { padding-right: 8px; padding-bottom: 8px; flex: 1; order: 1; }
-.hero-tag { font-size: 10px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.38); margin-bottom: 8px; }
+.hero-tag { font-size: 10px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: var(--white-lo); margin-bottom: 8px; }
 .hero-hed { font-family: 'Bebas Neue', sans-serif; font-size: 48px; letter-spacing: 2px; color: white; line-height: 0.95; margin-bottom: 10px; }
 .hero-hed em { font-style: normal; opacity: 0.35; }
-.hero-sub { font-size: 12px; color: rgba(255,255,255,0.45); line-height: 1.65; font-weight: 300; }
+.hero-sub { font-size: 12px; color: var(--white-mid); line-height: 1.65; font-weight: 300; }
 
 /* DOT OPENING */
 .dot-opening {
@@ -45,7 +60,7 @@ body { font-family: 'Inter', sans-serif; background: var(--red); min-height: 100
 .dot-open-text { font-size: 13px; color: var(--ink); line-height: 1.65; font-weight: 300; }
 
 /* INPUT ZONE */
-.input-zone { background: white; border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
+.input-zone { background: white; border-radius: var(--radius-lg); padding: 16px; display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
 
 .icon-row { display: flex; gap: 12px; }
 .icon-btn { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; opacity: 0.32; transition: opacity 0.15s, transform 0.15s; }
@@ -58,34 +73,34 @@ body { font-family: 'Inter', sans-serif; background: var(--red); min-height: 100
 .tab-panel { display: none; flex-direction: column; gap: 8px; }
 .tab-panel.active { display: flex; }
 
-.drop-zone { border: 1.5px dashed var(--card-border); border-radius: 10px; padding: 14px; text-align: center; cursor: pointer; transition: border-color 0.15s; }
+.drop-zone { border: 1.5px dashed var(--card-border); border-radius: var(--radius-sm); padding: 14px; text-align: center; cursor: pointer; transition: border-color 0.15s; }
 .drop-zone:hover, .drop-zone.drag-over { border-color: var(--red); }
 .drop-lbl { font-size: 12px; font-weight: 500; color: var(--ink); margin-bottom: 2px; }
 .drop-lbl u { color: var(--red); }
 .drop-sub { font-size: 9px; color: var(--mid); letter-spacing: 2px; text-transform: uppercase; }
 
 .weblink-row { display: flex; gap: 7px; }
-.weblink-input { flex: 1; background: var(--card-bg); border: 0.5px solid var(--card-border); border-radius: 8px; padding: 9px 12px; font-size: 12px; color: var(--ink); font-family: 'Inter', sans-serif; outline: none; }
+.weblink-input { flex: 1; background: var(--card-bg); border: 0.5px solid var(--card-border); border-radius: var(--radius-sm); padding: 9px 12px; font-size: 12px; color: var(--ink); outline: none; }
 .weblink-input::placeholder { color: var(--mid); }
 .weblink-input:focus { border-color: var(--red); }
-.weblink-btn { background: var(--red); color: white; border: none; border-radius: 8px; padding: 9px 14px; font-size: 11px; font-weight: 700; cursor: pointer; font-family: 'Inter', sans-serif; white-space: nowrap; }
+.weblink-btn { background: var(--red); color: white; border: none; border-radius: var(--radius-sm); padding: 9px 14px; font-size: 11px; font-weight: 700; cursor: pointer; white-space: nowrap; }
 .weblink-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 .weblink-note { font-size: 10px; color: var(--mid); line-height: 1.5; }
 
-.notes-textarea { width: 100%; min-height: 80px; background: var(--card-bg); border: 0.5px solid var(--card-border); border-radius: 8px; padding: 10px 12px; font-size: 12px; color: var(--ink); font-family: 'Inter', sans-serif; font-weight: 300; resize: none; outline: none; line-height: 1.65; }
+.notes-textarea { width: 100%; min-height: 80px; background: var(--card-bg); border: 0.5px solid var(--card-border); border-radius: var(--radius-sm); padding: 10px 12px; font-size: 12px; color: var(--ink); font-weight: 300; resize: none; outline: none; line-height: 1.65; }
 .notes-textarea::placeholder { color: var(--mid); }
 .notes-textarea:focus { border-color: var(--red); }
-.notes-add-btn { background: var(--red); color: white; border: none; border-radius: 8px; padding: 7px 16px; font-size: 11px; font-weight: 700; cursor: pointer; font-family: 'Inter', sans-serif; align-self: flex-end; }
+.notes-add-btn { background: var(--red); color: white; border: none; border-radius: var(--radius-sm); padding: 7px 16px; font-size: 11px; font-weight: 700; cursor: pointer; align-self: flex-end; }
 
 .file-list { display: flex; flex-direction: column; gap: 4px; }
-.file-row { display: flex; align-items: center; gap: 10px; background: var(--card-bg); border-radius: 8px; padding: 8px 12px; border: 0.5px solid var(--card-border); font-family: 'Inter', sans-serif; }
+.file-row { display: flex; align-items: center; gap: 10px; background: var(--card-bg); border-radius: var(--radius-sm); padding: 8px 12px; border: 0.5px solid var(--card-border); }
 .file-tick { font-size: 11px; font-weight: 700; color: var(--red); flex-shrink: 0; width: 16px; text-align: center; opacity: 0; transition: opacity 0.4s; }
 .file-tick.show { opacity: 1; }
 .file-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
-.file-name { font-size: 12px; font-weight: 500; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-family: 'Inter', sans-serif; }
-.file-label { font-size: 10px; color: var(--mid); font-weight: 300; font-family: 'Inter', sans-serif; }
-.file-size { font-size: 10px; color: var(--mid); flex-shrink: 0; font-family: 'Inter', sans-serif; }
-.file-x { font-size: 15px; color: var(--card-border); cursor: pointer; background: none; border: none; padding: 0; line-height: 1; font-family: inherit; transition: color 0.15s; flex-shrink: 0; }
+.file-name { font-size: 12px; font-weight: 500; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.file-label { font-size: 10px; color: var(--mid); font-weight: 300; }
+.file-size { font-size: 10px; color: var(--mid); flex-shrink: 0; }
+.file-x { font-size: 15px; color: var(--card-border); cursor: pointer; background: none; border: none; padding: 0; line-height: 1; transition: color 0.15s; flex-shrink: 0; }
 .file-x:hover { color: var(--red); }
 
 /* CONSULTATION */
@@ -93,11 +108,11 @@ body { font-family: 'Inter', sans-serif; background: var(--red); min-height: 100
 
 /* Collapsed history */
 .history-collapsed {
-  font-size: 11px; color: rgba(255,255,255,0.45); font-weight: 400;
+  font-size: 11px; color: var(--white-mid); font-weight: 400;
   cursor: pointer; padding: 6px 0; display: flex; align-items: center; gap: 6px;
   transition: color 0.15s; user-select: none;
 }
-.history-collapsed:hover { color: rgba(255,255,255,0.75); }
+.history-collapsed:hover { color: var(--white-hi); }
 .history-collapsed .arrow { font-size: 10px; transition: transform 0.2s; }
 .history-collapsed.open .arrow { transform: rotate(180deg); }
 
@@ -105,13 +120,13 @@ body { font-family: 'Inter', sans-serif; background: var(--red); min-height: 100
 .history-full.open { display: flex; }
 
 .history-dot-msg {
-  align-self: flex-start; background: rgba(255,255,255,0.15);
-  border-radius: 12px 12px 12px 3px; padding: 8px 12px;
-  font-size: 11px; color: rgba(255,255,255,0.8); font-weight: 300; max-width: 85%;
+  align-self: flex-start; background: var(--white-dim);
+  border-radius: var(--radius-md) var(--radius-md) var(--radius-md) 3px; padding: 8px 12px;
+  font-size: 11px; color: var(--white-hi); font-weight: 300; max-width: 85%;
 }
 .history-user-msg {
   align-self: flex-end; background: white;
-  border-radius: 12px 12px 3px 12px; padding: 8px 12px;
+  border-radius: var(--radius-md) var(--radius-md) 3px var(--radius-md); padding: 8px 12px;
   font-size: 11px; color: var(--ink); font-weight: 400; max-width: 80%;
 }
 
@@ -132,45 +147,34 @@ body { font-family: 'Inter', sans-serif; background: var(--red); min-height: 100
 .inline-dots span:nth-child(2) { animation-delay: 0.2s; }
 .inline-dots span:nth-child(3) { animation-delay: 0.4s; }
 
-/* Options */
-.options-block { background: white; border-radius: 12px; padding: 10px; display: flex; flex-direction: column; gap: 6px; animation: fadeUp 0.3s ease; }
-.option-item { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; border: 0.5px solid var(--card-border); cursor: pointer; transition: border-color 0.15s, background 0.15s; font-size: 12px; color: var(--ink); }
-.option-item:hover { border-color: var(--red); background: rgba(237,28,36,0.02); }
-.option-item.selected { border-color: var(--red); background: rgba(237,28,36,0.04); }
-.option-radio { width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid var(--card-border); flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: border-color 0.15s; }
-.option-item.selected .option-radio { border-color: var(--red); }
-.option-item.selected .option-radio::after { content:''; width: 6px; height: 6px; border-radius: 50%; background: var(--red); }
-.confirm-btn { background: var(--red); color: white; border: none; border-radius: 8px; padding: 9px; font-size: 12px; font-weight: 700; letter-spacing: 1px; width: 100%; cursor: pointer; font-family: inherit; margin-top: 2px; opacity: 0.4; transition: opacity 0.15s; }
-.confirm-btn:not(:disabled) { opacity: 1; }
-
 .reply-row { display: flex; gap: 7px; }
-.reply-input { flex: 1; background: white; border: 0.5px solid rgba(255,255,255,0.4); border-radius: 20px; padding: 9px 14px; font-size: 12px; color: var(--ink); font-family: 'Inter', sans-serif; outline: none; }
+.reply-input { flex: 1; background: white; border: 0.5px solid rgba(255,255,255,0.4); border-radius: 20px; padding: 9px 14px; font-size: 12px; color: var(--ink); outline: none; }
 .reply-input::placeholder { color: var(--mid); }
 .reply-input:focus { border-color: white; }
-.reply-send { background: white; color: var(--red); border: none; border-radius: 20px; padding: 9px 16px; font-size: 11px; font-weight: 700; cursor: pointer; font-family: 'Inter', sans-serif; white-space: nowrap; transition: all 0.15s; }
+.reply-send { background: white; color: var(--red); border: none; border-radius: 20px; padding: 9px 16px; font-size: 11px; font-weight: 700; cursor: pointer; white-space: nowrap; transition: all 0.15s; }
 .reply-send:hover { background: var(--ink); color: white; }
 .reply-send:disabled { opacity: 0.4; cursor: not-allowed; }
 
 /* LET'S GO */
 .go-wrap { margin-top: 12px; display: flex; align-items: center; justify-content: space-between; }
-.material-count { font-size: 11px; color: rgba(255,255,255,0.4); font-weight: 300; }
-.go-btn { background: white; color: var(--red); border: none; border-radius: 8px; padding: 12px 32px; font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 4px; cursor: pointer; transition: all 0.2s; }
-.go-btn:hover { background: #F0EDEA; }
-.go-btn:disabled { background: rgba(255,255,255,0.18); color: rgba(255,255,255,0.28); cursor: not-allowed; }
+.material-count { font-size: 11px; color: var(--white-mid); font-weight: 300; }
+.go-btn { background: white; color: var(--red); border: none; border-radius: var(--radius-sm); padding: 12px 32px; font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 4px; cursor: pointer; transition: all 0.2s; }
+.go-btn:hover { background: var(--card-bg); }
+.go-btn:disabled { background: var(--white-lo); color: var(--white-mid); cursor: not-allowed; }
 .go-btn.ready { animation: readyPulse 2s ease-in-out infinite; }
 @keyframes readyPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(255,255,255,0.4); } 50% { box-shadow: 0 0 0 8px rgba(255,255,255,0); } }
-.error-msg { font-size: 11px; color: rgba(255,255,255,0.7); font-weight: 300; min-height: 14px; text-align: right; }
+.error-msg { font-size: 11px; color: var(--white-hi); font-weight: 300; min-height: 14px; text-align: right; }
 
 /* PROFILE */
-.profile-zone { background: white; border-radius: 14px; overflow: hidden; margin-top: 10px; animation: fadeUp 0.4s ease; }
+.profile-zone { background: white; border-radius: var(--radius-lg); overflow: hidden; margin-top: 10px; animation: fadeUp 0.4s ease; }
 .profile-header { padding: 14px 18px; border-bottom: 0.5px solid var(--card-border); display: flex; align-items: center; justify-content: space-between; }
 .profile-title { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 3px; color: var(--ink); }
 .profile-title span { color: var(--red); }
 .profile-actions { display: flex; gap: 6px; }
-.pact { border: 0.5px solid var(--card-border); border-radius: 6px; padding: 5px 11px; font-size: 10px; color: var(--mid); background: none; cursor: pointer; font-family: inherit; transition: all 0.15s; }
+.pact { border: 0.5px solid var(--card-border); border-radius: var(--radius-sm); padding: 5px 11px; font-size: 10px; color: var(--mid); background: none; cursor: pointer; transition: all 0.15s; }
 .pact:hover { border-color: var(--ink); color: var(--ink); }
 .pact.copied { border-color: var(--red); color: var(--red); }
-.pact-solid { background: var(--ink); color: white; border: none; border-radius: 6px; padding: 5px 11px; font-size: 10px; cursor: pointer; font-family: inherit; }
+.pact-solid { background: var(--ink); color: white; border: none; border-radius: var(--radius-sm); padding: 5px 11px; font-size: 10px; cursor: pointer; }
 .pact-solid:hover { background: var(--red); }
 .psec { padding: 12px 18px; border-bottom: 0.5px solid var(--card-border); }
 .psec:last-of-type { border-bottom: none; }
@@ -188,7 +192,7 @@ body { font-family: 'Inter', sans-serif; background: var(--red); min-height: 100
 .rule-key { font-weight: 600; min-width: 120px; color: var(--ink); flex-shrink: 0; }
 .profile-footer { padding: 10px 18px; border-top: 0.5px solid var(--card-border); display: flex; align-items: center; justify-content: space-between; }
 .footer-note { font-size: 10px; color: var(--mid); }
-.start-again { font-size: 11px; color: var(--mid); text-decoration: underline; background: none; border: none; cursor: pointer; font-family: inherit; }
+.start-again { font-size: 11px; color: var(--mid); text-decoration: underline; background: none; border: none; cursor: pointer; }
 .start-again:hover { color: var(--ink); }
 
 /* THINKING */
@@ -198,51 +202,148 @@ body { font-family: 'Inter', sans-serif; background: var(--red); min-height: 100
 .thinking-label { font-family: 'Bebas Neue', sans-serif; font-size: 44px; letter-spacing: 6px; color: white; animation: pulse 1s ease-in-out infinite alternate; }
 @keyframes pulse { from { opacity: 0.25; } to { opacity: 1; } }
 .thinking-steps { display: flex; flex-direction: column; gap: 6px; width: 100%; max-width: 340px; }
-.thinking-step { display: flex; align-items: center; gap: 10px; padding: 7px 12px; border-radius: 8px; background: rgba(0,0,0,0.1); border: 0.5px solid rgba(255,255,255,0.1); font-size: 12px; color: rgba(255,255,255,0.28); transition: all 0.3s; }
-.thinking-step.done { color: rgba(255,255,255,0.52); border-color: rgba(255,255,255,0.18); }
-.thinking-step.active { color: white; border-color: rgba(255,255,255,0.48); background: rgba(255,255,255,0.1); }
-.step-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.18); flex-shrink: 0; transition: background 0.3s; }
-.thinking-step.done .step-dot { background: rgba(255,255,255,0.45); }
+.thinking-step { display: flex; align-items: center; gap: 10px; padding: 7px 12px; border-radius: var(--radius-sm); background: rgba(0,0,0,0.1); border: 0.5px solid var(--white-dim); font-size: 12px; color: var(--white-lo); transition: all 0.3s; }
+.thinking-step.done { color: var(--white-mid); border-color: var(--white-lo); }
+.thinking-step.active { color: white; border-color: var(--white-mid); background: var(--white-dim); }
+.step-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--white-lo); flex-shrink: 0; transition: background 0.3s; }
+.thinking-step.done .step-dot { background: var(--white-mid); }
 .thinking-step.active .step-dot { background: white; }
 
 .page-footer { padding: 8px var(--g) 16px; text-align: center; }
 .page-footer span { font-size: 9px; color: rgba(255,255,255,0.25); letter-spacing: 1.5px; text-transform: uppercase; }
 
-/* CONFIRM SCREEN */
-.confirm-zone { display: flex; flex-direction: column; gap: 16px; margin-top: 10px; animation: fadeUp 0.3s ease; }
-.confirm-card { background: white; border-radius: 14px; padding: 22px 22px 18px; display: flex; flex-direction: column; gap: 20px; }
-.confirm-header { display: flex; align-items: center; justify-content: space-between; }
-.confirm-title { font-size: 13px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--ink); font-family: 'Inter', sans-serif; }
-.confirm-steps { display: flex; gap: 6px; align-items: center; }
-.cstep { width: 7px; height: 7px; border-radius: 50%; background: var(--card-border); flex-shrink: 0; transition: background 0.3s; }
-.cstep.on { background: var(--red); }
-.confirm-note { font-size: 14px; color: var(--mid); font-weight: 300; line-height: 1.6; transition: opacity 0.2s; min-height: 22px; }
-.confirm-note.fade { opacity: 0; }
-.confirm-note strong { color: var(--ink); font-weight: 600; }
-.confirm-note .aside { color: var(--mid); font-weight: 300; }
-.sentence-pair { display: flex; flex-direction: column; gap: 10px; }
-.csent { border-radius: 10px; padding: 15px 17px; border: 1.5px solid var(--card-border); transition: border-color 0.2s, background 0.2s, opacity 0.2s; }
-.csent.active { border-color: var(--red); background: rgba(237,28,36,0.03); }
-.csent.dimmed { opacity: 0.3; }
-.csent-lbl { font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #C8C4BE; margin-bottom: 5px; transition: color 0.2s; }
-.csent.active .csent-lbl { color: var(--red); }
-.csent p { font-size: 13px; color: var(--ink); line-height: 1.6; font-style: italic; font-weight: 400; }
-.cslider-wrap { position: relative; height: 48px; display: flex; align-items: center; }
-.ctrack-bg { position: absolute; left: 0; right: 0; height: 8px; background: var(--card-bg); border-radius: 4px; overflow: hidden; }
-.ctrack-fill { height: 100%; background: var(--red); border-radius: 4px; width: 50%; transition: width 0.04s; }
-input.crange { position: absolute; left: 0; right: 0; width: 100%; -webkit-appearance: none; appearance: none; background: transparent; outline: none; cursor: pointer; margin: 0; padding: 0; }
-input.crange::-webkit-slider-thumb { -webkit-appearance: none; width: 34px; height: 34px; border-radius: 50%; background: var(--red); cursor: pointer; border: 3px solid white; }
-input.crange::-moz-range-thumb { width: 34px; height: 34px; border-radius: 50%; background: var(--red); cursor: pointer; border: 3px solid white; }
-input.crange::-webkit-slider-runnable-track { background: transparent; }
-.confirm-actions { display: flex; align-items: center; justify-content: space-between; }
+/* ── SENSE CHECK SCREEN ─────────────────────────────────── */
+.sensecheck-screen {
+  display: none; position: fixed; inset: 0; z-index: 100;
+  background: var(--red); flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 24px var(--g);
+}
+.sensecheck-screen.active { display: flex; }
 
-/* BUTTON RULES */
-.btn-primary { background: var(--red); color: white; border: none; border-radius: 100px; padding: 10px 26px; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; transition: background 0.15s; }
-.btn-primary:hover { background: #C8141B; }
+.sc-inner {
+  width: 100%; max-width: 560px;
+  display: flex; flex-direction: column; gap: 20px;
+}
+
+.sc-eyebrow {
+  display: flex; align-items: center; justify-content: space-between;
+}
+.sc-label {
+  font-size: 10px; font-weight: 700; letter-spacing: 3px;
+  text-transform: uppercase; color: var(--white-mid);
+}
+.sc-progress {
+  display: flex; gap: 6px; align-items: center;
+}
+.sc-pip {
+  width: 24px; height: 4px; border-radius: 2px;
+  background: var(--white-lo); transition: background 0.3s;
+}
+.sc-pip.on { background: white; }
+
+.sc-card {
+  background: white; border-radius: var(--radius-lg);
+  padding: 24px; display: flex; flex-direction: column; gap: 18px;
+  animation: fadeUp 0.3s ease;
+}
+
+.sc-question {
+  font-size: 15px; font-weight: 300; color: var(--mid);
+  line-height: 1.5; min-height: 22px; transition: opacity 0.18s;
+}
+.sc-question.fade { opacity: 0; }
+.sc-question strong { color: var(--ink); font-weight: 600; }
+
+.sc-pair { display: flex; flex-direction: column; gap: 10px; }
+
+.sc-sent {
+  border-radius: var(--radius-md); padding: 16px 18px;
+  border: 1.5px solid var(--card-border);
+  transition: border-color 0.2s, background 0.2s, opacity 0.2s;
+  cursor: default;
+}
+.sc-sent.leaning-a { border-color: var(--red); background: rgba(237,28,36,0.03); }
+.sc-sent.leaning-b { border-color: var(--red); background: rgba(237,28,36,0.03); }
+.sc-sent.dim { opacity: 0.28; }
+
+.sc-sent-lbl {
+  font-size: 8px; font-weight: 700; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--dim);
+  margin-bottom: 7px; transition: color 0.2s;
+}
+.sc-sent.leaning-a .sc-sent-lbl,
+.sc-sent.leaning-b .sc-sent-lbl { color: var(--red); }
+
+.sc-sent p {
+  font-size: 13px; color: var(--ink); line-height: 1.65;
+  font-style: italic; font-weight: 400;
+}
+
+.sc-slider-wrap {
+  position: relative; height: 52px; display: flex; align-items: center;
+}
+.sc-track {
+  position: absolute; left: 0; right: 0; height: 6px;
+  background: var(--card-bg); border-radius: 3px; overflow: hidden;
+}
+.sc-fill {
+  height: 100%; background: var(--red); border-radius: 3px;
+  width: 50%; transition: width 0.03s;
+}
+input.sc-range {
+  position: absolute; left: 0; right: 0; width: 100%;
+  -webkit-appearance: none; appearance: none;
+  background: transparent; outline: none; cursor: pointer; margin: 0; padding: 0;
+}
+input.sc-range::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 36px; height: 36px; border-radius: 50%;
+  background: var(--red); cursor: pointer; border: 3px solid white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+input.sc-range::-moz-range-thumb {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--red); cursor: pointer; border: 3px solid white;
+}
+input.sc-range::-webkit-slider-runnable-track { background: transparent; }
+
+.sc-actions {
+  display: flex; align-items: center; justify-content: space-between;
+  padding-top: 2px;
+}
+
+.sc-loading {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 16px; color: white;
+}
+.sc-loading-label {
+  font-family: 'Bebas Neue', sans-serif; font-size: 28px;
+  letter-spacing: 4px; color: white; opacity: 0.6;
+}
+.sc-dots { display: flex; gap: 8px; }
+.sc-dots span {
+  width: 8px; height: 8px; border-radius: 50%; background: white;
+  animation: blink 1.2s ease-in-out infinite; opacity: 0.3;
+}
+.sc-dots span:nth-child(2) { animation-delay: 0.2s; }
+.sc-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+/* ── BUTTON SYSTEM (locked) ────────────────────────────────
+   Primary   — red pill, white text
+   Secondary — white pill, red border + text
+   Ghost     — no bg, no border, muted text
+   Disabled  — grey pill (applied via :disabled or .disabled)
+   LET'S GO  — .go-btn, Bebas Neue, special case
+──────────────────────────────────────────────────────────── */
+.btn-primary { background: var(--red); color: white; border: none; border-radius: var(--radius-pill); padding: 10px 26px; font-size: 13px; font-weight: 600; cursor: pointer; transition: background 0.15s; }
+.btn-primary:hover { background: var(--red-dark); }
 .btn-primary:disabled { background: var(--card-border); color: var(--mid); cursor: not-allowed; }
-.btn-secondary { background: white; color: var(--red); border: 1.5px solid var(--red); border-radius: 100px; padding: 9px 24px; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+
+.btn-secondary { background: white; color: var(--red); border: 1.5px solid var(--red); border-radius: var(--radius-pill); padding: 9px 24px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.15s; }
 .btn-secondary:hover { background: rgba(237,28,36,0.04); }
-.btn-ghost { background: none; border: none; font-size: 12px; color: var(--mid); font-family: 'Inter', sans-serif; cursor: pointer; font-weight: 500; padding: 0; transition: color 0.15s; }
+.btn-secondary:disabled { border-color: var(--card-border); color: var(--mid); cursor: not-allowed; }
+
+.btn-ghost { background: none; border: none; font-size: 12px; color: var(--mid); cursor: pointer; font-weight: 500; padding: 0; transition: color 0.15s; }
 .btn-ghost:hover { color: var(--ink); }
 </style>
 </head>
@@ -361,21 +462,31 @@ input.crange::-webkit-slider-runnable-track { background: transparent; }
 
   </div>
 
-  <!-- CONFIRM ZONE -->
-  <div class="confirm-zone" id="confirmZone" style="display:none;"></div>
+  <!-- CONFIRM ZONE (retired — kept as empty anchor) -->
 
   <!-- LET'S GO -->
   <div class="go-wrap" id="goWrap" style="display:none;">
     <span class="material-count" id="materialCount"></span>
     <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
       <div class="error-msg" id="errorMsg"></div>
-      <button class="go-btn" id="goBtn" onclick="startConfirm()" disabled>LET'S GO</button>
+      <button class="go-btn" id="goBtn" onclick="goButtonPressed()" disabled>LET'S GO</button>
     </div>
   </div>
 
   <!-- PROFILE -->
   <div id="profileZone" style="display:none;"></div>
 
+</div>
+
+<!-- SENSE CHECK SCREEN (fixed overlay) -->
+<div class="sensecheck-screen" id="sensecheckScreen">
+  <div class="sc-inner" id="scInner">
+    <!-- Loading state -->
+    <div class="sc-loading" id="scLoading">
+      <div class="sc-loading-label">ONE SEC</div>
+      <div class="sc-dots"><span></span><span></span><span></span></div>
+    </div>
+  </div>
 </div>
 
 <!-- THINKING SCREEN -->
@@ -808,6 +919,7 @@ function renderProfileZone(p) {
 function startAgain() {
   uploadedFiles = []; profileData = null; consultHistory = [];
   notesCounter = 0; dotReady = false; selectedOption = null;
+  confirmChecks = []; confirmResults = []; currentCheck = 0;
   document.getElementById('fileList').innerHTML = '';
   document.getElementById('responseArea').innerHTML = '';
   document.getElementById('profileZone').style.display = 'none';
@@ -821,6 +933,7 @@ function startAgain() {
   document.getElementById('goBtn').classList.remove('ready');
   document.getElementById('dotMsgText').style.display = 'none';
   document.getElementById('dotThinking').style.display = 'flex';
+  document.getElementById('sensecheckScreen').classList.remove('active');
   resetHistoryUI();
   showError('');
   switchTab('uploads');
@@ -888,19 +1001,23 @@ function copyPrompt() {
 }
 
 
-// ── CONFIRM SCREEN ───────────────────────────────────────
+// ── SENSE CHECK SCREEN ───────────────────────────────────
 
 let confirmChecks = [];
 let confirmResults = [];
 let currentCheck = 0;
 let checkMoved = false;
 
-async function startConfirm() {
+function goButtonPressed() {
   document.getElementById('goBtn').disabled = true;
-  const zone = document.getElementById('confirmZone');
-  zone.style.display = 'flex';
-  zone.innerHTML = '<div style="font-size:12px;color:rgba(255,255,255,0.45);padding:8px 0;">Dot is putting together a quick sense check...</div>';
+  showError('');
+  // Show sense check screen in loading state
+  document.getElementById('sensecheckScreen').classList.add('active');
+  document.getElementById('scLoading').style.display = 'flex';
+  fetchSenseChecks();
+}
 
+async function fetchSenseChecks() {
   try {
     const res = await fetch('/api/confirm', {
       method: 'POST',
@@ -911,91 +1028,94 @@ async function startConfirm() {
       })
     });
     const data = await res.json();
-    if (!data.success || !data.checks.length) throw new Error('No checks');
+    if (!data.success || !data.checks || !data.checks.length) throw new Error('No checks');
     confirmChecks = data.checks;
     confirmResults = [];
     currentCheck = 0;
-    renderCheck(0);
+    renderSenseCheck(0);
   } catch {
-    // Fallback — skip confirm, go straight to extract
-    zone.style.display = 'none';
-    document.getElementById('goBtn').disabled = false;
-    document.getElementById('goBtn').classList.add('ready');
+    // If confirm fails, skip straight to theatre
+    hideSenseCheckScreen();
+    runExtractWithCalibration();
   }
 }
 
-function renderCheck(idx) {
-  const zone = document.getElementById('confirmZone');
+function renderSenseCheck(idx) {
+  const inner = document.getElementById('scInner');
   const check = confirmChecks[idx];
   checkMoved = false;
 
-  zone.innerHTML = '';
-
-  const card = document.createElement('div');
-  card.className = 'confirm-card';
-  card.innerHTML = `
-    <div class="confirm-header">
-      <div class="confirm-title">Quick sense check</div>
-      <div class="confirm-steps">
-        ${confirmChecks.map((_,i) => `<div class="cstep${i===idx?' on':''}"></div>`).join('')}
+  inner.innerHTML = `
+    <div class="sc-eyebrow">
+      <div class="sc-label">Quick sense check</div>
+      <div class="sc-progress">
+        ${confirmChecks.map((_,i) => `<div class="sc-pip${i===idx?' on':''}"></div>`).join('')}
       </div>
     </div>
-    <div class="confirm-note" id="cnote">Which sounds most like you?</div>
-    <div class="sentence-pair">
-      <div class="csent" id="csentA">
-        <div class="csent-lbl">Like this?</div>
-        <p>${escHtml(check.sentenceA)}</p>
+    <div class="sc-card">
+      <div class="sc-question" id="scQuestion">Which sounds more like you?</div>
+      <div class="sc-pair">
+        <div class="sc-sent" id="scSentA">
+          <div class="sc-sent-lbl">A</div>
+          <p>${escHtml(check.sentenceA)}</p>
+        </div>
+        <div class="sc-sent" id="scSentB">
+          <div class="sc-sent-lbl">B</div>
+          <p>${escHtml(check.sentenceB)}</p>
+        </div>
       </div>
-      <div class="csent" id="csentB">
-        <div class="csent-lbl">Or like this?</div>
-        <p>${escHtml(check.sentenceB)}</p>
+      <div class="sc-slider-wrap">
+        <div class="sc-track"><div class="sc-fill" id="scFill"></div></div>
+        <input class="sc-range" type="range" min="0" max="100" value="50" step="1"
+          id="scSlider" oninput="updateSenseCheck(this.value)"/>
       </div>
-    </div>
-    <div class="cslider-wrap">
-      <div class="ctrack-bg"><div class="ctrack-fill" id="cfill"></div></div>
-      <input class="crange" type="range" min="0" max="100" value="50" step="1" id="cslider" oninput="updateCheck(this.value)"/>
-    </div>
-    <div class="confirm-actions">
-      <button class="btn-ghost" onclick="skipCheck()">Skip</button>
-      <button class="btn-primary" onclick="nextCheck()" id="cnextBtn">${idx < confirmChecks.length - 1 ? 'Next' : 'Build my profile'}</button>
+      <div class="sc-actions">
+        <button class="btn-ghost" onclick="skipSenseCheck()" style="color:var(--white-mid);">Skip</button>
+        <button class="btn-primary" id="scNextBtn" onclick="nextSenseCheck()">
+          ${idx < confirmChecks.length - 1 ? 'Next' : 'Build my profile'}
+        </button>
+      </div>
     </div>
   `;
-  zone.appendChild(card);
 }
 
-function updateCheck(v) {
+function updateSenseCheck(v) {
   v = parseInt(v);
-  const a = document.getElementById('csentA');
-  const b = document.getElementById('csentB');
-  const n = document.getElementById('cnote');
-  const fill = document.getElementById('cfill');
+  const a = document.getElementById('scSentA');
+  const b = document.getElementById('scSentB');
+  const q = document.getElementById('scQuestion');
+  const fill = document.getElementById('scFill');
   const check = confirmChecks[currentCheck];
 
   fill.style.width = v + '%';
-  a.classList.remove('active','dimmed');
-  b.classList.remove('active','dimmed');
+  a.classList.remove('leaning-a', 'dim');
+  b.classList.remove('leaning-b', 'dim');
 
   if (!checkMoved) {
-    n.classList.add('fade');
     checkMoved = true;
-    setTimeout(() => { n.classList.remove('fade'); updateCheckNote(v, check); }, 180);
+    q.classList.add('fade');
+    setTimeout(() => {
+      q.classList.remove('fade');
+      updateSenseCheckQuestion(v, check);
+    }, 180);
     return;
   }
-  updateCheckNote(v, check);
-  if (v < 40) { a.classList.add('active'); b.classList.add('dimmed'); }
-  else if (v > 60) { b.classList.add('active'); a.classList.add('dimmed'); }
+  updateSenseCheckQuestion(v, check);
+
+  if (v < 38) { a.classList.add('leaning-a'); b.classList.add('dim'); }
+  else if (v > 62) { b.classList.add('leaning-b'); a.classList.add('dim'); }
 }
 
-function updateCheckNote(v, check) {
-  const n = document.getElementById('cnote');
-  if (!n) return;
-  if (v < 40) n.innerHTML = `<strong>${escHtml(check.noteA)}</strong> &nbsp;<span class="aside">(leaning this way)</span>`;
-  else if (v > 60) n.innerHTML = `<strong>${escHtml(check.noteB)}</strong> &nbsp;<span class="aside">(leaning this way)</span>`;
-  else n.innerHTML = 'Which sounds most like you?';
+function updateSenseCheckQuestion(v, check) {
+  const q = document.getElementById('scQuestion');
+  if (!q) return;
+  if (v < 38) q.innerHTML = `<strong>${escHtml(check.noteA)}</strong>`;
+  else if (v > 62) q.innerHTML = `<strong>${escHtml(check.noteB)}</strong>`;
+  else q.innerHTML = 'Which sounds more like you?';
 }
 
-function nextCheck() {
-  const v = parseInt(document.getElementById('cslider').value);
+function nextSenseCheck() {
+  const v = parseInt(document.getElementById('scSlider').value);
   const check = confirmChecks[currentCheck];
   confirmResults.push({
     dimension: check.dimension,
@@ -1007,15 +1127,14 @@ function nextCheck() {
   if (currentCheck < confirmChecks.length - 1) {
     currentCheck++;
     checkMoved = false;
-    renderCheck(currentCheck);
+    renderSenseCheck(currentCheck);
   } else {
-    // Done -- run extract with calibration
-    document.getElementById('confirmZone').style.display = 'none';
+    hideSenseCheckScreen();
     runExtractWithCalibration();
   }
 }
 
-function skipCheck() {
+function skipSenseCheck() {
   const check = confirmChecks[currentCheck];
   confirmResults.push({
     dimension: check.dimension,
@@ -1023,7 +1142,14 @@ function skipCheck() {
     sentenceB: check.sentenceB,
     value: 50
   });
-  nextCheck();
+  // Count as moved so next check starts fresh
+  currentCheck < confirmChecks.length - 1
+    ? (currentCheck++, checkMoved = false, renderSenseCheck(currentCheck))
+    : (hideSenseCheckScreen(), runExtractWithCalibration());
+}
+
+function hideSenseCheckScreen() {
+  document.getElementById('sensecheckScreen').classList.remove('active');
 }
 
 async function runExtractWithCalibration() {
@@ -1045,7 +1171,8 @@ async function runExtractWithCalibration() {
     const data = await res.json();
     if (!data.success) throw new Error(data.error);
     profileData = data.profile;
-    renderProfile(profileData);
+    renderProfileZone(profileData);
+
     document.getElementById('thinkingScreen').classList.remove('active');
     document.getElementById('mainPage').style.display = 'flex';
     document.getElementById('pageFooter').style.display = 'block';
@@ -1054,7 +1181,6 @@ async function runExtractWithCalibration() {
     document.getElementById('inputZone').style.display = 'none';
     document.getElementById('consultZone').style.display = 'none';
     document.getElementById('goWrap').style.display = 'none';
-    document.getElementById('confirmZone').style.display = 'none';
     document.getElementById('profileZone').style.display = 'block';
   } catch {
     document.getElementById('thinkingScreen').classList.remove('active');

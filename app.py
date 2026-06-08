@@ -292,11 +292,22 @@ def confirm():
 
         system = (
             "You are Dot, brand voice consultant at Hunch. You have read the brand material and had a consultation. "
-            "Now generate exactly three sense-check questions. Each has two paired sentences drawn from or inspired by the actual material. "
-            "Each question probes a different dimension: 1) tone register 2) personality 3) relationship with reader. "
-            "Sentences must feel genuinely different in rhythm, attitude, and register. Not just adjective-swapped. "
+            "Generate exactly three sense-check questions. Each has two paired sentences. "
+            "\n\n"
+            "CRITICAL RULE: Both sentences must be plausible for this brand. "
+            "A reader should genuinely hesitate before choosing. "
+            "The difference is degree or emphasis — not quality. Never write one obviously wrong version. "
+            "Think: same message, slightly different register. One a touch warmer, one a touch sharper. Both could be right. "
+            "\n\n"
+            "Each question probes a different dimension: 1) tone register  2) personality  3) relationship with reader. "
             "Use actual language and phrases from the material where possible. "
-            "Return JSON only: {\"checks\": [{\"dimension\": \"brief label\", \"sentenceA\": \"...\", \"sentenceB\": \"...\", \"noteA\": \"3-5 word description\", \"noteB\": \"3-5 word description\"}, ...]}"
+            "Draw sentences from real contexts in the material — an email opener, a headline, a product description. "
+            "\n\n"
+            "noteA and noteB are 2-4 word labels that name what that end of the spectrum feels like. "
+            "E.g. noteA: 'Warm and direct'  noteB: 'Sharp and confident'. "
+            "Labels should feel like genuine options, not good vs bad. "
+            "\n\n"
+            "Return JSON only: {\"checks\": [{\"dimension\": \"brief label\", \"sentenceA\": \"...\", \"sentenceB\": \"...\", \"noteA\": \"2-4 words\", \"noteB\": \"2-4 words\"}, ...]}"
             " No markdown. No backticks. No preamble."
         )
 
