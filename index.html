@@ -36,10 +36,10 @@ body { font-family: 'Inter', sans-serif; background: var(--red); min-height: 100
 .suite-item.active { color: var(--ink); }
 .suite-div { color: var(--divider); }
 
-.main { flex: 1; display: flex; flex-direction: column; padding: 0 var(--g) 24px; max-width: 640px; width: 100%; align-self: center; }
+.main { flex: 1; display: flex; flex-direction: column; padding: 0 var(--g) 32px; max-width: 640px; width: 100%; align-self: center; }
 
 /* HERO */
-.hero { display: flex; align-items: flex-end; gap: 0; padding-top: 24px; padding-bottom: 0; }
+.hero { display: flex; align-items: flex-end; gap: 0; padding-top: 32px; padding-bottom: 0; }
 .dot-hero-img { height: 141px; width: auto; flex-shrink: 0; margin-bottom: 8px; margin-left: -49px; order: 2; }
 .hero-copy { padding-right: 8px; padding-bottom: 8px; flex: 1; order: 1; }
 .hero-tag { font-size: 10px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: var(--white-lo); margin-bottom: 8px; }
@@ -466,8 +466,7 @@ input.sc-range::-webkit-slider-runnable-track { background: transparent; }
 
   <!-- LET'S GO -->
   <div class="go-wrap" id="goWrap" style="display:none;">
-    <span class="material-count" id="materialCount"></span>
-    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;width:100%;">
       <div class="error-msg" id="errorMsg"></div>
       <button class="go-btn" id="goBtn" onclick="goButtonPressed()" disabled>LET'S GO</button>
     </div>
@@ -512,7 +511,7 @@ let profileData = null;
 let consultHistory = [];
 let notesCounter = 0;
 let dotReady = false;
-let selectedOption = null;
+let dotReady = false;
 let exchangeCount = 0;
 let historyOpen = false;
 
@@ -716,11 +715,11 @@ async function runConsult() {
       document.getElementById('goBtn').classList.add('ready');
       document.getElementById('responseArea').innerHTML = '';
     } else {
-      renderResponseArea(data.options || []);
+      renderResponseArea();
     }
   } catch {
     showDotMessage("I had a bit of trouble there. Try adding your material again.");
-    renderResponseArea([]);
+    renderResponseArea();
   }
 }
 
@@ -741,84 +740,29 @@ function showDotMessage(text) {
   bubble.style.animation = 'fadeUp 0.3s ease';
 }
 
-// Store current options for safe access
-let currentOptions = [];
-
-function renderResponseArea(options) {
+function renderResponseArea() {
   const area = document.getElementById('responseArea');
-  selectedOption = null;
-  currentOptions = options;
-
-  if (options.length > 0) {
-    const block = document.createElement('div');
-    block.className = 'options-block';
-    block.id = 'optionsBlock';
-
-    options.forEach((opt, i) => {
-      const item = document.createElement('div');
-      item.className = 'option-item';
-      item.dataset.idx = i;
-      item.innerHTML = `<div class="option-radio"></div>${escHtml(opt)}`;
-      item.addEventListener('click', () => selectOption(i, opt, block));
-      block.appendChild(item);
-    });
-
-    const btn = document.createElement('button');
-    btn.className = 'confirm-btn';
-    btn.id = 'confirmBtn';
-    btn.disabled = true;
-    btn.textContent = "That's right";
-    btn.addEventListener('click', submitResponse);
-    block.appendChild(btn);
-
-    area.innerHTML = '';
-    area.appendChild(block);
-  } else {
-    area.innerHTML = `<div class="reply-row">
-      <input class="reply-input" type="text" id="replyInput" placeholder="Type your reply..." />
-      <button class="reply-send" id="replySend">Send</button>
-    </div>`;
-    const input = document.getElementById('replyInput');
-    const send = document.getElementById('replySend');
-    input.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) submitResponse(); });
-    send.addEventListener('click', submitResponse);
-    setTimeout(() => input.focus(), 100);
-  }
-}
-
-function selectOption(idx, value, block) {
-  selectedOption = value;
-  const container = block || document.getElementById('optionsBlock');
-  if (!container) return;
-  container.querySelectorAll('.option-item').forEach((el, i) => {
-    el.classList.toggle('selected', i === idx);
-  });
-  const btn = document.getElementById('confirmBtn');
-  if (btn) btn.disabled = false;
+  area.innerHTML = `<div class="reply-row">
+    <input class="reply-input" type="text" id="replyInput" placeholder="Type your reply..." />
+    <button class="reply-send" id="replySend">Send</button>
+  </div>`;
+  const input = document.getElementById('replyInput');
+  const send = document.getElementById('replySend');
+  input.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) submitResponse(); });
+  send.addEventListener('click', submitResponse);
+  setTimeout(() => input.focus(), 100);
 }
 
 async function submitResponse() {
-  let userReply = selectedOption;
-  if (!userReply) {
-    const input = document.getElementById('replyInput');
-    if (input) userReply = input.value.trim();
-  }
+  const input = document.getElementById('replyInput');
+  const userReply = input ? input.value.trim() : '';
   if (!userReply) return;
 
-  // Get current Dot message before pushing to history
   const dotMsg = document.getElementById('dotMsgText').textContent;
-
-  // Add to conversation history
   consultHistory.push({ role: 'user', content: userReply });
   exchangeCount++;
-
-  // Archive to history UI
   archiveExchange(dotMsg, userReply);
-
-  // Clear response area
   document.getElementById('responseArea').innerHTML = '';
-
-  // Next round
   await runConsult();
 }
 
@@ -918,7 +862,7 @@ function renderProfileZone(p) {
 
 function startAgain() {
   uploadedFiles = []; profileData = null; consultHistory = [];
-  notesCounter = 0; dotReady = false; selectedOption = null;
+  notesCounter = 0; dotReady = false;
   confirmChecks = []; confirmResults = []; currentCheck = 0;
   document.getElementById('fileList').innerHTML = '';
   document.getElementById('responseArea').innerHTML = '';
