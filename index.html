@@ -675,8 +675,6 @@ function renderFileList() {
 }
 
 function updateGoBtn() {
-  const n = uploadedFiles.length;
-  document.getElementById('materialCount').textContent = `Your examples (${n})`;
   document.getElementById('goBtn').disabled = false;
   document.getElementById('goWrap').style.display = 'flex';
 }
