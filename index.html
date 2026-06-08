@@ -227,11 +227,12 @@ body { font-family: 'Inter', sans-serif; background: var(--red); min-height: 100
 }
 
 .sc-eyebrow {
-  display: flex; align-items: center; justify-content: space-between;
+  display: flex; align-items: flex-start; justify-content: space-between;
 }
 .sc-label {
-  font-size: 10px; font-weight: 700; letter-spacing: 3px;
-  text-transform: uppercase; color: var(--white-mid);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 32px; letter-spacing: 3px;
+  color: white;
 }
 .sc-progress {
   display: flex; gap: 6px; align-items: center;
@@ -255,13 +256,13 @@ body { font-family: 'Inter', sans-serif; background: var(--red); min-height: 100
 .sc-question.fade { opacity: 0; }
 .sc-question strong { color: var(--ink); font-weight: 600; }
 
-.sc-pair { display: flex; flex-direction: column; gap: 10px; }
+.sc-pair { display: flex; flex-direction: row; gap: 12px; }
 
 .sc-sent {
   border-radius: var(--radius-md); padding: 16px 18px;
   border: 1.5px solid var(--card-border);
   transition: border-color 0.2s, background 0.2s, opacity 0.2s;
-  cursor: default;
+  cursor: default; flex: 1;
 }
 .sc-sent.leaning-a { border-color: var(--red); background: rgba(237,28,36,0.03); }
 .sc-sent.leaning-b { border-color: var(--red); background: rgba(237,28,36,0.03); }
@@ -277,7 +278,7 @@ body { font-family: 'Inter', sans-serif; background: var(--red); min-height: 100
 
 .sc-sent p {
   font-size: 13px; color: var(--ink); line-height: 1.65;
-  font-style: italic; font-weight: 400;
+  font-style: normal; font-weight: 400;
 }
 
 .sc-slider-wrap {
@@ -850,7 +851,7 @@ function renderProfileZone(p) {
     </div>`;
   html += `<div class="psec"><div class="plbl">Brand</div><div class="pbody">${escHtml(p.brand)}</div></div>`;
   html += `<div class="psec"><div class="plbl">Customer Feels</div><div class="pbody">${escHtml(p.customerFeels)}</div></div>`;
-  html += `<div class="psec"><div class="plbl">Behaviours</div><table class="ptable"><tr><th>We are</th><th>We are not</th></tr>${p.behaviours.map(b=>`<tr><td>${escHtml(b.we)}</td><td>${escHtml(b.not)}</td></tr>`).join('')}</table></div>`;
+  html += `<div class="psec"><div class="plbl">Behaviours</div><table class="ptable"><tr><th>We do</th><th>We don't</th></tr>${p.behaviours.map(b=>`<tr><td>${escHtml(b.we)}</td><td>${escHtml(b.not)}</td></tr>`).join('')}</table></div>`;
   html += `<div class="psec"><div class="plbl">Examples</div><table class="ptable"><tr><th>More this</th><th>Less this</th></tr>${p.examples.map(e=>`<tr><td>${escHtml(e.more)}</td><td class="less">${escHtml(e.less)}</td></tr>`).join('')}</table></div>`;
   html += `<div class="psec"><div class="plbl">House Rules</div><div class="rules-list">${p.houseRules.map(r=>`<div class="rule-item"><span class="rule-key">${escHtml(r.key)}</span><span class="rule-val">${escHtml(r.rule)}</span></div>`).join('')}</div></div>`;
   html += `<div class="profile-footer"><span class="footer-note">Produced by Prompter — a Hunch product &nbsp;·&nbsp; Review before use</span><button class="start-again" onclick="startAgain()">Start again</button></div></div>`;
