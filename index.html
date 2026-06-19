@@ -6,6 +6,7 @@
 <title>Prompter — Find your brand voice</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
@@ -170,12 +171,20 @@ body { font-family: 'Inter', sans-serif; background: var(--red); min-height: 100
 .profile-header { padding: 14px 18px; border-bottom: 0.5px solid var(--card-border); display: flex; align-items: center; justify-content: space-between; }
 .profile-title { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 3px; color: var(--ink); }
 .profile-title span { color: var(--red); }
-.profile-actions { display: flex; gap: 6px; }
+.profile-actions { display: flex; gap: 8px; }
 .pact { border: 0.5px solid var(--card-border); border-radius: var(--radius-sm); padding: 5px 11px; font-size: 10px; color: var(--mid); background: none; cursor: pointer; transition: all 0.15s; }
 .pact:hover { border-color: var(--ink); color: var(--ink); }
 .pact.copied { border-color: var(--red); color: var(--red); }
 .pact-solid { background: var(--ink); color: white; border: none; border-radius: var(--radius-sm); padding: 5px 11px; font-size: 10px; cursor: pointer; }
 .pact-solid:hover { background: var(--red); }
+/* Icon pill action buttons */
+.pill { display: inline-flex; align-items: center; gap: 6px; border-radius: var(--radius-pill); padding: 7px 16px; font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.2px; cursor: pointer; transition: all 0.15s; border: none; }
+.pill svg { width: 14px; height: 14px; flex-shrink: 0; }
+.pill.ghost { background: none; border: 1px solid var(--card-border); color: var(--ink); }
+.pill.ghost:hover { border-color: var(--ink); }
+.pill.solid { background: var(--ink); color: white; }
+.pill.solid:hover { background: var(--red); }
+.pill:disabled { opacity: 0.5; cursor: default; }
 .psec { padding: 12px 18px; border-bottom: 0.5px solid var(--card-border); }
 .psec:last-of-type { border-bottom: none; }
 .plbl { font-size: 8px; font-weight: 700; color: var(--red); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 5px; }
@@ -867,9 +876,14 @@ function renderProfileZone(p) {
     <div class="profile-header">
       <div class="profile-title">YOUR <span>${escHtml(bn.toUpperCase())}</span> VOICE</div>
       <div class="profile-actions">
-        <button class="pact" id="copyPromptBtn" onclick="copyPrompt()">Copy prompt</button>
-        <button class="pact" id="copyBtn" onclick="copyProfile()">Copy profile</button>
-        <button class="pact-solid" onclick="downloadMd()">Download prompt</button>
+        <button class="pill ghost" id="pdfBtn" onclick="downloadPdf()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><polyline points="9 15 12 18 15 15"/></svg>
+          PDF
+        </button>
+        <button class="pill solid" id="promptBtn" onclick="downloadMd()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+          Prompt
+        </button>
       </div>
     </div>`;
   html += `<div class="psec"><div class="plbl">Brand</div><div class="pbody">${escHtml(p.brand)}</div></div>`;
@@ -955,6 +969,39 @@ function downloadMd() {
   const a = document.createElement('a'); a.href = url;
   a.download = bn.toLowerCase().replace(/\s+/g,'-') + '-voice-prompt.md';
   a.click(); URL.revokeObjectURL(url);
+}
+
+async function downloadPdf() {
+  if (!profileData || typeof html2pdf === 'undefined') return;
+  const src = document.querySelector('.profile-zone');
+  if (!src) return;
+  const btn = document.getElementById('pdfBtn');
+
+  // Clone the profile and strip the interactive controls from the capture
+  const clone = src.cloneNode(true);
+  clone.querySelectorAll('.profile-actions, .start-again').forEach(el => el.remove());
+  // Render on white with breathing room so it reads as a document, not a screenshot
+  const wrap = document.createElement('div');
+  wrap.style.cssText = 'background:#fff;padding:28px 32px;width:760px;';
+  wrap.appendChild(clone);
+
+  const bn = (profileData.brandName || 'brand').toLowerCase().replace(/\s+/g,'-');
+  if (btn) { btn.disabled = true; }
+  try {
+    await html2pdf().set({
+      margin: [8, 8, 8, 8],
+      filename: bn + '-voice-profile.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2, backgroundColor: '#ffffff', useCORS: true },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      pagebreak: { mode: ['css', 'legacy'], avoid: '.psec' }
+    }).from(wrap).save();
+  } catch (e) {
+    console.error('[Prompter] PDF error:', e);
+    showError('Could not build the PDF. Try again.');
+  } finally {
+    if (btn) { btn.disabled = false; }
+  }
 }
 
 function copyPrompt() {
