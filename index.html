@@ -643,11 +643,13 @@ function removeFile(filename) {
     document.getElementById('goWrap').style.display = 'none';
     document.getElementById('goBtn').disabled = true;
     consultHistory = []; dotReady = false; exchangeCount = 0;
+    invalidateSenseCheckPrefetch();
     resetHistoryUI();
   }
 }
 
 function afterFilesChanged() {
+  invalidateSenseCheckPrefetch();  // material changed — warmed checks no longer match
   renderFileList();
   if (uploadedFiles.length > 0 && consultHistory.length === 0) {
     startConsultation();
@@ -740,11 +742,14 @@ async function runConsult() {
     consultHistory.push({ role: 'assistant', content: data.message });
     showDotMessage(data.message);
     dotReady = data.ready;
+    invalidateSenseCheckPrefetch();  // conversation just changed — any warmed checks are stale
 
     if (dotReady) {
       document.getElementById('goBtn').classList.add('ready');
       document.getElementById('responseArea').innerHTML = '';
+      prefetchSenseChecks();  // warm the confirm call now, so it's ready by the time they hit Let's Go
     } else {
+      document.getElementById('goBtn').classList.remove('ready');
       renderResponseArea();
     }
   } catch {
@@ -899,6 +904,7 @@ function startAgain() {
   uploadedFiles = []; profileData = null; consultHistory = [];
   notesCounter = 0; dotReady = false;
   confirmChecks = []; confirmResults = []; currentCheck = 0;
+  senseCheckPrefetch = null;
   document.getElementById('fileList').innerHTML = '';
   document.getElementById('responseArea').innerHTML = '';
   document.getElementById('profileZone').style.display = 'none';
@@ -1019,6 +1025,33 @@ let confirmChecks = [];
 let confirmResults = [];
 let currentCheck = 0;
 let checkMoved = false;
+let senseCheckPrefetch = null;  // Promise resolving to checks[], warmed when Dot signals ready
+
+// Single source for the confirm request — used by both the prefetch and the live fallback.
+async function requestSenseChecks() {
+  const res = await fetch('/api/confirm', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({
+      files: uploadedFiles.map(f => ({filename: f.filename, text: f.text})),
+      history: consultHistory
+    })
+  });
+  const data = await res.json();
+  if (!data.success || !data.checks || !data.checks.length) throw new Error('No checks');
+  return data.checks;
+}
+
+// Fire the confirm call in the background while the user reads Dot's last line.
+// Errors resolve to null so a failed prefetch quietly falls back to a live fetch.
+function prefetchSenseChecks() {
+  senseCheckPrefetch = requestSenseChecks().catch(() => null);
+}
+
+// Any change to the material or the conversation makes a warmed prefetch stale.
+function invalidateSenseCheckPrefetch() {
+  senseCheckPrefetch = null;
+}
 
 function goButtonPressed() {
   document.getElementById('goBtn').disabled = true;
@@ -1031,17 +1064,12 @@ function goButtonPressed() {
 
 async function fetchSenseChecks() {
   try {
-    const res = await fetch('/api/confirm', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({
-        files: uploadedFiles.map(f => ({filename: f.filename, text: f.text})),
-        history: consultHistory
-      })
-    });
-    const data = await res.json();
-    if (!data.success || !data.checks || !data.checks.length) throw new Error('No checks');
-    confirmChecks = data.checks;
+    // Use the warmed prefetch if we have one: it resolves to the checks, to
+    // null if the prefetch failed, or is simply awaited if still in flight.
+    // Fall back to a live request when there's nothing warmed.
+    let checks = senseCheckPrefetch ? await senseCheckPrefetch : null;
+    if (!checks) checks = await requestSenseChecks();
+    confirmChecks = checks;
     confirmResults = [];
     currentCheck = 0;
     renderSenseCheck(0);
@@ -1049,6 +1077,8 @@ async function fetchSenseChecks() {
     // If confirm fails, skip straight to theatre
     hideSenseCheckScreen();
     runExtractWithCalibration();
+  } finally {
+    senseCheckPrefetch = null;  // consumed — re-warmed on the next ready
   }
 }
 
