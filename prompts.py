@@ -59,28 +59,43 @@ Three kinds of signal may appear:
 
 Where calibration and the material disagree, calibration wins.
 
+ARCHETYPE REFERENCE -- internal only. Use to find the brand's emotional register and borrow vocabulary texture. NEVER name an archetype in the output; the brand's own concrete identity always wins. The archetype only sharpens feel and word choice.
+- Innocent -- open, optimistic / simple, wholesome, reassuring
+- Sage -- measured, knowing / precise, considered, evidence-led
+- Explorer -- restless, independent / frontier, discovery, open road
+- Outlaw -- defiant, disruptive / blunt, rule-breaking, provocative
+- Magician -- visionary, uncanny / possibility, reveal, transformation
+- Hero -- bold, determined / challenge, effort, triumph
+- Lover -- warm, intimate / closeness, desire, indulgence
+- Jester -- playful, irreverent / wit, wordplay, lightness
+- Everyman -- grounded, unpretentious / plain, friendly, no airs
+- Caregiver -- protective, generous / support, warmth, looking after
+- Ruler -- assured, authoritative / standards, mastery, the benchmark
+- Creator -- inventive, exacting / craft, design, making
+
 Output a JSON object: brandName, brand, behaviours, examples, houseRules.
 
 brandName: Infer from the material. Just the name. If unclear: "Unknown Brand".
 brand: How the brand carries itself and what that does to the reader -- posture landing on effect, in one unit. Not the business, not the category. The brand layer. Lead from the spine. Max 3 sentences, three lines.
-behaviours: Exactly 5 {we, not} pairs. WRITING behaviours -- what the pen does, not personality traits. "We open on the take, not the plot" -- never "We're confident". The "not" is the near miss: the plausible wrong move next door, never the opposite of the "we". Keep each side to one line: state the move and stop -- no tail explaining the effect ("so the reader is already inside"), no dash-then-list elaboration. Aim under ten words a side. Short must not mean generic: still a move only this brand would make.
+behaviours (displayed as "We are / We're not"): Exactly 3 {we, not} pairs. Each "we" is a concrete identity -- a who or a stance, never a personality adjective. "The friend who's already watched it", not "relatable"; "the one who got in early", not "confident". The "not" is the near miss: the adjacent identity this brand gets mistaken for, never the opposite of the "we" -- "the critic reviewing it", not "boring". If "not" is just the antonym, rewrite it. Draw feel and vocabulary from the closest archetype(s) above; never name one, use the brand's own words. Keep each side to one line and stop -- no tail explaining the effect, no dash-then-list. Aim under ten words a side. Short must not mean generic: still an identity only this brand could claim.
 examples: Exactly 5 {more, less} pairs. Original sentences that show the voice -- do NOT lift from the material. Short, both sides. The "less" is plausible-but-flat -- the line that'd slip through, not an obvious dud.
 houseRules: {key, rule} objects. Hard constraints ONLY -- banned words, mandated devices, capitalisation, never-say-this, format conventions. Not behaviours (those live above). Each binary and checkable. Don't pad: three real rules beat eight soft ones, and a short or near-empty list is correct when the material only gives you that.
 
 For gaps: "[DON'T KNOW YET -- reason]". Never guess. Never pad.
 Ignore photography, logos and colours. Mine values and mission only for WHY the voice is the way it is -- never reproduce them.
+Before output, reject and rewrite any "We're not" that is merely the opposite of its "We are", and any "we" that reads as a bare personality adjective rather than a concrete identity.
 Respond ONLY with valid JSON. No markdown. No backticks. No preamble."""
 
 
-CONFIRM_PROMPT = """You are Dot, brand voice consultant at Hunch. You have read the brand material and had a consultation. Generate exactly five sense-check questions using three different formats.
+CONFIRM_PROMPT = """You are Dot, brand voice consultant at Hunch. You have read the brand material and had a consultation. Generate exactly three sense-check questions -- one of each format below. These are dials, not a quiz: there is no correct answer. The user's choice is the signal.
 
 FORMAT 1 — BOUNDARY (type: "boundary")
 "We're [positive trait] but not [wrong end]."
-Generate the positive trait from the material. Then generate three plausible wrong-end words — all believable negatives, but one clearly more wrong for this brand than the others. The user picks which wrong-end word fits.
-Fields: trait, options (array of 3 words), answer (index 0-2 of the most wrong option)
+Generate the positive trait from the material. Then generate three distinct, plausible wrong-end words -- all believable negatives this brand could be pushed toward. The user picks the one that matters most to steer away from.
+Fields: trait, options (array of 3 words)
 
 FORMAT 2 — SENTENCE (type: "sentence")
-Two versions of the same message, side by side. Both must be plausible for this brand — the difference is degree, not quality. One slightly warmer, one slightly sharper. Both could be right. The user slides between them.
+Two versions of the same message, side by side. Both must be plausible for this brand -- the difference is degree, not quality. One slightly warmer, one slightly sharper. Both could be right. The user slides between them.
 Do NOT lift sentences verbatim from the material. Use the material to understand the voice, then write original sentences that demonstrate it.
 Fields: sentenceA, sentenceB, noteA (2-4 words), noteB (2-4 words)
 
@@ -88,24 +103,20 @@ FORMAT 3 — FEELING (type: "feeling")
 "When people read our stuff they should feel..."
 Pick exactly three words from this list that are most relevant to this brand:
 excited, motivated, inspired, energised, fired-up, reassured, confident, secure, understood, supported, challenged, curious, informed, provoked, entertained, included, seen, valued, compelled, clear
-One should feel clearly right, one plausible, one slightly off for this brand.
-Fields: options (array of 3 words), answer (index 0-2 of the best fit)
+Three plausible options. The user picks the closest.
+Fields: options (array of 3 words)
 
 GENERATE IN THIS ORDER:
 1. boundary
 2. sentence
-3. boundary
-4. sentence
-5. feeling
+3. feeling
 
 Return JSON only:
 {
   "checks": [
-    {"type": "boundary", "dimension": "brief label", "trait": "confident", "options": ["arrogant", "cocky", "dismissive"], "answer": 1},
+    {"type": "boundary", "dimension": "brief label", "trait": "confident", "options": ["arrogant", "cocky", "dismissive"]},
     {"type": "sentence", "dimension": "brief label", "sentenceA": "...", "sentenceB": "...", "noteA": "2-4 words", "noteB": "2-4 words"},
-    {"type": "boundary", "dimension": "brief label", "trait": "direct", "options": ["blunt", "cold", "aggressive"], "answer": 0},
-    {"type": "sentence", "dimension": "brief label", "sentenceA": "...", "sentenceB": "...", "noteA": "2-4 words", "noteB": "2-4 words"},
-    {"type": "feeling", "dimension": "reader feeling", "options": ["excited", "reassured", "challenged"], "answer": 0}
+    {"type": "feeling", "dimension": "reader feeling", "options": ["excited", "reassured", "challenged"]}
   ]
 }
 No markdown. No backticks. No preamble."""

@@ -963,7 +963,7 @@ function renderProfileZone(p) {
       </div>
     </div>`;
   html += `<div class="psec"><div class="plbl">Brand</div><div class="pbody">${escHtml(p.brand)}</div></div>`;
-  html += `<div class="psec"><div class="plbl">Behaviours</div><table class="ptable"><tr><th>We do</th><th>We don't</th></tr>${p.behaviours.map(b=>`<tr><td>${escHtml(b.we)}</td><td>${escHtml(b.not)}</td></tr>`).join('')}</table></div>`;
+  html += `<div class="psec"><div class="plbl">Who we are</div><table class="ptable"><tr><th>We are</th><th>We're not</th></tr>${p.behaviours.map(b=>`<tr><td>${escHtml(b.we)}</td><td>${escHtml(b.not)}</td></tr>`).join('')}</table></div>`;
   html += `<div class="psec"><div class="plbl">Examples</div><table class="ptable"><tr><th>More this</th><th>Less this</th></tr>${p.examples.map(e=>`<tr><td>${escHtml(e.more)}</td><td class="less">${escHtml(e.less)}</td></tr>`).join('')}</table></div>`;
   html += `<div class="psec"><div class="plbl">House Rules</div><div class="rules-list">${p.houseRules.map(r=>`<div class="rule-item"><span class="rule-key">${escHtml(r.key)}</span><span class="rule-val">${escHtml(r.rule)}</span></div>`).join('')}</div></div>`;
   html += `<div class="profile-footer"><span class="footer-note">Produced by Prompter — a Hunch product &nbsp;·&nbsp; Review before use</span><button class="start-again" onclick="startAgain()">Start again</button></div></div>`;
@@ -1020,7 +1020,7 @@ function copyProfile() {
   if (!profileData) return;
   const p = profileData; const bn = p.brandName || 'Brand';
   let text = `${bn.toUpperCase()} — BRAND PROFILE\n\nBRAND\n${p.brand}\n\n`;
-  text += `BEHAVIOURS\n${p.behaviours.map(b=>`We are: ${b.we} / Not: ${b.not}`).join('\n')}\n\n`;
+  text += `WHO WE ARE\n${p.behaviours.map(b=>`We are: ${b.we} / We are not: ${b.not}`).join('\n')}\n\n`;
   text += `EXAMPLES\n${p.examples.map(e=>`More: ${e.more} / Less: ${e.less}`).join('\n')}\n\n`;
   text += `HOUSE RULES\n${p.houseRules.map(r=>`${r.key}: ${r.rule}`).join('\n')}`;
   navigator.clipboard.writeText(text).then(() => {
@@ -1034,7 +1034,7 @@ function buildPromptMd() {
   const p = profileData; const bn = p.brandName || 'this brand';
   let md = `You are an experienced copywriter crafting communications for **${bn}**. Your job is to write in their exact voice — not approximately, exactly.\n\n---\n\n`;
   md += `## Brand\n\n${p.brand}\n\n`;
-  md += `## How you write\n\n${p.behaviours.map(b=>`- **Do:** ${b.we}  \n  **Don't:** ${b.not}`).join('\n')}\n\n`;
+  md += `## Who we are\n\n${p.behaviours.map(b=>`- **Are:** ${b.we}  \n  **Are not:** ${b.not}`).join('\n')}\n\n`;
   md += `## Write more like this\n\n${p.examples.map(e=>`- ✓ ${e.more}  \n  ✗ ${e.less}`).join('\n')}\n\n`;
   md += `## House rules\n\n${p.houseRules.map(r=>`- **${r.key}:** ${r.rule}`).join('\n')}\n\n---\n\nNow write like this. Every time. No exceptions.`;
   return md;
