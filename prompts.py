@@ -48,7 +48,7 @@ Before you fill anything in, find the spine: the single organising idea the whol
 
 The reader feeling is your tuning fork, not your filter. Build from the spine; let the feeling settle close calls -- which way a behaviour leans, which of two examples earns its place, where the tone sits. It biases; it never prunes. If calibration gave you the feeling, use it; if not, name the one the material reaches for. Organise on the spine. Tune to the feeling.
 
-Trust the copy over the claims. Where the guidelines say one thing and the real examples do another, the examples win. Describe what the material does, not what it says about itself.
+Guidelines are the anchor. Examples are reference, not gospel. When guidelines exist, they set the voice -- examples only show it in practice, they never reset it. A stray example that fights the guidelines is a likely outlier, not a correction: the guideline holds. Examples carry the read only when there are no guidelines -- and then say the profile is observational.
 
 CALIBRATION is the user's own sense-check, captured directly. It is the single most direct signal of intent in the whole input. Treat it as correction, not suggestion: weight it above anything you infer from the material, and make it VISIBLE in the output. A user who made these choices should be able to point at the profile and see their answers reflected. Don't absorb it silently.
 
