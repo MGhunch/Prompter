@@ -130,9 +130,12 @@ def consult():
         for h in history:
             messages.append({'role': h['role'], 'content': h['content']})
 
-        # If no history, trigger first observation
-        if not messages:
-            messages = [{'role': 'user', 'content': 'Please read the material and start.'}]
+        # Anthropic requires the first message to be from the user. After the
+        # first exchange the replayed history starts with Dot's turn, which
+        # would 400. Prepend a user primer whenever that's the case (this also
+        # covers the no-history first call).
+        if not messages or messages[0]['role'] != 'user':
+            messages.insert(0, {'role': 'user', 'content': 'Please read the material and start.'})
 
         response = client.messages.create(
             model=MODEL,
@@ -189,7 +192,7 @@ def extract():
 
         response = client.messages.create(
             model=MODEL,
-            max_tokens=1500,
+            max_tokens=3000,
             system=EXTRACT_PROMPT,
             messages=[{'role': 'user', 'content': user_content}]
         )
