@@ -44,11 +44,14 @@ EXTRACT_PROMPT = """You are the Prompter InputBot. Read brand material, conversa
 
 Precision not length. If it does not change how something gets written, leave it out.
 
-If calibration data is provided (slider value 0-100 and two sentences), use it to tune the profile:
-- Value near 0: lean toward sentence A in tone, examples, and behaviours
-- Value near 50: blend both
-- Value near 100: lean toward sentence B
-This is the most direct signal of what this brand actually wants. Weight it accordingly.
+CALIBRATION is the user's own sense-check, captured directly. It is the single most direct signal of intent in the whole input. Treat it as correction, not suggestion: weight it above anything you infer from the material, and make it VISIBLE in the output. A user who made these choices should be able to point at the profile and see their answers reflected. Don't absorb it silently.
+
+Three kinds of signal may appear:
+- Sentence lean: the brand sits somewhere between version A and version B. Bias the tone of your behaviours and examples toward the chosen end.
+- Wrong end to steer away from: a word the brand must avoid. Put that word (or its clear sense) on the "not" side of a behaviour, or into a house rule, so the boundary is explicit on the page.
+- Reader feeling: the emotional target. It must shape customerFeels directly -- name it or land it unmistakably.
+
+Where calibration and the material disagree, calibration wins.
 
 Output a JSON object: brandName, brand, customerFeels, behaviours, examples, houseRules.
 

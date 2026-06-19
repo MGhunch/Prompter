@@ -185,10 +185,49 @@ def extract():
             user_content += f"\n\n--- CONSULTATION NOTES ---\n{convo}"
 
         if calibration:
-            cal_text = "\n\n--- CALIBRATION DATA ---\n"
-            for i, c in enumerate(calibration):
-                cal_text += f"Check {i+1} ({c.get('dimension','')}): A='{c.get('sentenceA','')}' B='{c.get('sentenceB','')}' Slider={c.get('value',50)}/100 (0=fully A, 100=fully B)\n"
-            user_content += cal_text
+            cal_lines = []
+            for c in calibration:
+                if c.get('skipped'):
+                    continue
+                ctype = c.get('type')
+                dim = c.get('dimension', '')
+
+                if ctype == 'sentence':
+                    val = c.get('value', 50)
+                    if val < 25:   lean = 'leans strongly toward A'
+                    elif val < 45: lean = 'leans toward A'
+                    elif val <= 55: lean = 'sits between A and B'
+                    elif val <= 75: lean = 'leans toward B'
+                    else:          lean = 'leans strongly toward B'
+                    cal_lines.append(
+                        f"- [{dim}] The brand {lean} ({val}/100):\n"
+                        f"    A: \"{c.get('sentenceA','')}\"\n"
+                        f"    B: \"{c.get('sentenceB','')}\""
+                    )
+
+                elif ctype == 'boundary':
+                    opts = c.get('options', [])
+                    sel = c.get('selected')
+                    if sel is not None and 0 <= sel < len(opts):
+                        cal_lines.append(
+                            f"- [{dim}] The brand is \"{c.get('trait','')}\" but the user "
+                            f"named \"{opts[sel]}\" as the wrong end to steer away from."
+                        )
+
+                elif ctype == 'feeling':
+                    opts = c.get('options', [])
+                    sel = c.get('selected')
+                    if sel is not None and 0 <= sel < len(opts):
+                        cal_lines.append(
+                            f"- [{dim}] After reading, the reader should feel \"{opts[sel]}\"."
+                        )
+
+            if cal_lines:
+                user_content += (
+                    "\n\n--- CALIBRATION (the user's own sense-check choices — treat as "
+                    "corrections, not hints; weight above inference and make visible) ---\n"
+                    + "\n".join(cal_lines)
+                )
 
         response = client.messages.create(
             model=MODEL,
