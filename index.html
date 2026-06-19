@@ -31,10 +31,12 @@
 body { font-family: 'Inter', sans-serif; background: var(--red); min-height: 100vh; display: flex; flex-direction: column; }
 
 .topbar { background: white; padding: 13px var(--g); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
-.hai-logo { height: 26px; width: auto; }
+.hai-logo { height: 26px; width: auto; cursor: pointer; transition: opacity 0.15s; }
+.hai-logo:hover { opacity: 0.7; }
 .suite-nav { display: flex; align-items: center; gap: 10px; }
 .suite-item { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--dim); }
-.suite-item.active { color: var(--ink); }
+.suite-item.active { color: var(--ink); cursor: pointer; transition: opacity 0.15s; }
+.suite-item.active:hover { opacity: 0.65; }
 .suite-div { color: var(--divider); }
 
 .main { flex: 1; display: flex; flex-direction: column; padding: 0 var(--g) 32px; max-width: 640px; width: 100%; align-self: center; }
@@ -383,9 +385,9 @@ input.sc-range::-webkit-slider-runnable-track { background: transparent; }
 <body>
 
 <div class="topbar">
-  <img src="/images/ai2-logo.png" class="hai-logo" alt="hai2" onerror="this.style.display='none'"/>
+  <img src="/images/ai2-logo.png" class="hai-logo" alt="hai2" title="Back to start" onclick="startAgain()" onerror="this.style.display='none'"/>
   <div class="suite-nav">
-    <span class="suite-item active">Prompter</span>
+    <span class="suite-item active" title="Back to start" onclick="startAgain()">Prompter</span>
     <span class="suite-div">|</span>
     <span class="suite-item">Slicer</span>
     <span class="suite-div">|</span>
@@ -919,6 +921,9 @@ function startAgain() {
   document.getElementById('dotMsgText').style.display = 'none';
   document.getElementById('dotThinking').style.display = 'flex';
   document.getElementById('sensecheckScreen').classList.remove('active');
+  document.getElementById('thinkingScreen').classList.remove('active');
+  document.getElementById('mainPage').style.display = 'flex';
+  document.getElementById('pageFooter').style.display = 'block';
   resetHistoryUI();
   showError('');
   switchTab('uploads');
