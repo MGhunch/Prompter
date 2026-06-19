@@ -34,10 +34,23 @@ body { font-family: 'Inter', sans-serif; background: var(--red); min-height: 100
 .hai-logo { height: 26px; width: auto; cursor: pointer; transition: opacity 0.15s; }
 .hai-logo:hover { opacity: 0.7; }
 .suite-nav { display: flex; align-items: center; gap: 10px; }
-.suite-item { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--dim); }
+.suite-item { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--dim); cursor: pointer; transition: color 0.15s, opacity 0.15s; }
+.suite-item:not(.active):hover { color: var(--ink); }
 .suite-item.active { color: var(--ink); cursor: pointer; transition: opacity 0.15s; }
 .suite-item.active:hover { opacity: 0.65; }
 .suite-div { color: var(--divider); }
+/* Coming-soon teaser modal for Slicer / Wrangler */
+.suite-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(26,25,23,0.55); z-index: 100; align-items: center; justify-content: center; padding: 24px; }
+.suite-modal-overlay.active { display: flex; }
+.suite-modal { background: white; border-radius: var(--radius-lg); padding: 32px 30px 28px; max-width: 420px; width: 100%; position: relative; animation: fadeUp 0.25s ease; }
+.suite-modal-x { position: absolute; top: 12px; right: 16px; background: none; border: none; font-size: 26px; line-height: 1; color: var(--mid); cursor: pointer; padding: 0; }
+.suite-modal-x:hover { color: var(--ink); }
+.suite-modal-hed { font-family: 'Bebas Neue', sans-serif; font-size: 46px; letter-spacing: 2px; color: var(--ink); line-height: 1; margin-bottom: 12px; }
+.suite-modal-body { font-family: 'Inter', sans-serif; font-size: 14px; line-height: 1.6; color: var(--ink); margin-bottom: 22px; }
+.suite-modal-cta { background: var(--red); color: white; border: none; border-radius: var(--radius-pill); padding: 11px 24px; font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 3px; cursor: pointer; transition: background 0.15s; }
+.suite-modal-cta:hover { background: var(--red-dark); }
+.suite-modal-cta:disabled { cursor: default; }
+.suite-modal-cta.sent { background: var(--ink); }
 
 .main { flex: 1; display: flex; flex-direction: column; padding: 0 var(--g) 32px; max-width: 640px; width: 100%; align-self: center; }
 
@@ -389,9 +402,18 @@ input.sc-range::-webkit-slider-runnable-track { background: transparent; }
   <div class="suite-nav">
     <span class="suite-item active" title="Back to start" onclick="startAgain()">Prompter</span>
     <span class="suite-div">|</span>
-    <span class="suite-item">Slicer</span>
+    <span class="suite-item" onclick="openSuiteModal('slicer')">Slicer</span>
     <span class="suite-div">|</span>
-    <span class="suite-item">Wrangler</span>
+    <span class="suite-item" onclick="openSuiteModal('wrangler')">Wrangler</span>
+  </div>
+</div>
+
+<div class="suite-modal-overlay" id="suiteModal" onclick="if(event.target===this)closeSuiteModal()">
+  <div class="suite-modal">
+    <button class="suite-modal-x" onclick="closeSuiteModal()" aria-label="Close">&times;</button>
+    <div class="suite-modal-hed" id="suiteModalHed"></div>
+    <div class="suite-modal-body" id="suiteModalBody"></div>
+    <button class="suite-modal-cta" id="suiteModalCta" onclick="suiteModalAction()"></button>
   </div>
 </div>
 
@@ -409,7 +431,7 @@ input.sc-range::-webkit-slider-runnable-track { background: transparent; }
   <!-- INPUT ZONE -->
   <div class="input-zone" id="inputZone">
     <div class="icon-row">
-      <div class="icon-btn active" id="btn-uploads" onclick="switchTab('uploads')">
+      <div class="icon-btn active" id="btn-uploads" onclick="uploadsTabClick()">
         <div class="icircle">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M12 16V8M8 12l4-4 4 4"/>
@@ -562,12 +584,59 @@ window.addEventListener('load', async () => {
   }
 });
 
+// SUITE TEASER MODALS (Slicer / Wrangler — not yet built)
+const SUITE_TEASERS = {
+  slicer: {
+    hed: 'SLICER',
+    body: "Slicer is an app that takes a block of copy and recrafts it for different channels. Email, socials, even text. It's not fully built yet. Yell if you want it now.",
+    cta: 'BUILD SLICER FASTER'
+  },
+  wrangler: {
+    hed: 'WRANGLE',
+    body: "Wrangler is an app that wrangles feedback. See what we did with the name? It's designed to solve the conflicting feedback puzzle. But it isn't ready yet.",
+    cta: 'BUILD WRANGLE FASTER'
+  }
+};
+
+function openSuiteModal(key) {
+  const t = SUITE_TEASERS[key];
+  if (!t) return;
+  document.getElementById('suiteModalHed').textContent = t.hed;
+  document.getElementById('suiteModalBody').textContent = t.body;
+  const cta = document.getElementById('suiteModalCta');
+  cta.textContent = t.cta;
+  cta.classList.remove('sent');
+  cta.disabled = false;
+  document.getElementById('suiteModal').classList.add('active');
+}
+
+function closeSuiteModal() {
+  document.getElementById('suiteModal').classList.remove('active');
+}
+
+function suiteModalAction() {
+  // Cosmetic for now — registers the "yell" in-UI but doesn't send anywhere yet.
+  const cta = document.getElementById('suiteModalCta');
+  cta.textContent = 'YELL HEARD.';
+  cta.classList.add('sent');
+  cta.disabled = true;
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSuiteModal(); });
+
 // TABS
 function switchTab(name) {
   ['uploads','weblinks','notes'].forEach(t => {
     document.getElementById('tab-' + t).classList.toggle('active', t === name);
     document.getElementById('btn-' + t).classList.toggle('active', t === name);
   });
+}
+
+// Tapping the Uploads circle should feel like "add a file": switch to the tab
+// and open the browser box, the same dialog the dropzone triggers.
+function uploadsTabClick() {
+  switchTab('uploads');
+  document.getElementById('fileInput').click();
 }
 
 // FILE HANDLING
