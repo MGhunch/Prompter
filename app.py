@@ -19,6 +19,10 @@ CORS(app)
 
 ANTHROPIC_API_KEY = os.environ.get('ANTHROPIC_API_KEY')
 
+# One source of truth for the model. claude-sonnet-4-20250514 retired 15 Jun 2026.
+# Override per-environment with PROMPTER_MODEL if needed.
+MODEL = os.environ.get('PROMPTER_MODEL', 'claude-sonnet-4-6')
+
 
 def extract_text_from_pdf(file_bytes):
     import pdfplumber
@@ -131,7 +135,7 @@ def consult():
             messages = [{'role': 'user', 'content': 'Please read the material and start.'}]
 
         response = client.messages.create(
-            model="claude-sonnet-4-20250514",
+            model=MODEL,
             max_tokens=600,
             system=system,
             messages=messages
@@ -184,7 +188,7 @@ def extract():
             user_content += cal_text
 
         response = client.messages.create(
-            model="claude-sonnet-4-20250514",
+            model=MODEL,
             max_tokens=1500,
             system=EXTRACT_PROMPT,
             messages=[{'role': 'user', 'content': user_content}]
@@ -231,7 +235,7 @@ def confirm():
             ])
 
         message = client.messages.create(
-            model="claude-sonnet-4-20250514",
+            model=MODEL,
             max_tokens=1200,
             system=CONFIRM_PROMPT,
             messages=[{'role': 'user', 'content': file_context + convo}]
@@ -266,7 +270,7 @@ def summarise():
     try:
         client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
         message = client.messages.create(
-            model="claude-sonnet-4-20250514",
+            model=MODEL,
             max_tokens=20,
             system=SUMMARISE_PROMPT,
             messages=[{'role': 'user', 'content': text}]
