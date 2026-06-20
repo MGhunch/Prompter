@@ -104,6 +104,23 @@ def fetch_url():
         return jsonify({'error': str(e)}), 500
 
 
+def extract_json_object(text):
+    """Pull a JSON object out of a model reply, tolerant of stray prose,
+    preamble or code fences around it. Returns a dict, or None if there's
+    no recoverable object."""
+    if not text:
+        return None
+    t = text.replace('```json', '').replace('```', '').strip()
+    start = t.find('{')
+    end = t.rfind('}')
+    if start == -1 or end == -1 or end < start:
+        return None
+    try:
+        return json.loads(t[start:end + 1])
+    except json.JSONDecodeError:
+        return None
+
+
 @app.route('/api/consult', methods=['POST'])
 def consult():
     data = request.get_json() or {}
@@ -125,10 +142,18 @@ def consult():
 
         system = CONSULT_PROMPT + "\n\n" + file_context
 
-        # Build message history
+        # Build message history. Dot's turns are stored by the frontend as her
+        # plain message string, not the JSON she emits. Replaying that as-is
+        # drops the model out of JSON mode from turn two on (it mirrors the prose
+        # it's shown) -- which is what was 500ing the parse. Re-wrap assistant
+        # turns in the JSON shape she's meant to speak in so she stays in format.
         messages = []
         for h in history:
-            messages.append({'role': h['role'], 'content': h['content']})
+            role = h.get('role')
+            content = h.get('content', '')
+            if role == 'assistant' and extract_json_object(content) is None:
+                content = json.dumps({'message': content, 'ready': False})
+            messages.append({'role': role, 'content': content})
 
         # Anthropic requires the first message to be from the user. After the
         # first exchange the replayed history starts with Dot's turn, which
@@ -144,9 +169,20 @@ def consult():
             messages=messages
         )
 
-        raw = response.content[0].text
-        clean = raw.replace('```json', '').replace('```', '').strip()
-        result = json.loads(clean)
+        raw = (response.content[0].text or '').strip()
+        result = extract_json_object(raw)
+
+        if result is None:
+            # No parseable JSON came back. Don't 500 the user into the error
+            # wall over a formatting wobble -- treat the reply as Dot's message
+            # and carry on. Log the raw so we can watch how often this happens
+            # and what's actually coming back.
+            print(f'[Prompter] Consult fell back to raw reply (no JSON): {raw[:300]!r}')
+            return jsonify({
+                'success': True,
+                'message': raw or "Hmm, that one didn't come through. Give it another go?",
+                'ready': False
+            })
 
         return jsonify({
             'success': True,
@@ -154,9 +190,6 @@ def consult():
             'ready': result.get('ready', False)
         })
 
-    except json.JSONDecodeError as e:
-        print(f'[Prompter] Consult JSON error: {e}')
-        return jsonify({'error': 'Could not parse response'}), 500
     except Exception as e:
         print(f'[Prompter] Consult error: {e}')
         return jsonify({'error': str(e)}), 500
