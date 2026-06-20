@@ -681,11 +681,11 @@ async function fetchWeblink() {
     const res = await fetch('/api/fetch', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({url}) });
     const data = await res.json();
     if (data.success) {
-      if (!uploadedFiles.find(f => f.filename === data.filename)) uploadedFiles.push({ filename: data.filename, text: data.text, size: data.text.length });
+      if (!uploadedFiles.find(f => f.filename === data.filename)) uploadedFiles.push({ filename: data.filename, text: data.text, size: data.text.length, kind: 'web' });
       input.value = '';
       afterFilesChanged();
-    } else showError(data.error || 'Could not fetch that URL.');
-  } catch { showError('Fetch failed — check the URL.'); }
+    } else showDotMessage("Couldn't pull much off that page — paste the copy or drop a PDF and we're away.");
+  } catch { showDotMessage("Couldn't reach that page — paste the copy or drop a PDF instead."); }
   btn.disabled = false; btn.textContent = 'Fetch';
 }
 
@@ -771,8 +771,12 @@ function renderFileList() {
     const size = f.size < 1024*1024 ? Math.round(f.size/1024) + ' KB' : (f.size/1024/1024).toFixed(1) + ' MB';
     const label = f.label ? `<div class="file-label">${escHtml(f.label)}</div>` : '';
     const safeName = f.filename.replace(/'/g, "\\'");
+    const webIcon = f.kind === 'web'
+      ? `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--mid);flex-shrink:0;"><circle cx="12" cy="12" r="9"/><path d="M12 3c-2.5 3-2.5 15 0 18M12 3c2.5 3 2.5 15 0 18"/><path d="M3 12h18"/></svg>`
+      : '';
     return `<div class="file-row">
       <span class="file-tick" id="ftick-${CSS.escape(f.filename)}">✓</span>
+      ${webIcon}
       <div class="file-info">
         <span class="file-name">${escHtml(f.filename)}</span>
         ${label}
@@ -975,7 +979,7 @@ function renderProfileZone(p) {
   html += `<div class="psec"><div class="plbl">Who we are</div><table class="ptable"><tr><th>We are</th><th>We're not</th></tr>${p.behaviours.map(b=>`<tr><td>${escHtml(b.we)}</td><td>${escHtml(b.not)}</td></tr>`).join('')}</table></div>`;
   html += `<div class="psec"><div class="plbl">Examples</div><table class="ptable"><tr><th>More this</th><th>Less this</th></tr>${p.examples.map(e=>`<tr><td>${escHtml(e.more)}</td><td class="less">${escHtml(e.less)}</td></tr>`).join('')}</table></div>`;
   html += `<div class="psec"><div class="plbl">House Rules</div><div class="rules-list">${p.houseRules.map(r=>`<div class="rule-item"><span class="rule-key">${escHtml(r.key)}</span><span class="rule-val">${escHtml(r.rule)}</span></div>`).join('')}</div></div>`;
-  html += `<div class="profile-footer"><span class="footer-note">Produced by Prompter — a Hunch product &nbsp;·&nbsp; Review before use</span><button class="start-again" onclick="startAgain()">Start again</button></div></div>`;
+  html += `<div class="profile-footer"><span class="footer-note">Remember, robots are good. But keep a human in the loop.</span><button class="start-again" onclick="startAgain()">Start again</button></div></div>`;
   document.getElementById('profileZone').innerHTML = html;
 }
 
@@ -1084,6 +1088,11 @@ async function downloadPdf() {
   const wrap = document.createElement('div');
   wrap.style.cssText = 'background:#fff;padding:28px 32px;width:760px;';
   wrap.appendChild(clone);
+  // Hunch AI2 logo at the foot of the PDF
+  const pdfLogo = document.createElement('div');
+  pdfLogo.style.cssText = 'text-align:center;margin-top:26px;padding-top:18px;border-top:0.5px solid #E8E5E0;';
+  pdfLogo.innerHTML = '<img src="images/ai2-logo.png" style="height:32px;opacity:0.9;" />';
+  wrap.appendChild(pdfLogo);
 
   const bn = (profileData.brandName || 'brand').toLowerCase().replace(/\s+/g,'-');
   if (btn) { btn.disabled = true; }

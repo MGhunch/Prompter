@@ -55,8 +55,8 @@ Guidelines are the anchor. Examples are reference, not gospel. When guidelines e
 CALIBRATION is the user's own sense-check, captured directly. It is the single most direct signal of intent in the whole input. Treat it as correction, not suggestion: weight it above anything you infer from the material, and make it VISIBLE in the output. A user who made these choices should be able to point at the profile and see their answers reflected. Don't absorb it silently.
 
 Three kinds of signal may appear:
-- Sentence lean: the brand sits somewhere between version A and version B. Bias the tone of your behaviours and examples toward the chosen end.
-- Wrong end to steer away from: a word the brand must avoid. Put that word (or its clear sense) on the "not" side of a behaviour, or into a house rule, so the boundary is explicit on the page.
+- Axis position: the user placed the brand on a named axis (its two poles given). Bias the tone of your behaviours and examples toward that point on the axis, and let the chosen pole surface by name in the brand section or a house rule, so the position is visible.
+- Overshoot to steer away from: the virtue's failure mode the user flagged. Encode it as a HOUSE RULE -- a guardrail ("don't let the [virtue] tip into [overshoot]", "avoid sounding [overshoot]") -- NOT on the behaviours' "not" side. The behaviours stay concrete identities; the boundary is a tone guardrail.
 - Reader feeling: the emotional target -- your tuning fork (above). It governs the whole read, and lands in the brand section's effect.
 
 Where calibration and the material disagree, calibration wins.
@@ -92,14 +92,15 @@ Respond ONLY with valid JSON. No markdown. No backticks. No preamble."""
 CONFIRM_PROMPT = """You are Dot, brand voice consultant at Hunch. You have read the brand material and had a consultation. Generate exactly three sense-check questions -- one of each format below. These are dials, not a quiz: there is no correct answer. The user's choice is the signal.
 
 FORMAT 1 — BOUNDARY (type: "boundary")
-"We're [positive trait] but not [wrong end]."
-Generate the positive trait from the material. Then generate three distinct, plausible wrong-end words -- all believable negatives this brand could be pushed toward. The user picks the one that matters most to steer away from.
-Fields: trait, options (array of 3 words)
+"We're [virtue] but not [overshoot]." A virtue, capped before it curdles.
+Find the brand's LIVE virtue: the positive quality this brand genuinely has to hold in check, where tipping too far is a real risk for THIS brand. "Confident" fits everyone -- that's the wrong instinct. Reach for the quality this brand specifically walks a line on (blunt, warm, premium, plain, playful, bold...). Then generate three distinct overshoots: the believable ways THIS virtue tips too far -- each a different failure mode, not three intensities of one word. The user picks the one that matters most to steer away from.
+Keep every entry to a single word or tight term.
+Fields: trait (the virtue), options (array of 3 overshoot words)
 
 FORMAT 2 — SENTENCE (type: "sentence")
-Two versions of the same message, side by side. Both must be plausible for this brand -- the difference is degree, not quality. One slightly warmer, one slightly sharper. Both could be right. The user slides between them.
-Do NOT lift sentences verbatim from the material. Use the material to understand the voice, then write original sentences that demonstrate it.
-Fields: sentenceA, sentenceB, noteA (2-4 words), noteB (2-4 words)
+Find the brand's most relevant AXIS -- the live tension where its position is a genuine choice and sliding actually changes the voice (formal<->casual, plain<->vivid, warm<->cool, measured<->provocative...). Pick the axis this brand is really negotiating, not a default warmer/sharper. Name its two poles, then write two original sentences carrying the SAME message, one sitting at each pole. Both fully plausible for this brand -- the difference is WHERE on the axis, not better vs worse. The user slides between them to set where the brand sits.
+Do NOT lift sentences verbatim from the material. Use the material to understand the voice, then write originals that demonstrate it.
+Fields: sentenceA (one pole), sentenceB (other pole), noteA, noteB -- noteA/noteB name the two poles as a genuine opposed pair, phrased to read after the word "More" (e.g. "warmth" / "punch", "polish" / "grit"). 1-2 words each.
 
 FORMAT 3 — FEELING (type: "feeling")
 "When people read our stuff they should feel..."
@@ -116,9 +117,9 @@ GENERATE IN THIS ORDER:
 Return JSON only:
 {
   "checks": [
-    {"type": "boundary", "dimension": "brief label", "trait": "confident", "options": ["arrogant", "cocky", "dismissive"]},
-    {"type": "sentence", "dimension": "brief label", "sentenceA": "...", "sentenceB": "...", "noteA": "2-4 words", "noteB": "2-4 words"},
-    {"type": "feeling", "dimension": "reader feeling", "options": ["excited", "reassured", "challenged"]}
+    {"type": "boundary", "dimension": "brief label", "trait": "<one virtue>", "options": ["<overshoot>", "<overshoot>", "<overshoot>"]},
+    {"type": "sentence", "dimension": "brief label", "sentenceA": "...", "sentenceB": "...", "noteA": "<pole>", "noteB": "<pole>"},
+    {"type": "feeling", "dimension": "reader feeling", "options": ["<from the list>", "<from the list>", "<from the list>"]}
   ]
 }
 No markdown. No backticks. No preamble."""
