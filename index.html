@@ -58,7 +58,7 @@ body { font-family: 'Inter', sans-serif; background: var(--red); min-height: 100
 .hero { display: flex; align-items: flex-end; gap: 0; padding-top: 32px; padding-bottom: 0; }
 .dot-hero-img { height: 141px; width: auto; flex-shrink: 0; margin-bottom: 8px; margin-left: -49px; order: 2; }
 .hero-copy { padding-right: 8px; padding-bottom: 8px; flex: 1; order: 1; }
-.hero-tag { font-size: 10px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: var(--white-lo); margin-bottom: 8px; }
+.hero-tag { font-size: 10px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.34); margin-bottom: 8px; }
 .hero-hed { font-family: 'Bebas Neue', sans-serif; font-size: 48px; letter-spacing: 2px; color: white; line-height: 0.95; margin-bottom: 10px; }
 .hero-hed em { font-style: normal; opacity: 0.35; }
 .hero-sub { font-size: 12px; color: var(--white-mid); line-height: 1.65; font-weight: 300; }
@@ -240,8 +240,8 @@ body { font-family: 'Inter', sans-serif; background: var(--red); min-height: 100
 
 /* ── SENSE CHECK SCREEN ─────────────────────────────────── */
 .sensecheck-screen {
-  display: none; position: fixed; inset: 0; z-index: 100;
-  background: var(--red); flex-direction: column;
+  display: none; flex: 1;
+  flex-direction: column;
   align-items: center; justify-content: center;
   padding: 24px var(--g);
 }
@@ -361,6 +361,13 @@ input.sc-range::-webkit-slider-runnable-track { background: transparent; }
   display: flex; align-items: center; justify-content: space-between;
   padding-top: 2px;
 }
+.sc-actions.final {
+  flex-direction: column; justify-content: center; gap: 10px;
+  padding-top: 10px;
+}
+.sc-actions.final .btn-primary.sc-build {
+  padding: 14px 44px; font-size: 15px;
+}
 
 .sc-loading {
   display: flex; flex-direction: column; align-items: center;
@@ -429,7 +436,7 @@ input.sc-range::-webkit-slider-runnable-track { background: transparent; }
 
   <div class="hero" id="hero">
     <div class="hero-copy">
-      <div class="hero-tag">Find your voice</div>
+      <div class="hero-tag">Lock your voice</div>
       <div class="hero-hed">Drop in your brand.<br><em>Draw out your voice.</em></div>
       <div class="hero-sub">Share guidelines, brand rules and examples you love.</div>
     </div>
@@ -589,7 +596,7 @@ window.addEventListener('load', async () => {
       document.getElementById('dotOpenText').textContent = data.message;
     }
   } catch {
-    document.getElementById('dotOpenText').textContent = "How you talk is who you are. Drop in an example and let's chat.";
+    document.getElementById('dotOpenText').textContent = "Does your robot sound like every other robot? We can fix that. Just upload some brand stuff here and we'll craft a prompt that any AI can use.";
   }
 });
 
@@ -1159,7 +1166,9 @@ function invalidateSenseCheckPrefetch() {
 function goButtonPressed() {
   document.getElementById('goBtn').disabled = true;
   showError('');
-  // Show sense check screen in loading state
+  // Show sense check screen in loading state, under the persistent header
+  document.getElementById('mainPage').style.display = 'none';
+  document.getElementById('pageFooter').style.display = 'none';
   document.getElementById('sensecheckScreen').classList.add('active');
   document.getElementById('scLoading').style.display = 'flex';
   startScLoadingLines();
@@ -1225,7 +1234,7 @@ function renderSenseCheck(idx) {
   checkMoved = false;
 
   const isLast = idx === confirmChecks.length - 1;
-  const nextLabel = isLast ? 'Build my profile' : 'Next';
+  const nextLabel = isLast ? 'Build my prompt' : 'Next';
   const pips = confirmChecks.map((_,i) => `<div class="sc-pip${i===idx?' on':''}"></div>`).join('');
 
   const eyebrow = `
@@ -1269,7 +1278,7 @@ function renderSenseCheck(idx) {
   } else if (check.type === 'feeling') {
     cardBody = `
       <div class="sc-feeling">
-        <div class="sc-feeling-stem">When people read our stuff they should feel... <em>pick one</em></div>
+        <div class="sc-feeling-stem">When people read our stuff they should feel...</div>
         <div class="sc-options">
           ${check.options.map((opt, i) => `
             <div class="sc-option" id="scOpt${i}" onclick="selectFeeling(${i})">${escHtml(opt)}</div>
@@ -1278,14 +1287,24 @@ function renderSenseCheck(idx) {
       </div>`;
   }
 
+  const disabledAttr = check.type !== 'sentence' ? 'disabled' : '';
+  const actions = isLast
+    ? `
+      <div class="sc-actions final">
+        <button class="btn-primary sc-build" id="scNextBtn" onclick="nextSenseCheck()" ${disabledAttr}>${nextLabel}</button>
+        <button class="btn-ghost" onclick="skipSenseCheck()" style="color:var(--white-mid);">Skip</button>
+      </div>`
+    : `
+      <div class="sc-actions">
+        <button class="btn-ghost" onclick="skipSenseCheck()" style="color:var(--white-mid);">Skip</button>
+        <button class="btn-primary" id="scNextBtn" onclick="nextSenseCheck()" ${disabledAttr}>${nextLabel}</button>
+      </div>`;
+
   inner.innerHTML = `
     ${eyebrow}
     <div class="sc-card">
       ${cardBody}
-      <div class="sc-actions">
-        <button class="btn-ghost" onclick="skipSenseCheck()" style="color:var(--white-mid);">Skip</button>
-        <button class="btn-primary" id="scNextBtn" onclick="nextSenseCheck()" ${check.type !== 'sentence' ? 'disabled' : ''}>${nextLabel}</button>
-      </div>
+      ${actions}
     </div>`;
 }
 
