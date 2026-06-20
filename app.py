@@ -24,15 +24,49 @@ ANTHROPIC_API_KEY = os.environ.get('ANTHROPIC_API_KEY')
 MODEL = os.environ.get('PROMPTER_MODEL', 'claude-sonnet-4-6')
 
 
+def _order_blocks(blocks, page_width):
+    """Reconstruct reading order for multi-column layouts. Detects column
+    separators as vertical whitespace gaps in horizontal coverage, assigns each
+    text block to a column, then reads each column top-to-bottom, left-to-right.
+    Pure text-layer work -- never touches images, so OCR can never fire."""
+    cover = [False] * (int(page_width) + 2)
+    for b in blocks:
+        for x in range(max(0, int(b[0])), min(len(cover), int(b[2]) + 1)):
+            cover[x] = True
+    gap = max(18, int(page_width * 0.025))
+    edges, run = [0], 0
+    for x in range(len(cover)):
+        if not cover[x]:
+            run += 1
+        else:
+            if run >= gap:
+                edges.append(x - run // 2)
+            run = 0
+    edges.append(page_width)
+    cols = [[] for _ in range(len(edges) - 1)]
+    for b in blocks:
+        cx = (b[0] + b[2]) / 2
+        for ci in range(len(edges) - 1):
+            if edges[ci] <= cx < edges[ci + 1]:
+                cols[ci].append(b)
+                break
+    out = []
+    for col in cols:
+        out += [b[4].strip() for b in sorted(col, key=lambda b: b[1])]
+    return '\n'.join(out)
+
+
 def extract_text_from_pdf(file_bytes):
-    import pdfplumber
-    text_parts = []
-    with pdfplumber.open(io.BytesIO(file_bytes)) as pdf:
-        for page in pdf.pages:
-            text = page.extract_text()
-            if text:
-                text_parts.append(text)
-    return '\n\n'.join(text_parts)
+    import fitz  # pymupdf
+    doc = fitz.open(stream=file_bytes, filetype='pdf')
+    pages = []
+    for page in doc:
+        # b[6] == 0 keeps text blocks only (no image blocks -> no OCR path).
+        blocks = [b for b in page.get_text('blocks') if b[6] == 0 and b[4].strip()]
+        if blocks:
+            pages.append(_order_blocks(blocks, page.rect.width))
+    doc.close()
+    return '\n\n'.join(pages).strip()
 
 
 def extract_text_from_docx(file_bytes):
