@@ -227,6 +227,7 @@ const OPENERS = {
 
 const SEED = {
   brandName: "Neon",
+  descriptors: ["Opinionated", "Warm", "Unbothered"],
   brand: "Neon writes like the friend who's already three episodes in and won't shut up about it — opinionated, warm, pulling you toward something rather than pitching it at you. The voice runs on conviction: it has a take, it backs the take, and it's comfortable if you push back. The reader doesn't feel marketed to; they feel let in.",
   behaviours: [
     { we: "The one who's already seen it and can't help saying so", not: "The critic building a case for the record" },
@@ -294,9 +295,16 @@ function render(){
     return;
   }
 
+  let threeW = '';
+  if(p.descriptors && p.descriptors.length){
+    const ws = p.descriptors.map(w=>esc(w.toLowerCase()));
+    const list = ws.length>1 ? ws.slice(0,-1).join(', ')+' and '+ws[ws.length-1] : ws[0];
+    threeW = ` ${esc(bn)} is ${list}.`;
+  }
   h += `<div class="psec editable" data-section="brand" data-index="0">
     <button class="pencil" title="Tweak">${PENCIL}</button>
-    <div class="plbl">Brand Voice</div><div class="pbody" data-text data-field="brand">${esc(p.brand)}</div></div>`;
+    <div class="plbl">Brand Voice</div>
+    <div class="pbody"><span data-text data-field="brand">${esc(p.brand)}</span>${threeW}</div></div>`;
 
   h += `<div class="psec"><div class="plbl">Who we are</div><table class="ptable">
     <tr><th>We are</th><th>We're not</th></tr>` +
@@ -555,7 +563,9 @@ function commit(){
 /* ── second render: the prompt ────────────────────────────────── */
 function buildPromptMd(){
   const p = profileData, bn = p.brandName || 'this brand';
-  let md = `You are an experienced copywriter crafting communications for **${bn}**. Your job is to write in their exact voice — not approximately, exactly.\n\n---\n\n`;
+  let md = `You are crafting communications for **${bn}**. Your job is to write in their voice.`;
+  if(p.descriptors && p.descriptors.length) md += ` Think, ${p.descriptors.join(', ')}.`;
+  md += `\n\n---\n\n`;
   md += `## Brand\n\n${p.brand}\n\n`;
   md += `## Who we are\n\n${p.behaviours.map(b=>`- **Are:** ${b.we}\n  **Are not:** ${b.not}`).join('\n')}\n\n`;
   md += `## Write more like this\n\n${p.examples.map(e=>`- ✓ ${e.more}\n  ✗ ${e.less}`).join('\n')}\n\n`;
