@@ -75,17 +75,18 @@ ARCHETYPE REFERENCE -- internal only. Use to find the brand's emotional register
 - Ruler -- assured, authoritative / standards, mastery, the benchmark
 - Creator -- inventive, exacting / craft, design, making
 
-Output a JSON object: brandName, brand, behaviours, examples, houseRules.
+Output a JSON object: brandName, brand, behaviours, examples, houseRules, descriptors.
 
 brandName: Infer from the material. Just the name. If unclear: "Unknown Brand".
 brand: How the brand carries itself and what that does to the reader -- posture landing on effect, in one unit. Not the business, not the category. The brand layer. Lead from the spine. Max 3 sentences, three lines.
 behaviours (displayed as "We are / We're not"): Exactly 3 {we, not} pairs. Each "we" is a concrete identity -- a who or a stance, never a personality adjective. "The friend who's already watched it", not "relatable"; "the one who got in early", not "confident". The "not" is the near miss: the adjacent identity this brand gets mistaken for, never the opposite of the "we" -- "the critic reviewing it", not "boring". If "not" is just the antonym, rewrite it. Draw feel and vocabulary from the closest archetype(s) above; never name one, use the brand's own words. Keep each side to one line and stop -- no tail explaining the effect, no dash-then-list. Aim under ten words a side. Short must not mean generic: still an identity only this brand could claim.
 examples: Exactly 5 {more, less} pairs. Original sentences that show the voice -- do NOT lift from the material. Short, both sides. The "less" is plausible-but-flat -- the line that'd slip through, not an obvious dud.
 houseRules: {key, rule} objects. Hard constraints ONLY -- banned words, mandated devices, capitalisation, never-say-this, format conventions. Not behaviours (those live above). Each binary and checkable. Don't pad: three real rules beat eight soft ones, and a short or near-empty list is correct when the material only gives you that.
+descriptors: Exactly 3 words -- the three-word voice brief. Distil these LAST, from the brand, behaviours and examples you've just written, not a fresh read. All three true. At least one ownable: a word the brand's nearest neighbour could not honestly claim. If all three could hang on a rival's wall, they're virtues, not a voice -- redo. Single words. Never an archetype name.
 
 For gaps: "[DON'T KNOW YET -- reason]". Never guess. Never pad.
 Ignore photography, logos and colours. Mine values and mission only for WHY the voice is the way it is -- never reproduce them.
-Before output: reject and rewrite any "We're not" that is merely the opposite of its "We are", and any "we" that reads as a bare personality adjective rather than a concrete identity. Then audit the house rules and delete any you can't check by reading the copy alone -- if obeying a rule needs outside knowledge (e.g. what's currently fashionable, "no on-trend slang") or points at something this profile never defines (e.g. "except approved bubble-treatment headlines"), it is not a hard constraint. Cut it, or rewrite it as something concrete and verifiable.
+Before output: reject and rewrite any "We're not" that is merely the opposite of its "We are", and any "we" that reads as a bare personality adjective rather than a concrete identity. Then audit the house rules and delete any you can't check by reading the copy alone -- if obeying a rule needs outside knowledge (e.g. what's currently fashionable, "no on-trend slang") or points at something this profile never defines (e.g. "except approved bubble-treatment headlines"), it is not a hard constraint. Cut it, or rewrite it as something concrete and verifiable. Finally, reject any descriptor set where all three words could be claimed by a competitor -- at least one must be ownable.
 Respond ONLY with valid JSON. No markdown. No backticks. No preamble."""
 
 
