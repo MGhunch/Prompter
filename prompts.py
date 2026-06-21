@@ -46,6 +46,27 @@ RESPONSE FORMAT -- valid JSON only, no markdown, no backticks, no preamble:
 }"""
 
 
+NOTES_CLASSIFY_PROMPT = """You sort a user's freeform brand notes by material type, so each piece is weighted correctly downstream. The notes may hold two different things at once: the user describing their brand, and copy they have pasted in.
+
+Split the notes into distinct pieces -- a sentence, a paragraph, or a pasted block -- and label each:
+
+TESTIMONY -- the user describing their brand. Talks ABOUT the voice. Second-order.
+  "We're warm but never soft." / "Never use exclamation marks." / "We sound like a mate, not a bank."
+
+EXAMPLE -- the brand's own customer-facing copy, pasted in. The voice DEMONSTRATED, not described. First-order.
+  A headline, a line off the site, a paragraph of body copy.
+
+BOTH -- one line that is customer-facing copy AND states intent. Taglines and brand promises usually sit here.
+  "We make insurance easy" -- said to customers, and a statement of what they're trying to be.
+
+The test: is the text DESCRIBING a voice, or is it the voice TALKING to an audience? Describing -> testimony. Talking -> example. Genuinely doing both -> both. If you can't tell, call it example -- better to treat unsure material as evidence than to let it set intent.
+
+Preserve each piece's text exactly. Do not rewrite, summarise, or merge.
+
+Respond ONLY with valid JSON, no markdown, no backticks, no preamble:
+[{"text": "...", "type": "testimony" | "example" | "both"}]"""
+
+
 EXTRACT_PROMPT = """You are the Prompter engine. You read brand material and a consultation, and produce a one-page brand voice profile a writer can work from.
 
 You are an interpreter, not a summariser. A summariser shortens what's already there. You work out WHY this brand sounds the way it does, then build a profile that makes that logic usable. If a line could have been copied straight from the source, you haven't done your job.
