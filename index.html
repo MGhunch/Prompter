@@ -27,6 +27,9 @@
   /* Layout */
   --g: 32px;
   --radius-sm: 8px; --radius-md: 12px; --radius-lg: 14px; --radius-pill: 100px;
+
+  /* REVISE — highlight + diff */
+  --yellow: #FFE600; --delta: rgba(237,28,36,.13);
 }
 body { font-family: 'Inter', sans-serif; background: var(--red); min-height: 100vh; display: flex; flex-direction: column; }
 
@@ -228,6 +231,127 @@ body { font-family: 'Inter', sans-serif; background: var(--red); min-height: 100
 @keyframes pulse { from { opacity: 0.25; } to { opacity: 1; } }
 .thinking-steps { display: flex; flex-direction: column; gap: 6px; width: 100%; max-width: 340px; }
 .thinking-step { display: flex; align-items: center; gap: 10px; padding: 7px 12px; border-radius: var(--radius-sm); background: rgba(0,0,0,0.1); border: 0.5px solid var(--white-dim); font-size: 12px; color: var(--white-lo); transition: all 0.3s; }
+
+/* ═══════════════════════════════════════════════════════════════
+   REVISE — tick-it-or-tweak-it (card + human rail). Additive.
+   ═══════════════════════════════════════════════════════════════ */
+/* widen the page on reveal so card + rail fit; consult flow stays 640 */
+#mainPage.revealed { max-width: 1000px; }
+
+/* stage: artefact (card, left) + human rail (right) */
+.stage { display: flex; justify-content: center; align-items: flex-start; gap: 16px; padding: 10px 0 40px; }
+.cardwrap { flex: 0 1 600px; min-width: 0; }
+.rail { flex: 0 0 320px; position: sticky; top: 24px; max-height: calc(100vh - 48px); display: flex; flex-direction: column; gap: 16px; }
+
+/* card view toggle — screen chrome, stripped on PDF export ([data-noexport]) */
+.view-toggle { display: inline-flex; flex: 0 0 auto; border: 1px solid var(--red); border-radius: var(--radius-pill); overflow: hidden; }
+.vt { background: none; border: none; color: var(--red); font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; padding: 5px 12px; cursor: pointer; font-family: 'Inter', sans-serif; transition: background .15s, color .15s; }
+.vt.active { background: var(--red); color: #fff; }
+.vt:not(.active):hover { background: rgba(237,28,36,.08); }
+.prompt-view { padding: 20px 18px; font-family: ui-monospace, Menlo, monospace; font-size: 11px; line-height: 1.75; white-space: pre-wrap; color: #111; }
+
+/* fixed table layout so word-diffs wrap predictably */
+#reviseCard .ptable { table-layout: fixed; }
+#reviseCard .ptable td { word-wrap: break-word; vertical-align: top; }
+#reviseCard .ptable th:first-child, #reviseCard .ptable td:first-child { width: 55%; }
+#reviseCard .ptable th:last-child, #reviseCard .ptable td:last-child { width: 45%; }
+.footer-row { display: flex; align-items: center; gap: 12px; }
+
+/* highlighter (yellow) + delta (brand red) */
+mark.hl { background: var(--yellow); color: var(--ink); border-radius: 2px; padding: 0 1px; }
+mark.changed { background: var(--delta); color: var(--ink); border-radius: 2px; padding: 0 1px; box-shadow: inset 0 -1px 0 rgba(237,28,36,.45); }
+
+/* editable blocks */
+.editable { position: relative; border-radius: 6px; transition: background .15s; }
+.editable:hover { background: rgba(237,28,36,.035); }
+.pencil { position: absolute; top: 6px; right: 6px; width: 22px; height: 22px; border-radius: 50%; border: none; background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,.12); color: var(--mid); cursor: pointer; opacity: 0; transition: opacity .15s, color .15s; display: flex; align-items: center; justify-content: center; z-index: 2; }
+.editable:hover .pencil { opacity: 1; }
+.pencil:hover { color: var(--red); }
+.pencil svg { width: 12px; height: 12px; }
+.psec.editable .pencil { top: 10px; right: 10px; }
+tr.editable td { position: relative; }
+tr.editable .pencil { top: 4px; right: 4px; }
+.rule-item.editable .pencil { top: 0; right: 0; }
+.editable.active { background: rgba(237,28,36,.05); box-shadow: inset 0 0 0 1px rgba(237,28,36,.3); }
+.editable.preview { background: rgba(237,28,36,.05); box-shadow: inset 0 0 0 1px rgba(237,28,36,.4); }
+
+/* ── RAIL: idle (the human's resting column) ── */
+.rail-idle { display: flex; flex-direction: column; gap: 16px; overflow-y: auto; padding-right: 2px; }
+.rl-hero { padding: 4px 4px 0; }
+.rl-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 4px; text-transform: uppercase; color: rgba(255,255,255,.5); margin-bottom: 10px; }
+.rl-hed { font-family: 'Bebas Neue', sans-serif; font-size: 58px; letter-spacing: 0; line-height: .82; color: #fff; }
+.rl-hed .rl-tweak { color: rgba(255,255,255,.42); }
+.rl-intro { font-size: 13px; line-height: 1.5; color: rgba(255,255,255,.85); font-weight: 400; margin: 14px 4px 0; }
+.rl-dot { display: flex; gap: 10px; align-items: flex-start; }
+.rl-dot-av { flex: 0 0 auto; width: 34px; height: 34px; border-radius: 50%; background: #fff; color: var(--red); display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue'; font-size: 17px; letter-spacing: 1px; }
+.rl-dot-bubble { flex: 1; background: #fff; border-radius: 14px; border-top-left-radius: 4px; padding: 12px 14px; font-size: 13px; line-height: 1.5; color: var(--ink); font-weight: 400; }
+
+/* persistent footer — the exit, always visible, even mid-tweak */
+.rail-foot { flex: 0 0 auto; display: flex; flex-direction: column; gap: 10px; }
+.gtg { background: var(--card-bg); border-radius: var(--radius-lg); padding: 16px 16px 14px; text-align: left; }
+.gtg-hed { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 1px; line-height: 1; color: var(--mid); margin-bottom: 11px; }
+.dl-btn { display: flex; align-items: center; justify-content: center; gap: 9px; width: 100%; background: var(--red); color: #fff; border: none; border-radius: var(--radius-pill); padding: 11px 18px; font-size: 13px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; cursor: pointer; transition: background .15s; font-family: inherit; }
+.dl-btn:hover { background: var(--red-dark); }
+.dl-btn:disabled { opacity: .55; cursor: default; }
+.dl-btn svg { width: 16px; height: 16px; }
+.rail-restart { background: none; border: none; color: rgba(255,255,255,.7); font-size: 11px; text-decoration: underline; cursor: pointer; align-self: center; font-family: inherit; }
+.rail-restart:hover { color: #fff; }
+
+/* tweaks made — the receipt of the sensecheck */
+.tweaks-made { background: #fff; border-radius: var(--radius-lg); overflow: hidden; }
+.tm-head { display: flex; align-items: center; justify-content: space-between; width: 100%; background: none; border: none; cursor: pointer; padding: 13px 16px; font-family: inherit; }
+.tm-count { font-size: 12px; font-weight: 600; color: var(--ink); display: flex; align-items: center; gap: 7px; }
+.tm-count .tick { color: var(--red); font-weight: 700; }
+.tm-chev { font-size: 10px; color: var(--mid); transition: transform .2s; }
+.tweaks-made.open .tm-chev { transform: rotate(180deg); }
+.tm-list { display: none; flex-direction: column; border-top: .5px solid var(--card-border); }
+.tweaks-made.open .tm-list { display: flex; }
+.tw-item { padding: 9px 16px; border-bottom: .5px solid var(--card-border); }
+.tw-item:last-child { border-bottom: none; }
+.tw-lbl { font-size: 9px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; color: var(--red); margin-bottom: 3px; }
+.tw-why { font-size: 11px; line-height: 1.5; color: var(--ink); font-weight: 300; }
+
+/* ── RAIL: chat (becomes Dot on tweak) ── */
+.rail-chat { display: none; flex-direction: column; flex: 1; min-height: 0; background: #fff; border-radius: var(--radius-lg); box-shadow: 0 12px 40px rgba(0,0,0,.16); overflow: hidden; }
+.stage.editing .rail-idle { display: none; }
+.stage.editing .rail-chat { display: flex; }
+.dp-head { display: flex; align-items: center; gap: 10px; padding: 13px 16px; border-bottom: .5px solid var(--card-border); }
+.dp-dot { width: 30px; height: 30px; border-radius: 50%; background: var(--red); display: flex; align-items: center; justify-content: center; color: #fff; font-family: 'Bebas Neue'; font-size: 15px; letter-spacing: 1px; }
+.dp-title { font-weight: 600; font-size: 13px; }
+.dp-sub { font-size: 10px; color: var(--mid); }
+.dp-x { margin-left: auto; background: none; border: none; color: var(--mid); font-size: 18px; cursor: pointer; line-height: 1; }
+.dp-x:hover { color: var(--ink); }
+.dp-body { flex: 1; overflow-y: auto; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
+.msg { font-size: 12px; line-height: 1.6; max-width: 88%; padding: 9px 12px; border-radius: 12px; font-weight: 300; white-space: pre-line; }
+.msg.dot { background: var(--card-bg); color: var(--ink); align-self: flex-start; border-bottom-left-radius: 3px; }
+.msg.dot.pb { background: #fff; outline: 1px solid var(--red); }
+.msg.me { background: var(--ink); color: #fff; align-self: flex-end; border-bottom-right-radius: 3px; }
+.proposal { align-self: flex-start; max-width: 92%; background: #fff; border: 1px solid var(--red); border-radius: 12px; border-bottom-left-radius: 3px; padding: 10px 12px; font-size: 12px; line-height: 1.6; color: var(--ink); }
+.proposal .pl { font-size: 8px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--red); margin-bottom: 5px; }
+.proposal .pf { display: block; margin-top: 4px; }
+.proposal .pf b { font-weight: 600; }
+.proposal .lbl { font-size: 8px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--mid); }
+.lock-row { align-self: flex-end; }
+.lock-btn { background: var(--red); color: #fff; border: none; border-radius: var(--radius-pill); padding: 8px 18px; font-size: 12px; font-weight: 700; letter-spacing: .3px; cursor: pointer; }
+.lock-btn:hover { background: var(--red-dark); }
+.thinking { display: flex; gap: 4px; align-self: flex-start; padding: 9px 12px; }
+.thinking span { width: 6px; height: 6px; border-radius: 50%; background: var(--red); animation: blink 1.2s infinite; }
+.thinking span:nth-child(2) { animation-delay: .2s; } .thinking span:nth-child(3) { animation-delay: .4s; }
+@keyframes blink { 0%,80%,100% { opacity: .25; } 40% { opacity: 1; } }
+.dp-foot { display: flex; gap: 8px; padding: 12px 14px; border-top: .5px solid var(--card-border); }
+.dp-input { flex: 1; border: .5px solid var(--card-border); border-radius: 20px; padding: 9px 14px; font-size: 12px; outline: none; font-family: inherit; }
+.dp-input:focus { border-color: var(--red); }
+.dp-send { background: var(--ink); color: #fff; border: none; border-radius: 20px; padding: 9px 16px; font-size: 11px; font-weight: 700; cursor: pointer; }
+.dp-send:hover { background: var(--red); }
+
+.toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--ink); color: #fff; padding: 11px 20px; border-radius: var(--radius-pill); font-size: 12px; font-weight: 600; opacity: 0; transition: all .3s; z-index: 40; pointer-events: none; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+@media (max-width: 920px) {
+  #mainPage.revealed { max-width: 600px; }
+  .stage { flex-direction: column; align-items: center; }
+  .rail { position: static; flex: none; width: 100%; max-width: 600px; max-height: none; }
+}
 .thinking-step.done { color: var(--white-mid); border-color: var(--white-lo); }
 .thinking-step.active { color: white; border-color: var(--white-mid); background: var(--white-dim); animation: stepPulse 1.1s ease-in-out infinite; }
 .step-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--white-lo); flex-shrink: 0; transition: background 0.3s; }
@@ -580,6 +704,8 @@ input.sc-range::-webkit-slider-runnable-track { background: transparent; }
 <div class="page-footer" id="pageFooter">
   <span>Agency intuition &times; Artificial intelligence</span>
 </div>
+
+<div class="toast" id="toast"></div>
 
 <script>
 let uploadedFiles = [];
@@ -969,35 +1095,387 @@ async function runExtract_DISABLED() {
   }
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   REVISE — tick-it-or-tweak-it. Ported from revise-lab.html.
+   Reuses live profileData / escHtml / threeWordSentence /
+   buildPromptMd / downloadPdf / downloadMd. State is namespaced
+   (revise*) and the two browser-global footguns are renamed
+   (open → openTweak, history → reviseHistory).
+   ═══════════════════════════════════════════════════════════════ */
+const esc = escHtml;
+let reviseActive = null;       // {section,index,highlight,opener,lastReason}
+let reviseHistory = [];        // chat turns for /api/revise
+let reviseProposal = null;     // pending proposal awaiting Lock
+let reviseTweaks = [];         // in-session receipt: {label,why,before,after}
+let reviseView = 'profile';    // card face: 'profile' | 'prompt'
+let reviseMouseupBound = false;
+
+const PENCIL = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>`;
+const SVG_DL = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>`;
+
+const OPENERS = {
+  brand:       p => `This is your Brand — the whole voice in a paragraph.\n\nWhat do you want to tweak?`,
+  brandHi:     (p,h) => `You've highlighted “${h}” in your Brand.\n\nWhat do you want to tweak?`,
+  behaviours:  (p,i) => `This is a Who-we-are pair — “${p.behaviours[i].we}” against “${p.behaviours[i].not}”.\n\nWhat do you want to tweak?`,
+  behavioursHi:(p,i,h) => `You've highlighted “${h}”.\n\nWhat do you want to tweak?`,
+  examples:    (p,i) => `This is a More / Less example.\n\nWhat do you want to tweak?`,
+  examplesHi:  (p,i,h) => `You've highlighted “${h}”.\n\nWhat do you want to tweak?`,
+  houseRules:  (p,i) => `This is your “${p.houseRules[i].key}” rule.\n\nWhat do you want to tweak?`,
+  houseRulesHi:(p,i,h) => `You've highlighted “${h}” in the “${p.houseRules[i].key}” rule.\n\nWhat do you want to tweak?`,
+};
+
+/* reveal entry point — builds card + rail, then renders both */
 function renderProfileZone(p) {
-  const bn = p.brandName || 'Brand';
-  let html = `<div class="profile-zone">
-    <div class="profile-header">
-      <div class="profile-title">YOUR <span>${escHtml(bn.toUpperCase())}</span> VOICE</div>
-      <div class="profile-actions">
-        <button class="pill ghost" id="pdfBtn" onclick="downloadPdf()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><polyline points="9 15 12 18 15 15"/></svg>
-          PDF
-        </button>
-        <button class="pill solid" id="promptBtn" onclick="downloadMd()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
-          Prompt
-        </button>
+  reviseActive = null; reviseHistory = []; reviseProposal = null;
+  reviseTweaks = []; reviseView = 'profile';
+  const mp = document.getElementById('mainPage'); if (mp) mp.classList.add('revealed');
+
+  document.getElementById('profileZone').innerHTML = `
+    <div class="stage" id="reviseStage">
+      <div class="cardwrap"><div class="profile-zone" id="reviseCard"></div></div>
+      <div class="rail" id="rail">
+        <div class="rail-head" id="railHead"></div>
+        <div class="rail-idle" id="railIdle"></div>
+        <div class="rail-chat" id="railChat">
+          <div class="dp-head">
+            <div class="dp-dot">D</div>
+            <div><div class="dp-title">Dot</div><div class="dp-sub" id="dpSub">Tweaking a block</div></div>
+            <button class="dp-x" onclick="closePanel()">&times;</button>
+          </div>
+          <div class="dp-body" id="dpBody"></div>
+          <div class="dp-foot">
+            <input class="dp-input" id="dpInput" placeholder="Tell Dot what to tweak…" onkeydown="if(event.key==='Enter')sendFeedback()">
+            <button class="dp-send" onclick="sendFeedback()">Send</button>
+          </div>
+        </div>
+        <div class="rail-foot" id="railFoot"></div>
       </div>
     </div>`;
-  html += `<div class="psec"><div class="plbl">Brand</div><div class="pbody">${escHtml(p.brand)}${escHtml(threeWordSentence(p))}</div></div>`;
-  html += `<div class="psec"><div class="plbl">Who we are</div><table class="ptable"><tr><th>We are</th><th>We're not</th></tr>${p.behaviours.map(b=>`<tr><td>${escHtml(b.we)}</td><td>${escHtml(b.not)}</td></tr>`).join('')}</table></div>`;
-  html += `<div class="psec"><div class="plbl">Examples</div><table class="ptable"><tr><th>More this</th><th>Less this</th></tr>${p.examples.map(e=>`<tr><td>${escHtml(e.more)}</td><td class="less">${escHtml(e.less)}</td></tr>`).join('')}</table></div>`;
-  html += `<div class="psec"><div class="plbl">House Rules</div><div class="rules-list">${p.houseRules.map(r=>`<div class="rule-item"><span class="rule-key">${escHtml(r.key)}</span><span class="rule-val">${escHtml(r.rule)}</span></div>`).join('')}</div></div>`;
-  html += `<div class="profile-footer"><span class="footer-note">Remember, robots are good. But keep a human in the loop.</span><button class="start-again" onclick="startAgain()">Start again</button></div></div>`;
-  document.getElementById('profileZone').innerHTML = html;
+
+  if (!reviseMouseupBound) {
+    document.addEventListener('mouseup', onCardMouseup);
+    reviseMouseupBound = true;
+  }
+  reviseRender(); renderHead(); renderRail(); renderFoot();
 }
+
+/* ── the artefact (card) — editable ── */
+function reviseRender() {
+  const p = profileData, bn = p.brandName || 'Brand';
+  const titleWord = reviseView === 'prompt' ? 'PROMPT' : 'VOICE';
+  let h = `<div class="profile-header">
+    <div class="profile-title">YOUR <span>${esc(bn.toUpperCase())}</span> ${titleWord}</div>
+    <div class="view-toggle" data-noexport>
+      <button class="vt ${reviseView==='profile'?'active':''}" onclick="reviseSetView('profile')">Profile</button>
+      <button class="vt ${reviseView==='prompt'?'active':''}" onclick="reviseSetView('prompt')">Prompt</button>
+    </div>
+  </div>`;
+
+  if (reviseView === 'prompt') {
+    h += `<div class="prompt-view">${esc(buildPromptMd())}</div>`;
+    document.getElementById('reviseCard').innerHTML = h;
+    return;
+  }
+
+  const threeW = esc(threeWordSentence(p));
+  h += `<div class="psec editable" data-section="brand" data-index="0">
+    <button class="pencil" title="Tweak">${PENCIL}</button>
+    <div class="plbl">Brand</div>
+    <div class="pbody"><span data-text data-field="brand">${esc(p.brand)}</span>${threeW}</div></div>`;
+
+  h += `<div class="psec"><div class="plbl">Who we are</div><table class="ptable">
+    <tr><th>We are</th><th>We're not</th></tr>` +
+    p.behaviours.map((b,i)=>`<tr class="editable" data-section="behaviours" data-index="${i}">
+      <td data-text data-field="we">${esc(b.we)}</td><td class="less" data-text data-field="not">${esc(b.not)}<button class="pencil" title="Tweak">${PENCIL}</button></td></tr>`).join('') +
+    `</table></div>`;
+
+  h += `<div class="psec"><div class="plbl">Examples</div><table class="ptable">
+    <tr><th>More this</th><th>Less this</th></tr>` +
+    p.examples.map((e,i)=>`<tr class="editable" data-section="examples" data-index="${i}">
+      <td data-text data-field="more">${esc(e.more)}</td><td class="less" data-text data-field="less">${esc(e.less)}<button class="pencil" title="Tweak">${PENCIL}</button></td></tr>`).join('') +
+    `</table></div>`;
+
+  h += `<div class="psec"><div class="plbl">House Rules</div><div class="rules-list">` +
+    p.houseRules.map((r,i)=>`<div class="rule-item editable" data-section="houseRules" data-index="${i}">
+      <span class="rule-key" data-text data-field="key">${esc(r.key)}</span><span class="rule-val" data-text data-field="rule">${esc(r.rule)}</span>
+      <button class="pencil" title="Tweak">${PENCIL}</button></div>`).join('') +
+    `</div></div>`;
+
+  h += `<div class="psec footer-row"><span class="footer-note">Remember, robots are good. But keep a human in the loop.</span></div>`;
+
+  document.getElementById('reviseCard').innerHTML = h;
+  document.querySelectorAll('#reviseCard .editable').forEach(el=>{
+    el.querySelector('.pencil').addEventListener('click', ev=>{
+      ev.stopPropagation();
+      openTweak(el.dataset.section, +el.dataset.index, highlightWithin(el));
+    });
+  });
+}
+
+/* ── the hero — persistent, stays put while Dot grows ── */
+function renderHead() {
+  document.getElementById('railHead').innerHTML = `<div class="rl-hero">
+      <div class="rl-eyebrow">Quick sensecheck</div>
+      <div class="rl-hed">Tick it.<br><span class="rl-tweak">Or tweak it.</span></div>
+      <div class="rl-intro">Here's our take on your voice.</div>
+    </div>`;
+}
+
+/* ── Dot's section, at rest (becomes the chat when live) ── */
+function renderRail() {
+  let h = `<div class="rl-dot">
+      <div class="rl-dot-av">D</div>
+      <div class="rl-dot-bubble">See something worth fixing?<br>Just highlight it and let's chat.</div>
+    </div>`;
+
+  if (reviseTweaks.length) {
+    h += `<div class="tweaks-made" id="tweaksMade">
+        <button class="tm-head" onclick="document.getElementById('tweaksMade').classList.toggle('open')">
+          <span class="tm-count"><span class="tick">✓</span> ${reviseTweaks.length} tweak${reviseTweaks.length>1?'s':''} made</span>
+          <span class="tm-chev">▾</span>
+        </button>
+        <div class="tm-list">` +
+        reviseTweaks.map(t=>`<div class="tw-item"><div class="tw-lbl">${esc(t.label)}</div><div class="tw-why">${esc(t.why)}</div></div>`).join('') +
+        `</div></div>`;
+  }
+
+  document.getElementById('railIdle').innerHTML = h;
+}
+
+/* the exit — persistent footer, survives the chat */
+function renderFoot() {
+  document.getElementById('railFoot').innerHTML = `<div class="gtg">
+      <div class="gtg-hed">Good to go?</div>
+      <button class="dl-btn" id="reviseDownload" onclick="reviseDownloadAll()">${SVG_DL} Download</button>
+    </div>
+    <button class="rail-restart" onclick="startAgain()">Start again</button>`;
+}
+
+/* rail download — takes both faces at once (PDF + prompt) */
+async function reviseDownloadAll() {
+  if (reviseView === 'prompt') reviseSetView('profile'); // export the profile, not the raw prompt
+  const btn = document.getElementById('reviseDownload');
+  if (btn) btn.disabled = true;
+  try { await downloadPdf(); downloadMd(); }
+  finally { if (btn) btn.disabled = false; }
+}
+
+/* ── word-level diff (LCS) → brand-red on changed tokens ── */
+function diffWords(oldS, newS) {
+  const tok = s => (s||'').split(/(\s+)/);
+  const o = tok(oldS), n = tok(newS);
+  const m = o.length, k = n.length;
+  const dp = Array.from({length:m+1}, ()=>new Array(k+1).fill(0));
+  for (let i=m-1;i>=0;i--) for (let j=k-1;j>=0;j--)
+    dp[i][j] = o[i]===n[j] ? dp[i+1][j+1]+1 : Math.max(dp[i+1][j], dp[i][j+1]);
+  let i=0, j=0, out='';
+  while (j<k) {
+    if (i<m && o[i]===n[j]) { out+=esc(n[j]); i++; j++; }
+    else if (i<m && dp[i+1][j] >= dp[i][j+1]) { i++; }
+    else { out += n[j].trim()==='' ? esc(n[j]) : '<mark class="changed">'+esc(n[j])+'</mark>'; j++; }
+  }
+  return out;
+}
+
+/* ── highlighter ── */
+function highlightWithin(el) {
+  const sel = window.getSelection();
+  if (!sel || sel.isCollapsed) return '';
+  const txt = sel.toString().trim();
+  if (!txt) return '';
+  const anc = sel.getRangeAt(0).commonAncestorContainer;
+  const node = anc.nodeType === 3 ? anc.parentElement : anc;
+  return el.contains(node) ? txt : '';
+}
+function onCardMouseup() {
+  const sel = window.getSelection();
+  if (!sel || sel.isCollapsed) return;
+  const txt = sel.toString().trim();
+  if (!txt) return;
+  const anc = sel.getRangeAt(0).commonAncestorContainer;
+  const node = anc.nodeType === 3 ? anc.parentElement : anc;
+  const el = node && node.closest ? node.closest('#reviseCard .editable') : null;
+  if (!el) return;
+  if (reviseActive && reviseActive.section===el.dataset.section && reviseActive.index===+el.dataset.index && reviseActive.highlight===txt) return;
+  openTweak(el.dataset.section, +el.dataset.index, txt);
+}
+function litHighlight(section, index, hl) {
+  if (!hl) return;
+  const el = blockEl(section,index);
+  if (!el) return;
+  for (const node of el.querySelectorAll('[data-text]')) {
+    const t = node.textContent;
+    const i = t.indexOf(hl);
+    if (i >= 0) { node.innerHTML = esc(t.slice(0,i))+'<mark class="hl">'+esc(hl)+'</mark>'+esc(t.slice(i+hl.length)); break; }
+  }
+}
+
+function blockValue(section,index) { return section==='brand' ? profileData.brand : profileData[section][index]; }
+function blockEl(section,index) { return document.querySelector(`#reviseCard .editable[data-section="${section}"][data-index="${index}"]`); }
+
+function openTweak(section, index, highlight) {
+  if (reviseActive) { const prev = reviseActive; reviseActive = null; restoreBlock(prev.section, prev.index); }
+  clearActive();
+  reviseActive = { section, index, highlight: highlight||'', lastReason:'' };
+  reviseHistory = []; reviseProposal = null;
+  const el = blockEl(section,index);
+  if (el) el.classList.add('active');
+  if (highlight) litHighlight(section, index, highlight);
+
+  let opener;
+  const hk = section+'Hi';
+  if (highlight && OPENERS[hk]) opener = section==='brand' ? OPENERS.brandHi(profileData,highlight) : OPENERS[hk](profileData,index,highlight);
+  else opener = section==='brand' ? OPENERS.brand(profileData) : OPENERS[section](profileData,index);
+  reviseActive.opener = opener;
+
+  document.getElementById('dpSub').textContent = subLabel(section,index);
+  document.getElementById('dpBody').innerHTML = '';
+  addMsg('dot', opener);
+  document.getElementById('reviseStage').classList.add('editing');
+  setTimeout(()=>document.getElementById('dpInput').focus(), 200);
+}
+function subLabel(section,index) {
+  if (section==='brand') return 'Brand';
+  if (section==='behaviours') return 'Who we are · row '+(index+1);
+  if (section==='examples') return 'Examples · row '+(index+1);
+  if (section==='houseRules') return profileData.houseRules[index].key;
+  return section;
+}
+function clearActive() {
+  document.querySelectorAll('#reviseCard .editable.active, #reviseCard .editable.preview').forEach(e=>e.classList.remove('active','preview'));
+}
+function closePanel() {
+  document.getElementById('reviseStage').classList.remove('editing');
+  reviseActive = null; reviseProposal = null; reviseHistory = [];
+  reviseRender(); renderRail();
+}
+
+/* ── chat ── */
+function addMsg(who, text, opts={}) {
+  const body = document.getElementById('dpBody');
+  const d = document.createElement('div');
+  d.className = 'msg '+who+(opts.pb?' pb':'');
+  d.textContent = text;
+  body.appendChild(d); body.scrollTop = body.scrollHeight;
+}
+function addProposal(section, index, prop) {
+  const body = document.getElementById('dpBody');
+  const cur = blockValue(section, index);
+  let inner = '';
+  if (section==='brand') inner = `<span class="pf">${diffWords(cur, typeof prop==='string'?prop:(prop.brand||''))}</span>`;
+  else if (section==='behaviours') inner = `<span class="pf"><span class="lbl">We are</span> ${diffWords(cur.we, prop.we||'')}</span><span class="pf"><span class="lbl">We're not</span> ${diffWords(cur.not, prop.not||'')}</span>`;
+  else if (section==='examples') inner = `<span class="pf"><span class="lbl">More</span> ${diffWords(cur.more, prop.more||'')}</span><span class="pf"><span class="lbl">Less</span> ${diffWords(cur.less, prop.less||'')}</span>`;
+  else if (section==='houseRules') inner = `<span class="pf"><b>${diffWords(cur.key, prop.key||cur.key)}</b></span><span class="pf">${diffWords(cur.rule, prop.rule||'')}</span>`;
+  const card = document.createElement('div'); card.className='proposal';
+  card.innerHTML = `<div class="pl">Proposed</div>${inner}`;
+  body.appendChild(card);
+  const row = document.createElement('div'); row.className='lock-row';
+  const b = document.createElement('button'); b.className='lock-btn'; b.textContent='✓ Lock this?'; b.onclick=reviseCommit;
+  row.appendChild(b); body.appendChild(row); body.scrollTop = body.scrollHeight;
+}
+function thinking(on) {
+  const body = document.getElementById('dpBody');
+  let t = document.getElementById('thinkingDots');
+  if (on) { if (t) return; t=document.createElement('div'); t.id='thinkingDots'; t.className='thinking';
+    t.innerHTML='<span></span><span></span><span></span>'; body.appendChild(t); body.scrollTop=body.scrollHeight; }
+  else if (t) { t.remove(); }
+}
+async function sendFeedback() {
+  const inp = document.getElementById('dpInput');
+  const text = inp.value.trim();
+  if (!text || !reviseActive) return;
+  inp.value=''; addMsg('me', text);
+  reviseHistory.push({role:'user', content:text});
+  thinking(true);
+  try {
+    const res = await fetch('/api/revise', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        profile: profileData,
+        target:{section:reviseActive.section, index:reviseActive.index},
+        blockValue: blockValue(reviseActive.section, reviseActive.index),
+        highlight: reviseActive.highlight || null,
+        opener: reviseActive.opener, history: reviseHistory
+      })
+    });
+    const data = await res.json();
+    thinking(false);
+    if (!data.success) { addMsg('dot', data.error || "Something went sideways. Try again?"); return; }
+    reviseHistory.push({role:'assistant', content:data.message});
+    if (data.proposal) {
+      reviseProposal = data.proposal; reviseActive.lastReason = data.message || '';
+      if (data.message) addMsg('dot', data.message);
+      addProposal(reviseActive.section, reviseActive.index, data.proposal);
+      preview(reviseActive.section, reviseActive.index, data.proposal);
+    } else { reviseProposal=null; restoreBlock(reviseActive.section, reviseActive.index); addMsg('dot', data.message, {pb:data.pushback}); }
+  } catch (err) { thinking(false); addMsg('dot', "Couldn't reach the engine — is the API key set? ("+err.message+")"); }
+}
+
+/* ── preview on the card (DOM only) ── */
+function setField(el, field, html) { const n = el.querySelector(`[data-field="${field}"]`); if (n) n.innerHTML = html; }
+function preview(section, index, prop) {
+  const el = blockEl(section,index); if (!el) return;
+  el.classList.remove('active'); el.classList.add('preview');
+  const cur = blockValue(section,index);
+  if (section==='brand') setField(el,'brand', diffWords(cur, typeof prop==='string'?prop:(prop.brand||'')));
+  else if (section==='behaviours') { setField(el,'we', diffWords(cur.we, prop.we||'')); setField(el,'not', diffWords(cur.not, prop.not||'')); keepPencil(el,'not'); }
+  else if (section==='examples') { setField(el,'more', diffWords(cur.more, prop.more||'')); setField(el,'less', diffWords(cur.less, prop.less||'')); keepPencil(el,'less'); }
+  else if (section==='houseRules') { setField(el,'key', diffWords(cur.key, prop.key||cur.key)); setField(el,'rule', diffWords(cur.rule, prop.rule||'')); }
+}
+function keepPencil(el, field) {
+  const node = el.querySelector(`[data-field="${field}"]`);
+  if (node && !node.querySelector('.pencil')) {
+    const b = document.createElement('button'); b.className='pencil'; b.title='Tweak'; b.innerHTML=PENCIL;
+    b.addEventListener('click', ev=>{ ev.stopPropagation(); openTweak(el.dataset.section,+el.dataset.index,''); });
+    node.appendChild(b);
+  }
+}
+function restoreBlock(section,index) {
+  const el = blockEl(section,index); if (!el) return;
+  el.classList.remove('preview'); el.classList.add('active');
+  const cur = blockValue(section,index);
+  if (section==='brand') setField(el,'brand', esc(cur));
+  else if (section==='behaviours') { setField(el,'we',esc(cur.we)); setField(el,'not',esc(cur.not)); keepPencil(el,'not'); }
+  else if (section==='examples') { setField(el,'more',esc(cur.more)); setField(el,'less',esc(cur.less)); keepPencil(el,'less'); }
+  else if (section==='houseRules') { setField(el,'key',esc(cur.key)); setField(el,'rule',esc(cur.rule)); }
+  if (reviseActive && reviseActive.highlight) litHighlight(section,index,reviseActive.highlight);
+}
+
+/* ── commit: Lock writes to truth + logs the tweak ── */
+function reviseCommit() {
+  if (!reviseActive || !reviseProposal) return;
+  const {section,index} = reviseActive;
+  const before = JSON.parse(JSON.stringify(blockValue(section,index)));
+  if (section==='brand') profileData.brand = typeof reviseProposal==='string' ? reviseProposal : (reviseProposal.brand||profileData.brand);
+  else profileData[section][index] = reviseProposal;
+
+  reviseTweaks.push({
+    label: subLabel(section,index),
+    why: reviseActive.lastReason || 'Tweaked.',
+    before, after: JSON.parse(JSON.stringify(reviseProposal))
+  });
+
+  reviseProposal = null;
+  addMsg('dot', "Locked in. Profile and prompt both updated.");
+  reviseRender(); toast('Locked in');
+  setTimeout(closePanel, 650);
+}
+
+function reviseSetView(v) {
+  if (reviseView===v) return;
+  reviseView=v; reviseActive=null;
+  const st = document.getElementById('reviseStage'); if (st) st.classList.remove('editing');
+  reviseRender();
+}
+function toast(msg) { const t=document.getElementById('toast'); if (!t) return; t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),1700); }
 
 function startAgain() {
   uploadedFiles = []; profileData = null; consultHistory = [];
   notesCounter = 0; dotReady = false;
   confirmChecks = []; confirmResults = []; currentCheck = 0;
   senseCheckPrefetch = null;
+  reviseActive = null; reviseProposal = null; reviseHistory = []; reviseTweaks = []; reviseView = 'profile';
+  document.getElementById('mainPage').classList.remove('revealed');
   document.getElementById('fileList').innerHTML = '';
   document.getElementById('responseArea').innerHTML = '';
   document.getElementById('profileZone').style.display = 'none';
@@ -1103,7 +1581,7 @@ async function downloadPdf() {
 
   // Clone the profile and strip the interactive controls from the capture
   const clone = src.cloneNode(true);
-  clone.querySelectorAll('.profile-actions, .start-again').forEach(el => el.remove());
+  clone.querySelectorAll('.profile-actions, .start-again, [data-noexport]').forEach(el => el.remove());
   // Render on white with breathing room so it reads as a document, not a screenshot
   const wrap = document.createElement('div');
   wrap.style.cssText = 'background:#fff;padding:28px 32px;width:760px;';
