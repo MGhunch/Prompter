@@ -358,6 +358,15 @@ input.sc-range::-moz-range-thumb {
 }
 input.sc-range::-webkit-slider-runnable-track { background: transparent; }
 
+.sc-retry-wrap { text-align: center; margin-top: 8px; }
+.sc-retry {
+  font-size: 12px; color: var(--mid); cursor: pointer;
+  text-decoration: underline; text-underline-offset: 3px;
+  text-decoration-color: var(--card-border); transition: color 0.15s;
+}
+.sc-retry:hover { color: var(--red); text-decoration-color: var(--red); }
+.sc-retry.busy { color: var(--dim); cursor: default; pointer-events: none; text-decoration: none; }
+
 .sc-actions {
   display: flex; align-items: center; justify-content: space-between;
   padding-top: 2px;
@@ -1219,6 +1228,8 @@ async function fetchSenseChecks() {
   }
 }
 
+const SC_RETRY_LABEL = "Neither's quite me — let me try again";
+
 function renderSenseCheck(idx) {
   stopScLoadingLines();
   const inner = document.getElementById('scInner');
@@ -1265,6 +1276,9 @@ function renderSenseCheck(idx) {
         <div class="sc-track"><div class="sc-fill" id="scFill"></div></div>
         <input class="sc-range" type="range" min="0" max="100" value="50" step="1"
           id="scSlider" oninput="updateSenseCheck(this.value)"/>
+      </div>
+      <div class="sc-retry-wrap">
+        <span class="sc-retry" id="scRetry" onclick="regenerateSentence()">${SC_RETRY_LABEL}</span>
       </div>`;
 
   } else if (check.type === 'feeling') {
@@ -1393,6 +1407,42 @@ function skipSenseCheck() {
   currentCheck < confirmChecks.length - 1
     ? (currentCheck++, checkMoved = false, renderSenseCheck(currentCheck))
     : (hideSenseCheckScreen(), runExtractWithCalibration());
+}
+
+async function regenerateSentence() {
+  const link = document.getElementById('scRetry');
+  if (!link || link.classList.contains('busy')) return;
+  const rejected = confirmChecks[currentCheck];
+  link.classList.add('busy');
+  link.innerHTML = 'Having another think<span class="inline-dots"><span></span><span></span><span></span></span>';
+  const nextBtn = document.getElementById('scNextBtn');
+  if (nextBtn) nextBtn.disabled = true;
+  try {
+    const res = await fetch('/api/confirm/regenerate', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        files: uploadedFiles.map(f => ({filename: f.filename, text: f.text})),
+        history: consultHistory,
+        reject: {
+          dimension: rejected.dimension,
+          sentenceA: rejected.sentenceA,
+          sentenceB: rejected.sentenceB,
+          noteA: rejected.noteA,
+          noteB: rejected.noteB
+        }
+      })
+    });
+    const data = await res.json();
+    if (!data.success || !data.check || data.check.type !== 'sentence') throw new Error('bad regen');
+    confirmChecks[currentCheck] = data.check;
+    checkMoved = false;
+    renderSenseCheck(currentCheck);
+  } catch (e) {
+    link.classList.remove('busy');
+    link.textContent = SC_RETRY_LABEL;
+    if (nextBtn) nextBtn.disabled = false;
+  }
 }
 
 function hideSenseCheckScreen() {
