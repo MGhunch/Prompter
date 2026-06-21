@@ -397,7 +397,7 @@ def summarise():
 def opening():
     return jsonify({
         'success': True,
-        'message': "How you talk is who you are. Drop in an example and let's chat."
+        'message': "How you talk is who you are. Let's craft a prompt that makes you sound like you."
     })
 
 
