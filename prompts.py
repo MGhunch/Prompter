@@ -55,7 +55,7 @@ Guidelines are the anchor. Examples are reference, not gospel. When guidelines e
 CALIBRATION is the user's own sense-check, captured directly. It is the single most direct signal of intent in the whole input. Treat it as correction, not suggestion: weight it above anything you infer from the material, and make it VISIBLE in the output. A user who made these choices should be able to point at the profile and see their answers reflected. Don't absorb it silently.
 
 Three kinds of signal may appear:
-- Axis position: the user placed the brand on a named axis (its two poles given). Bias the tone of your behaviours and examples toward that point on the axis, and let the chosen pole surface by name in the brand section or a house rule, so the position is visible.
+- Axis position: the user placed the brand on a named axis (its two poles given). Bias the tone of your behaviours and examples toward that point on the axis. Then, for each named axis in the calibration, ALWAYS write the chosen pole as a house rule in "X over Y" form -- winning pole over losing pole (e.g. "plain over clever", "warmth over polish") -- so the call is locked, not just implied. It may also surface in the brand section, but the house rule is mandatory, never optional.
 - Overshoot to steer away from: the virtue's failure mode the user flagged. Encode it as a HOUSE RULE -- a guardrail ("don't let the [virtue] tip into [overshoot]", "avoid sounding [overshoot]") -- NOT on the behaviours' "not" side. The behaviours stay concrete identities; the boundary is a tone guardrail.
 - Reader feeling: the emotional target -- your tuning fork (above). It governs the whole read, and lands in the brand section's effect.
 
@@ -85,7 +85,7 @@ houseRules: {key, rule} objects. Hard constraints ONLY -- banned words, mandated
 
 For gaps: "[DON'T KNOW YET -- reason]". Never guess. Never pad.
 Ignore photography, logos and colours. Mine values and mission only for WHY the voice is the way it is -- never reproduce them.
-Before output, reject and rewrite any "We're not" that is merely the opposite of its "We are", and any "we" that reads as a bare personality adjective rather than a concrete identity.
+Before output: reject and rewrite any "We're not" that is merely the opposite of its "We are", and any "we" that reads as a bare personality adjective rather than a concrete identity. Then audit the house rules and delete any you can't check by reading the copy alone -- if obeying a rule needs outside knowledge (e.g. what's currently fashionable, "no on-trend slang") or points at something this profile never defines (e.g. "except approved bubble-treatment headlines"), it is not a hard constraint. Cut it, or rewrite it as something concrete and verifiable.
 Respond ONLY with valid JSON. No markdown. No backticks. No preamble."""
 
 
