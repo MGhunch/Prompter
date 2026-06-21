@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prompter — REVISE Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#ED1C24; --red-dark:#C8141B; --ink:#1A1917; --white:#FFFFFF;
+  --card-bg:#F5F3EF; --card-border:#E8E5E0; --mid:#9A9590;
+  --radius-sm:8px; --radius-md:12px; --radius-lg:14px; --radius-pill:100px;
+}
+*{box-sizing:border-box;}
+body{font-family:'Inter',sans-serif;background:var(--red);min-height:100vh;margin:0;color:var(--ink);}
+
+/* lab chrome */
+.lab-bar{display:flex;align-items:center;gap:14px;padding:10px 18px;background:var(--ink);color:#fff;font-size:11px;letter-spacing:.4px;}
+.lab-bar .tag{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:3px;}
+.lab-bar .muted{color:rgba(255,255,255,.55);}
+.lab-bar .spacer{flex:1;}
+.lab-bar button{background:none;border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:var(--radius-pill);padding:5px 13px;font-size:10px;font-weight:600;cursor:pointer;letter-spacing:.5px;}
+.lab-bar button:hover{border-color:#fff;}
+
+/* stage */
+.stage{display:flex;justify-content:center;padding:40px 24px 60px;position:relative;overflow:hidden;}
+.cardwrap{width:100%;max-width:640px;transition:transform .42s cubic-bezier(.4,0,.1,1);will-change:transform;}
+.stage.editing .cardwrap{transform:translateX(-210px);}
+
+/* profile card — mirrors the live app */
+.profile-zone{background:#fff;border-radius:var(--radius-lg);overflow:hidden;}
+.profile-header{padding:14px 18px;border-bottom:.5px solid var(--card-border);display:flex;align-items:center;justify-content:space-between;}
+.profile-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;color:var(--ink);}
+.profile-title span{color:var(--red);}
+.profile-actions{display:flex;gap:8px;}
+.pill{display:inline-flex;align-items:center;gap:6px;border-radius:var(--radius-pill);padding:7px 16px;font-size:11px;font-weight:600;cursor:pointer;transition:all .15s;border:none;}
+.pill svg{width:14px;height:14px;}
+.pill.ghost{background:none;border:1px solid var(--card-border);color:var(--ink);}
+.pill.ghost:hover{border-color:var(--ink);}
+.pill.solid{background:var(--ink);color:#fff;}
+.pill.solid:hover{background:var(--red);}
+
+.psec{padding:12px 18px;border-bottom:.5px solid var(--card-border);}
+.psec:last-of-type{border-bottom:none;}
+.plbl{font-size:8px;font-weight:700;color:var(--red);letter-spacing:2px;text-transform:uppercase;margin-bottom:5px;}
+.pbody{font-size:12px;color:var(--ink);line-height:1.75;font-weight:300;}
+.ptable{width:100%;border-collapse:collapse;margin-top:4px;}
+.ptable th{font-size:8px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;padding:5px 8px;background:var(--ink);color:#fff;text-align:left;}
+.ptable td{font-size:11px;padding:6px 8px;border-bottom:.5px solid var(--card-border);font-weight:300;color:var(--ink);line-height:1.45;vertical-align:top;}
+.ptable tr:nth-child(even) td{background:var(--card-bg);}
+.ptable tr:last-child td{border-bottom:none;}
+.ptable td:first-child{font-weight:500;}
+.ptable td.less{color:var(--mid);}
+.rules-list{display:flex;flex-direction:column;gap:4px;margin-top:3px;}
+.rule-item{display:flex;gap:10px;font-size:11px;line-height:1.5;font-weight:300;align-items:baseline;}
+.rule-key{font-weight:600;flex:0 0 130px;color:var(--ink);overflow-wrap:break-word;}
+.rule-val{flex:1;}
+.profile-footer{padding:10px 18px;border-top:.5px solid var(--card-border);display:flex;align-items:center;justify-content:space-between;}
+.footer-note{font-size:10px;color:var(--mid);}
+
+/* editable blocks: hover-reveal pencil + selectable */
+.editable{position:relative;border-radius:6px;transition:background .15s;}
+.editable:hover{background:rgba(237,28,36,.035);}
+.pencil{position:absolute;top:6px;right:6px;width:22px;height:22px;border-radius:50%;border:none;background:#fff;
+  box-shadow:0 1px 4px rgba(0,0,0,.12);color:var(--mid);cursor:pointer;opacity:0;transition:opacity .15s,color .15s;
+  display:flex;align-items:center;justify-content:center;z-index:2;}
+.editable:hover .pencil{opacity:1;}
+.pencil:hover{color:var(--red);}
+.pencil svg{width:12px;height:12px;}
+.psec.editable .pencil{top:10px;right:10px;}
+tr.editable td{position:relative;}
+tr.editable .pencil{top:4px;right:4px;}
+.rule-item.editable .pencil{top:0;right:0;}
+.editable.active{background:rgba(237,28,36,.06);box-shadow:inset 0 0 0 1px rgba(237,28,36,.35);}
+
+/* live preview state */
+.preview{background:rgba(237,28,36,.06)!important;outline:1px dashed var(--red);outline-offset:-1px;border-radius:4px;}
+.proposed-tag{display:inline-block;font-size:7px;font-weight:700;letter-spacing:1px;color:#fff;background:var(--red);
+  border-radius:3px;padding:1px 5px;margin-bottom:4px;text-transform:uppercase;}
+
+/* Dot panel */
+.dot-panel{position:absolute;top:40px;right:24px;width:380px;max-width:calc(100% - 48px);background:#fff;border-radius:var(--radius-lg);
+  box-shadow:0 12px 40px rgba(0,0,0,.22);display:flex;flex-direction:column;max-height:calc(100vh - 120px);
+  transform:translateX(115%);opacity:0;transition:transform .42s cubic-bezier(.4,0,.1,1),opacity .3s;pointer-events:none;z-index:5;}
+.stage.editing .dot-panel{transform:translateX(0);opacity:1;pointer-events:auto;}
+.dp-head{display:flex;align-items:center;gap:10px;padding:13px 16px;border-bottom:.5px solid var(--card-border);}
+.dp-dot{width:30px;height:30px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Bebas Neue';font-size:15px;letter-spacing:1px;}
+.dp-title{font-weight:600;font-size:13px;}
+.dp-sub{font-size:10px;color:var(--mid);}
+.dp-x{margin-left:auto;background:none;border:none;color:var(--mid);font-size:18px;cursor:pointer;line-height:1;}
+.dp-x:hover{color:var(--ink);}
+.dp-body{flex:1;overflow-y:auto;padding:14px 16px;display:flex;flex-direction:column;gap:10px;}
+.msg{font-size:12px;line-height:1.6;max-width:88%;padding:9px 12px;border-radius:12px;font-weight:300;}
+.msg.dot{background:var(--card-bg);color:var(--ink);align-self:flex-start;border-bottom-left-radius:3px;}
+.msg.dot.pb{background:#fff;outline:1px solid var(--red);}
+.msg.me{background:var(--ink);color:#fff;align-self:flex-end;border-bottom-right-radius:3px;}
+.tick-row{align-self:flex-start;margin-top:-2px;}
+.tick-btn{background:var(--red);color:#fff;border:none;border-radius:var(--radius-pill);padding:8px 16px;font-size:11px;font-weight:700;letter-spacing:.4px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;}
+.tick-btn:hover{background:var(--red-dark);}
+.thinking{display:flex;gap:4px;align-self:flex-start;padding:9px 12px;}
+.thinking span{width:6px;height:6px;border-radius:50%;background:var(--red);animation:blink 1.2s infinite;}
+.thinking span:nth-child(2){animation-delay:.2s;} .thinking span:nth-child(3){animation-delay:.4s;}
+@keyframes blink{0%,80%,100%{opacity:.25;}40%{opacity:1;}}
+.dp-foot{display:flex;gap:8px;padding:12px 14px;border-top:.5px solid var(--card-border);}
+.dp-input{flex:1;border:.5px solid var(--card-border);border-radius:20px;padding:9px 14px;font-size:12px;outline:none;font-family:inherit;}
+.dp-input:focus{border-color:var(--red);}
+.dp-send{background:var(--ink);color:#fff;border:none;border-radius:20px;padding:9px 16px;font-size:11px;font-weight:700;cursor:pointer;}
+.dp-send:hover{background:var(--red);}
+
+/* prompt preview drawer */
+.prompt-drawer{position:fixed;top:0;right:0;width:440px;max-width:90vw;height:100vh;background:#10100f;color:#e9e7e3;
+  transform:translateX(100%);transition:transform .35s ease;z-index:30;display:flex;flex-direction:column;}
+.prompt-drawer.open{transform:translateX(0);box-shadow:-10px 0 40px rgba(0,0,0,.4);}
+.pd-head{display:flex;align-items:center;padding:14px 18px;border-bottom:1px solid rgba(255,255,255,.1);}
+.pd-head .t{font-family:'Bebas Neue';letter-spacing:2px;font-size:18px;}
+.pd-head .pulse{font-size:9px;color:var(--red);margin-left:10px;opacity:0;transition:opacity .2s;}
+.pd-head .pulse.on{opacity:1;}
+.pd-head button{margin-left:auto;background:none;border:none;color:#fff;font-size:20px;cursor:pointer;}
+.pd-body{flex:1;overflow:auto;padding:16px 18px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;line-height:1.6;white-space:pre-wrap;color:#cfcdc8;}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;
+  padding:11px 20px;border-radius:var(--radius-pill);font-size:12px;font-weight:600;opacity:0;transition:all .3s;z-index:40;pointer-events:none;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+@media(max-width:900px){
+  .stage.editing .cardwrap{transform:none;}
+  .dot-panel{top:auto;bottom:0;right:0;left:0;width:100%;max-width:100%;border-radius:var(--radius-lg) var(--radius-lg) 0 0;
+    transform:translateY(115%);max-height:72vh;}
+  .stage.editing .dot-panel{transform:translateY(0);}
+}
+</style>
+</head>
+<body>
+
+<div class="lab-bar">
+  <span class="tag">REVISE LAB</span>
+  <span class="muted">canned Neon profile · live <b>/api/revise</b> · highlight a line or hit a pencil</span>
+  <span class="spacer"></span>
+  <button onclick="togglePrompt()">Show prompt</button>
+  <button onclick="resetProfile()">Reset</button>
+</div>
+
+<div class="stage" id="stage">
+  <div class="cardwrap">
+    <div class="profile-zone" id="profileZone"></div>
+  </div>
+
+  <div class="dot-panel" id="dotPanel">
+    <div class="dp-head">
+      <div class="dp-dot">D</div>
+      <div>
+        <div class="dp-title">Dot</div>
+        <div class="dp-sub" id="dpSub">Tweaking a block</div>
+      </div>
+      <button class="dp-x" onclick="closePanel()">&times;</button>
+    </div>
+    <div class="dp-body" id="dpBody"></div>
+    <div class="dp-foot">
+      <input class="dp-input" id="dpInput" placeholder="Tell Dot what's off…" onkeydown="if(event.key==='Enter')sendFeedback()">
+      <button class="dp-send" onclick="sendFeedback()">Send</button>
+    </div>
+  </div>
+</div>
+
+<div class="prompt-drawer" id="promptDrawer">
+  <div class="pd-head"><span class="t">VOICE PROMPT</span><span class="pulse" id="pdPulse">updated ✓</span><button onclick="togglePrompt()">&times;</button></div>
+  <div class="pd-body" id="pdBody"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ───────────────────────────────────────────────────────────────
+   COPY lives here — rewrite the openers freely, they're yours.
+   ─────────────────────────────────────────────────────────────── */
+const OPENERS = {
+  brand:      p => `This is your Brand — the whole voice in a paragraph. What's not sitting right?`,
+  brandHi:    (p,h) => `You've marked “${h}” in your Brand. What's off about it?`,
+  behaviours: (p,i) => `This is a Who-we-are pair — “${p.behaviours[i].we}” against “${p.behaviours[i].not}”. What would you change?`,
+  examples:   (p,i) => `This is a More / Less example. What's not landing?`,
+  houseRules: (p,i) => `This is your “${p.houseRules[i].key}” rule. What's off?`,
+  houseRulesHi:(p,i,h) => `You've marked “${h}” in the “${p.houseRules[i].key}” rule. What's off about it?`,
+};
+
+/* ── canned Neon profile (real profileData shape) ──────────────── */
+const SEED = {
+  brandName: "Neon",
+  brand: "Neon writes like the friend who's already three episodes in and won't shut up about it — opinionated, warm, pulling you toward something rather than pitching it at you. The voice runs on conviction: it has a take, it backs the take, and it's comfortable if you push back. The reader doesn't feel marketed to; they feel let in.",
+  behaviours: [
+    { we: "The one who's already seen it and can't help saying so", not: "The critic building a case for the record" },
+    { we: "The person already in the group chat when you arrive", not: "The host who called the meeting" },
+    { we: "The Kiwi who just tells you straight, no performance required", not: "The hype merchant working the room" }
+  ],
+  examples: [
+    { more: "We've called it. Three episodes in and it's already the one. You'll catch up.", less: "We think this could be one to watch this weekend." },
+    { more: "Not everyone's going to love this ending. We did. Come fight us.", less: "This show has a surprising ending that's getting people talking." },
+    { more: "You didn't know you needed a slow-burn New Zealand thriller. Now you do.", less: "Discover something different with this locally made drama." },
+    { more: "It's good. Like, properly. No further explanation needed.", less: "This one comes highly recommended and is definitely worth checking out." },
+    { more: "Skip the scroll. This is the one we'd put on tonight.", less: "Here's a great option if you're looking for something to stream." }
+  ],
+  houseRules: [
+    { key: "No try-hard Kiwi", rule: "Never use 'sweet as', 'bro', 'chur' or any phrase that signals New Zealand-ness by name. The Kiwi register shows in attitude — understatement, directness, lightness — not in markers." },
+    { key: "Conviction, not hype", rule: "Avoid exclamation marks as a substitute for energy. The voice earns its enthusiasm through a clear take, not punctuation or volume. If a line needs an exclamation mark to land, rewrite the line." },
+    { key: "Have a take", rule: "Every recommendation carries an opinion. Never hedge with 'might', 'could be', or 'something for everyone'. If we're recommending it, we've decided." }
+  ]
+};
+
+let profileData = JSON.parse(JSON.stringify(SEED));
+
+/* ── state for the active edit ─────────────────────────────────── */
+let active = null;        // { section, index, opener }
+let history = [];         // dialogue for this block
+let currentProposal = null;
+
+const esc = s => (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const PENCIL = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>`;
+
+/* ── render the card (truth only) ──────────────────────────────── */
+function render(){
+  const p = profileData, bn = p.brandName || 'Brand';
+  let h = `<div class="profile-header">
+    <div class="profile-title">YOUR <span>${esc(bn.toUpperCase())}</span> VOICE</div>
+    <div class="profile-actions">
+      <button class="pill ghost">PDF</button>
+      <button class="pill solid">Prompt</button>
+    </div></div>`;
+
+  h += `<div class="psec editable" data-section="brand" data-index="0">
+    <button class="pencil" title="Tweak">${PENCIL}</button>
+    <div class="plbl">Brand</div><div class="pbody" data-text>${esc(p.brand)}</div></div>`;
+
+  h += `<div class="psec"><div class="plbl">Who we are</div><table class="ptable">
+    <tr><th>We are</th><th>We're not</th></tr>` +
+    p.behaviours.map((b,i)=>`<tr class="editable" data-section="behaviours" data-index="${i}">
+      <td data-text>${esc(b.we)}</td><td data-text>${esc(b.not)}<button class="pencil" title="Tweak">${PENCIL}</button></td></tr>`).join('') +
+    `</table></div>`;
+
+  h += `<div class="psec"><div class="plbl">Examples</div><table class="ptable">
+    <tr><th>More this</th><th>Less this</th></tr>` +
+    p.examples.map((e,i)=>`<tr class="editable" data-section="examples" data-index="${i}">
+      <td data-text>${esc(e.more)}</td><td class="less" data-text>${esc(e.less)}<button class="pencil" title="Tweak">${PENCIL}</button></td></tr>`).join('') +
+    `</table></div>`;
+
+  h += `<div class="psec"><div class="plbl">House Rules</div><div class="rules-list">` +
+    p.houseRules.map((r,i)=>`<div class="rule-item editable" data-section="houseRules" data-index="${i}">
+      <span class="rule-key" data-text>${esc(r.key)}</span><span class="rule-val" data-text>${esc(r.rule)}</span>
+      <button class="pencil" title="Tweak">${PENCIL}</button></div>`).join('') +
+    `</div></div>`;
+
+  h += `<div class="profile-footer"><span class="footer-note">Remember, robots are good. But keep a human in the loop.</span></div>`;
+
+  document.getElementById('profileZone').innerHTML = h;
+
+  // wire pencils + highlight-to-open
+  document.querySelectorAll('.editable').forEach(el=>{
+    const section = el.dataset.section, index = +el.dataset.index;
+    el.querySelector('.pencil').addEventListener('click', ev=>{
+      ev.stopPropagation();
+      open(section, index, highlightWithin(el));
+    });
+  });
+  refreshPrompt();
+}
+
+/* highlighter: a selection inside a prose block opens that block, focused */
+function highlightWithin(el){
+  const sel = window.getSelection();
+  if(!sel || sel.isCollapsed) return '';
+  const txt = sel.toString().trim();
+  if(!txt) return '';
+  const anc = sel.getRangeAt(0).commonAncestorContainer;
+  const node = anc.nodeType === 3 ? anc.parentElement : anc;
+  return el.contains(node) ? txt : '';
+}
+document.addEventListener('mouseup', ()=>{
+  const sel = window.getSelection();
+  if(!sel || sel.isCollapsed) return;
+  const txt = sel.toString().trim();
+  if(!txt) return;
+  const anc = sel.getRangeAt(0).commonAncestorContainer;
+  const node = anc.nodeType === 3 ? anc.parentElement : anc;
+  const el = node && node.closest ? node.closest('.editable') : null;
+  if(el && !active){ open(el.dataset.section, +el.dataset.index, txt); }
+});
+
+/* ── open / close the Dot panel ────────────────────────────────── */
+function blockValue(section,index){
+  return section==='brand' ? profileData.brand : profileData[section][index];
+}
+function blockEl(section,index){
+  return document.querySelector(`.editable[data-section="${section}"][data-index="${index}"]`);
+}
+function open(section, index, highlight){
+  clearActive();
+  active = { section, index, highlight: highlight||'' };
+  history = [];
+  currentProposal = null;
+  const el = blockEl(section,index);
+  el && el.classList.add('active');
+
+  // robot-first opener
+  let opener;
+  if(section==='brand') opener = highlight ? OPENERS.brandHi(profileData, highlight) : OPENERS.brand(profileData);
+  else if(section==='houseRules') opener = highlight ? OPENERS.houseRulesHi(profileData,index,highlight) : OPENERS.houseRules(profileData,index);
+  else opener = OPENERS[section](profileData, index);
+  active.opener = opener;
+
+  document.getElementById('dpSub').textContent = subLabel(section,index);
+  document.getElementById('dpBody').innerHTML = '';
+  addMsg('dot', opener);
+  document.getElementById('stage').classList.add('editing');
+  setTimeout(()=>document.getElementById('dpInput').focus(), 300);
+}
+function subLabel(section,index){
+  if(section==='brand') return 'Brand';
+  if(section==='behaviours') return 'Who we are · row '+(index+1);
+  if(section==='examples') return 'Examples · row '+(index+1);
+  if(section==='houseRules') return profileData.houseRules[index].key;
+  return section;
+}
+function clearActive(){
+  document.querySelectorAll('.editable.active').forEach(e=>e.classList.remove('active'));
+  clearPreview();
+}
+function closePanel(){
+  document.getElementById('stage').classList.remove('editing');
+  clearActive();
+  active = null; currentProposal = null; history = [];
+}
+
+/* ── chat ──────────────────────────────────────────────────────── */
+function addMsg(who, text, opts={}){
+  const body = document.getElementById('dpBody');
+  const d = document.createElement('div');
+  d.className = 'msg '+who+(opts.pb?' pb':'');
+  d.textContent = text;
+  body.appendChild(d);
+  if(opts.tick){
+    const row = document.createElement('div'); row.className='tick-row';
+    const b = document.createElement('button'); b.className='tick-btn';
+    b.innerHTML = '✓ Tick it — save to the truth';
+    b.onclick = commit;
+    row.appendChild(b); body.appendChild(row);
+  }
+  body.scrollTop = body.scrollHeight;
+}
+function thinking(on){
+  const body = document.getElementById('dpBody');
+  let t = document.getElementById('thinkingDots');
+  if(on){ if(t) return; t=document.createElement('div'); t.id='thinkingDots'; t.className='thinking';
+    t.innerHTML='<span></span><span></span><span></span>'; body.appendChild(t); body.scrollTop=body.scrollHeight; }
+  else if(t){ t.remove(); }
+}
+
+async function sendFeedback(){
+  const inp = document.getElementById('dpInput');
+  const text = inp.value.trim();
+  if(!text || !active) return;
+  inp.value='';
+  addMsg('me', text);
+  history.push({role:'user', content:text});
+  thinking(true);
+  try{
+    const res = await fetch('/api/revise', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        profile: profileData,
+        target: { section: active.section, index: active.index },
+        blockValue: blockValue(active.section, active.index),
+        highlight: active.highlight || null,
+        opener: active.opener,
+        history
+      })
+    });
+    const data = await res.json();
+    thinking(false);
+    if(!data.success){ addMsg('dot', data.error || "Something went sideways. Try again?"); return; }
+    history.push({role:'assistant', content: data.message});
+    if(data.proposal){
+      currentProposal = data.proposal;
+      preview(active.section, active.index, data.proposal);
+      addMsg('dot', data.message, {tick:true});
+    } else {
+      currentProposal = null; clearPreview();
+      addMsg('dot', data.message, {pb: data.pushback});
+    }
+  }catch(err){
+    thinking(false);
+    addMsg('dot', "Couldn't reach the engine — is the API key set? ("+err.message+")");
+  }
+}
+
+/* ── live preview (DOM only — never touches the truth) ─────────── */
+function preview(section, index, prop){
+  clearPreview();
+  const el = blockEl(section,index);
+  if(!el) return;
+  if(section==='brand'){
+    const body = el.querySelector('.pbody');
+    body.classList.add('preview');
+    body.innerHTML = `<span class="proposed-tag">proposed</span><br>${esc(typeof prop==='string'?prop:(prop.brand||prop.value||''))}`;
+  } else if(section==='behaviours'){
+    const tds = el.querySelectorAll('td');
+    tds[0].classList.add('preview'); tds[0].textContent = prop.we ?? prop.more ?? '';
+    tds[1].querySelector('.pencil')?.remove();
+    tds[1].classList.add('preview'); tds[1].textContent = prop.not ?? '';
+  } else if(section==='examples'){
+    const tds = el.querySelectorAll('td');
+    tds[0].classList.add('preview'); tds[0].textContent = prop.more ?? '';
+    tds[1].querySelector('.pencil')?.remove();
+    tds[1].classList.add('preview'); tds[1].textContent = prop.less ?? '';
+  } else if(section==='houseRules'){
+    const k = el.querySelector('.rule-key'), v = el.querySelector('.rule-val');
+    k.classList.add('preview'); k.textContent = prop.key ?? profileData.houseRules[index].key;
+    v.classList.add('preview'); v.textContent = prop.rule ?? '';
+  }
+}
+function clearPreview(){
+  document.querySelectorAll('.preview').forEach(e=>e.classList.remove('preview'));
+  // a full re-render restores any DOM we mutated, but only when nothing's active-previewing
+}
+
+/* ── commit: the tick writes to the truth ──────────────────────── */
+function commit(){
+  if(!active || !currentProposal) return;
+  const {section,index} = active;
+  if(section==='brand'){
+    profileData.brand = typeof currentProposal==='string' ? currentProposal : (currentProposal.brand||currentProposal.value||profileData.brand);
+  } else {
+    profileData[section][index] = currentProposal;
+  }
+  currentProposal = null;
+  addMsg('dot', "Done — saved to the truth. Profile and prompt both updated.");
+  render();                 // re-render from truth (clean), both renders move
+  pulsePrompt();
+  toast('Saved to the truth');
+  setTimeout(closePanel, 700);
+}
+
+/* ── the second render: voice prompt, rebuilt from the same object ─ */
+function buildPromptMd(){
+  const p = profileData, bn = p.brandName || 'this brand';
+  let md = `You are an experienced copywriter crafting communications for **${bn}**. Your job is to write in their exact voice — not approximately, exactly.\n\n---\n\n`;
+  md += `## Brand\n\n${p.brand}\n\n`;
+  md += `## Who we are\n\n${p.behaviours.map(b=>`- **Are:** ${b.we}\n  **Are not:** ${b.not}`).join('\n')}\n\n`;
+  md += `## Write more like this\n\n${p.examples.map(e=>`- ✓ ${e.more}\n  ✗ ${e.less}`).join('\n')}\n\n`;
+  md += `## House rules\n\n${p.houseRules.map(r=>`- **${r.key}:** ${r.rule}`).join('\n')}\n\n---\n\nNow write like this. Every time. No exceptions.`;
+  return md;
+}
+function refreshPrompt(){ document.getElementById('pdBody').textContent = buildPromptMd(); }
+function togglePrompt(){ document.getElementById('promptDrawer').classList.toggle('open'); refreshPrompt(); }
+function pulsePrompt(){
+  refreshPrompt();
+  const p = document.getElementById('pdPulse'); p.classList.add('on');
+  setTimeout(()=>p.classList.remove('on'), 1400);
+}
+
+function toast(msg){
+  const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 1800);
+}
+function resetProfile(){ profileData = JSON.parse(JSON.stringify(SEED)); closePanel(); render(); toast('Profile reset'); }
+
+render();
+</script>
+</body>
+</html>

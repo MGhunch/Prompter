@@ -13,9 +13,11 @@ import io
 import requests as req
 from bs4 import BeautifulSoup
 from prompts import CONSULT_PROMPT, EXTRACT_PROMPT, CONFIRM_PROMPT, SUMMARISE_PROMPT
+from revise import revise_bp  # REVISE feature block (tick-it-or-tweak-it)
 
 app = Flask(__name__, static_folder='.', static_url_path='')
 CORS(app)
+app.register_blueprint(revise_bp)  # adds /api/revise; touches no existing route
 
 ANTHROPIC_API_KEY = os.environ.get('ANTHROPIC_API_KEY')
 
