@@ -17,7 +17,6 @@
 body{font-family:'Inter',sans-serif;background:var(--red);min-height:100vh;margin:0;color:var(--ink);}
 ::selection{background:var(--yellow);color:var(--ink);}
 
-/* lab chrome */
 .lab-bar{display:flex;align-items:center;gap:14px;padding:10px 18px;background:var(--ink);color:#fff;font-size:11px;letter-spacing:.4px;}
 .lab-bar .tag{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:3px;}
 .lab-bar .muted{color:rgba(255,255,255,.55);}
@@ -25,45 +24,42 @@ body{font-family:'Inter',sans-serif;background:var(--red);min-height:100vh;margi
 .lab-bar button{background:none;border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:var(--radius-pill);padding:5px 13px;font-size:10px;font-weight:600;cursor:pointer;letter-spacing:.5px;}
 .lab-bar button:hover{border-color:#fff;}
 
-/* stage: card + panel sit side by side, centred as a pair */
-.stage{display:flex;justify-content:center;align-items:flex-start;gap:16px;padding:40px 24px 60px;}
-.cardwrap{flex:0 1 640px;min-width:0;}
+/* stage: artefact (left) + human rail (right) */
+.stage{display:flex;justify-content:center;align-items:flex-start;gap:16px;padding:32px 24px 60px;}
+.cardwrap{flex:0 1 600px;min-width:0;}
+.rail{flex:0 0 320px;position:sticky;top:24px;max-height:calc(100vh - 48px);display:flex;flex-direction:column;}
 
-/* profile card — mirrors the live app */
+/* profile card — the artefact, now button-free */
 .profile-zone{background:#fff;border-radius:var(--radius-lg);overflow:hidden;}
-.profile-header{padding:14px 18px;border-bottom:.5px solid var(--card-border);display:flex;align-items:center;justify-content:space-between;}
+.profile-header{padding:14px 18px;border-bottom:.5px solid var(--card-border);}
 .profile-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;color:var(--ink);}
 .profile-title span{color:var(--red);}
-.profile-actions{display:flex;gap:8px;}
-.pill{display:inline-flex;align-items:center;gap:6px;border-radius:var(--radius-pill);padding:7px 16px;font-size:11px;font-weight:600;cursor:pointer;transition:all .15s;border:none;}
-.pill.ghost{background:none;border:1px solid var(--card-border);color:var(--ink);}
-.pill.solid{background:var(--ink);color:#fff;}
-
 .psec{padding:12px 18px;border-bottom:.5px solid var(--card-border);}
 .psec:last-of-type{border-bottom:none;}
 .plbl{font-size:8px;font-weight:700;color:var(--red);letter-spacing:2px;text-transform:uppercase;margin-bottom:5px;}
 .pbody{font-size:12px;color:var(--ink);line-height:1.75;font-weight:300;}
-.ptable{width:100%;border-collapse:collapse;margin-top:4px;}
+.ptable{width:100%;border-collapse:collapse;margin-top:4px;table-layout:fixed;}
 .ptable th{font-size:8px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;padding:5px 8px;background:var(--ink);color:#fff;text-align:left;}
-.ptable td{font-size:11px;padding:6px 8px;border-bottom:.5px solid var(--card-border);font-weight:300;color:var(--ink);line-height:1.45;vertical-align:top;}
+.ptable td{font-size:11px;padding:6px 8px;border-bottom:.5px solid var(--card-border);font-weight:300;color:var(--ink);line-height:1.45;vertical-align:top;word-wrap:break-word;}
+.ptable th:first-child,.ptable td:first-child{width:55%;}
+.ptable th:last-child,.ptable td:last-child{width:45%;}
 .ptable tr:nth-child(even) td{background:var(--card-bg);}
 .ptable tr:last-child td{border-bottom:none;}
 .ptable td:first-child{font-weight:500;}
-.ptable td.less{color:var(--mid);}
+.ptable td.foil{color:var(--mid);}
 .rules-list{display:flex;flex-direction:column;gap:4px;margin-top:3px;}
 .rule-item{display:flex;gap:10px;font-size:11px;line-height:1.5;font-weight:300;align-items:baseline;}
 .rule-key{font-weight:600;flex:0 0 130px;color:var(--ink);overflow-wrap:break-word;}
 .rule-val{flex:1;}
-.profile-footer{padding:10px 18px;border-top:.5px solid var(--card-border);}
-.footer-note{font-size:10px;color:var(--mid);}
 .footer-row{display:flex;align-items:center;gap:12px;}
 .footer-logo{height:20px;width:auto;opacity:.9;flex:0 0 auto;}
+.footer-note{font-size:10px;color:var(--mid);}
 
-/* the highlighter pen (persistent yellow) + the delta (brand red) */
+/* highlighter (yellow) + delta (brand red) */
 mark.hl{background:var(--yellow);color:var(--ink);border-radius:2px;padding:0 1px;}
 mark.changed{background:var(--delta);color:var(--ink);border-radius:2px;padding:0 1px;box-shadow:inset 0 -1px 0 rgba(237,28,36,.45);}
 
-/* editable blocks: hover-reveal pencil */
+/* editable blocks */
 .editable{position:relative;border-radius:6px;transition:background .15s;}
 .editable:hover{background:rgba(237,28,36,.035);}
 .pencil{position:absolute;top:6px;right:6px;width:22px;height:22px;border-radius:50%;border:none;background:#fff;
@@ -79,12 +75,39 @@ tr.editable .pencil{top:4px;right:4px;}
 .editable.active{background:rgba(237,28,36,.05);box-shadow:inset 0 0 0 1px rgba(237,28,36,.3);}
 .editable.preview{background:rgba(237,28,36,.05);box-shadow:inset 0 0 0 1px rgba(237,28,36,.4);}
 
-/* Dot panel — in flow, expands in tight beside the card */
-.dot-panel{flex:0 0 0;width:0;opacity:0;overflow:hidden;align-self:stretch;
-  transition:width .38s cubic-bezier(.4,0,.1,1),opacity .3s;}
-.stage.editing .dot-panel{flex:0 0 380px;width:380px;opacity:1;}
-.dp-inner{width:380px;background:#fff;border-radius:var(--radius-lg);box-shadow:0 12px 40px rgba(0,0,0,.22);
-  display:flex;flex-direction:column;max-height:calc(100vh - 120px);position:sticky;top:40px;}
+/* ── RAIL: idle (the human's resting column) ─────────────────── */
+.rail-idle{display:flex;flex-direction:column;gap:12px;overflow-y:auto;padding-right:2px;}
+.sensecheck{background:#fff;border-radius:var(--radius-lg);padding:16px 18px;}
+.sc-hed{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;color:var(--red);line-height:1;margin-bottom:8px;}
+.sc-body{font-size:12px;line-height:1.6;color:var(--ink);font-weight:300;}
+.actions{display:flex;flex-direction:column;gap:8px;background:#fff;border-radius:var(--radius-lg);padding:14px 16px;}
+.act{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;border-radius:var(--radius-pill);padding:9px 16px;font-size:11px;font-weight:600;cursor:pointer;transition:all .15s;border:none;}
+.act svg{width:14px;height:14px;flex-shrink:0;}
+.act.ghost{background:none;border:1px solid var(--card-border);color:var(--ink);}
+.act.ghost:hover{border-color:var(--ink);}
+.act.solid{background:var(--ink);color:#fff;}
+.act.solid:hover{background:var(--red);}
+.act.disabled{background:none;border:1px dashed var(--card-border);color:var(--mid);cursor:default;}
+.act.disabled:hover{border-color:var(--card-border);}
+.soon{font-size:8px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--mid);border:1px solid var(--card-border);border-radius:3px;padding:1px 4px;margin-left:2px;}
+/* tweaks made — the receipt of the sensecheck */
+.tweaks-made{background:#fff;border-radius:var(--radius-lg);overflow:hidden;}
+.tm-head{display:flex;align-items:center;justify-content:space-between;width:100%;background:none;border:none;cursor:pointer;padding:13px 16px;font-family:inherit;}
+.tm-count{font-size:12px;font-weight:600;color:var(--ink);display:flex;align-items:center;gap:7px;}
+.tm-count .tick{color:var(--red);font-weight:700;}
+.tm-chev{font-size:10px;color:var(--mid);transition:transform .2s;}
+.tweaks-made.open .tm-chev{transform:rotate(180deg);}
+.tm-list{display:none;flex-direction:column;border-top:.5px solid var(--card-border);}
+.tweaks-made.open .tm-list{display:flex;}
+.tw-item{padding:9px 16px;border-bottom:.5px solid var(--card-border);}
+.tw-item:last-child{border-bottom:none;}
+.tw-lbl{font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--red);margin-bottom:3px;}
+.tw-why{font-size:11px;line-height:1.5;color:var(--ink);font-weight:300;}
+
+/* ── RAIL: chat (becomes Dot on tweak) ───────────────────────── */
+.rail-chat{display:none;flex-direction:column;flex:1;min-height:0;background:#fff;border-radius:var(--radius-lg);box-shadow:0 12px 40px rgba(0,0,0,.16);overflow:hidden;}
+.stage.editing .rail-idle{display:none;}
+.stage.editing .rail-chat{display:flex;}
 .dp-head{display:flex;align-items:center;gap:10px;padding:13px 16px;border-bottom:.5px solid var(--card-border);}
 .dp-dot{width:30px;height:30px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Bebas Neue';font-size:15px;letter-spacing:1px;}
 .dp-title{font-weight:600;font-size:13px;}
@@ -96,9 +119,7 @@ tr.editable .pencil{top:4px;right:4px;}
 .msg.dot{background:var(--card-bg);color:var(--ink);align-self:flex-start;border-bottom-left-radius:3px;}
 .msg.dot.pb{background:#fff;outline:1px solid var(--red);}
 .msg.me{background:var(--ink);color:#fff;align-self:flex-end;border-bottom-right-radius:3px;}
-/* proposed line, shown right in the chat with its delta lit */
-.proposal{align-self:flex-start;max-width:92%;background:#fff;border:1px solid var(--red);border-radius:12px;
-  border-bottom-left-radius:3px;padding:10px 12px;font-size:12px;line-height:1.6;color:var(--ink);}
+.proposal{align-self:flex-start;max-width:92%;background:#fff;border:1px solid var(--red);border-radius:12px;border-bottom-left-radius:3px;padding:10px 12px;font-size:12px;line-height:1.6;color:var(--ink);}
 .proposal .pl{font-size:8px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--red);margin-bottom:5px;}
 .proposal .pf{display:block;margin-top:4px;}
 .proposal .pf b{font-weight:600;}
@@ -116,27 +137,19 @@ tr.editable .pencil{top:4px;right:4px;}
 .dp-send{background:var(--ink);color:#fff;border:none;border-radius:20px;padding:9px 16px;font-size:11px;font-weight:700;cursor:pointer;}
 .dp-send:hover{background:var(--red);}
 
-/* prompt preview drawer */
-.prompt-drawer{position:fixed;top:0;right:0;width:440px;max-width:90vw;height:100vh;background:#10100f;color:#e9e7e3;
-  transform:translateX(100%);transition:transform .35s ease;z-index:30;display:flex;flex-direction:column;}
+.prompt-drawer{position:fixed;top:0;right:0;width:440px;max-width:90vw;height:100vh;background:#10100f;color:#e9e7e3;transform:translateX(100%);transition:transform .35s ease;z-index:30;display:flex;flex-direction:column;}
 .prompt-drawer.open{transform:translateX(0);box-shadow:-10px 0 40px rgba(0,0,0,.4);}
 .pd-head{display:flex;align-items:center;padding:14px 18px;border-bottom:1px solid rgba(255,255,255,.1);}
 .pd-head .t{font-family:'Bebas Neue';letter-spacing:2px;font-size:18px;}
-.pd-head .pulse{font-size:9px;color:var(--red);margin-left:10px;opacity:0;transition:opacity .2s;}
-.pd-head .pulse.on{opacity:1;}
 .pd-head button{margin-left:auto;background:none;border:none;color:#fff;font-size:20px;cursor:pointer;}
-.pd-body{flex:1;overflow:auto;padding:16px 18px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;line-height:1.6;white-space:pre-wrap;color:#cfcdc8;}
+.pd-body{flex:1;overflow:auto;padding:16px 18px;font-family:ui-monospace,Menlo,monospace;font-size:11px;line-height:1.6;white-space:pre-wrap;color:#cfcdc8;}
 
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;
-  padding:11px 20px;border-radius:var(--radius-pill);font-size:12px;font-weight:600;opacity:0;transition:all .3s;z-index:40;pointer-events:none;}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:11px 20px;border-radius:var(--radius-pill);font-size:12px;font-weight:600;opacity:0;transition:all .3s;z-index:40;pointer-events:none;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
 @media(max-width:920px){
   .stage{flex-direction:column;align-items:center;}
-  .dot-panel{position:fixed;bottom:0;left:0;right:0;width:auto;flex:none;z-index:20;
-    transform:translateY(110%);opacity:1;transition:transform .38s cubic-bezier(.4,0,.1,1);}
-  .stage.editing .dot-panel{width:auto;transform:translateY(0);}
-  .dp-inner{width:100%;border-radius:var(--radius-lg) var(--radius-lg) 0 0;max-height:72vh;position:static;}
+  .rail{position:static;flex:none;width:100%;max-width:600px;max-height:none;}
 }
 </style>
 </head>
@@ -146,23 +159,18 @@ tr.editable .pencil{top:4px;right:4px;}
   <span class="tag">REVISE LAB</span>
   <span class="muted">canned Neon profile · live <b>/api/revise</b> · highlight a line or hit a pencil</span>
   <span class="spacer"></span>
-  <button onclick="togglePrompt()">Show prompt</button>
   <button onclick="resetProfile()">Reset</button>
 </div>
 
 <div class="stage" id="stage">
-  <div class="cardwrap">
-    <div class="profile-zone" id="profileZone"></div>
-  </div>
+  <div class="cardwrap"><div class="profile-zone" id="profileZone"></div></div>
 
-  <div class="dot-panel" id="dotPanel">
-    <div class="dp-inner">
+  <div class="rail" id="rail">
+    <div class="rail-idle" id="railIdle"></div>
+    <div class="rail-chat" id="railChat">
       <div class="dp-head">
         <div class="dp-dot">D</div>
-        <div>
-          <div class="dp-title">Dot</div>
-          <div class="dp-sub" id="dpSub">Tweaking a block</div>
-        </div>
+        <div><div class="dp-title">Dot</div><div class="dp-sub" id="dpSub">Tweaking a block</div></div>
         <button class="dp-x" onclick="closePanel()">&times;</button>
       </div>
       <div class="dp-body" id="dpBody"></div>
@@ -175,28 +183,24 @@ tr.editable .pencil{top:4px;right:4px;}
 </div>
 
 <div class="prompt-drawer" id="promptDrawer">
-  <div class="pd-head"><span class="t" id="pdTitle">YOUR NEON PROMPT</span><span class="pulse" id="pdPulse">updated ✓</span><button onclick="togglePrompt()">&times;</button></div>
+  <div class="pd-head"><span class="t" id="pdTitle">YOUR NEON PROMPT</span><button onclick="togglePrompt()">&times;</button></div>
   <div class="pd-body" id="pdBody"></div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-/* ───────────────────────────────────────────────────────────────
-   COPY lives here — rewrite the openers freely, they're yours.
-   ─────────────────────────────────────────────────────────────── */
 const OPENERS = {
   brand:      p => `This is your Brand — the whole voice in a paragraph. What's not sitting right?`,
   brandHi:    (p,h) => `You've marked “${h}” in your Brand. What's off about it?`,
   behaviours: (p,i) => `This is a Who-we-are pair — “${p.behaviours[i].we}” against “${p.behaviours[i].not}”. What would you change?`,
+  behavioursHi:(p,i,h) => `You've marked “${h}”. What's off about it?`,
   examples:   (p,i) => `This is a More / Less example. What's not landing?`,
   examplesHi: (p,i,h) => `You've marked “${h}”. What's off about it?`,
   houseRules: (p,i) => `This is your “${p.houseRules[i].key}” rule. What's off?`,
   houseRulesHi:(p,i,h) => `You've marked “${h}” in the “${p.houseRules[i].key}” rule. What's off about it?`,
-  behavioursHi:(p,i,h) => `You've marked “${h}”. What's off about it?`,
 };
 
-/* ── canned Neon profile (real profileData shape) ──────────────── */
 const SEED = {
   brandName: "Neon",
   brand: "Neon writes like the friend who's already three episodes in and won't shut up about it — opinionated, warm, pulling you toward something rather than pitching it at you. The voice runs on conviction: it has a take, it backs the take, and it's comfortable if you push back. The reader doesn't feel marketed to; they feel let in.",
@@ -220,14 +224,16 @@ const SEED = {
 };
 
 let profileData = JSON.parse(JSON.stringify(SEED));
-let active = null;        // { section, index, highlight, opener }
+let active = null;
 let history = [];
 let currentProposal = null;
+let tweaks = [];          // in-session tweak log: {label, why, before, after}
 
 const esc = s => (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 const PENCIL = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>`;
+const SVG_PDF = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>`;
+const SVG_PROMPT = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>`;
 
-/* ── word-level diff: light up what changed (brand red) ────────────── */
 function diffWords(oldS, newS){
   const tok = s => (s||'').split(/(\s+)/);
   const o = tok(oldS), n = tok(newS);
@@ -238,18 +244,16 @@ function diffWords(oldS, newS){
   let i=0, j=0, out='';
   while(j<k){
     if(i<m && o[i]===n[j]){ out+=esc(n[j]); i++; j++; }
-    else if(i<m && dp[i+1][j] >= dp[i][j+1]){ i++; }       // word removed
+    else if(i<m && dp[i+1][j] >= dp[i][j+1]){ i++; }
     else { out += n[j].trim()==='' ? esc(n[j]) : '<mark class="changed">'+esc(n[j])+'</mark>'; j++; }
   }
   return out;
 }
 
-/* ── render the card (truth only) ──────────────────────────────── */
+/* ── the artefact (card), now button-free ─────────────────────── */
 function render(){
   const p = profileData, bn = p.brandName || 'Brand';
-  let h = `<div class="profile-header">
-    <div class="profile-title">YOUR <span>${esc(bn.toUpperCase())}</span> VOICE</div>
-    <div class="profile-actions"><button class="pill ghost">PDF</button><button class="pill solid">Prompt</button></div></div>`;
+  let h = `<div class="profile-header"><div class="profile-title">YOUR <span>${esc(bn.toUpperCase())}</span> VOICE</div></div>`;
 
   h += `<div class="psec editable" data-section="brand" data-index="0">
     <button class="pencil" title="Tweak">${PENCIL}</button>
@@ -258,13 +262,13 @@ function render(){
   h += `<div class="psec"><div class="plbl">Who we are</div><table class="ptable">
     <tr><th>We are</th><th>We're not</th></tr>` +
     p.behaviours.map((b,i)=>`<tr class="editable" data-section="behaviours" data-index="${i}">
-      <td data-text data-field="we">${esc(b.we)}</td><td data-text data-field="not">${esc(b.not)}<button class="pencil" title="Tweak">${PENCIL}</button></td></tr>`).join('') +
+      <td data-text data-field="we">${esc(b.we)}</td><td class="foil" data-text data-field="not">${esc(b.not)}<button class="pencil" title="Tweak">${PENCIL}</button></td></tr>`).join('') +
     `</table></div>`;
 
   h += `<div class="psec"><div class="plbl">Examples</div><table class="ptable">
     <tr><th>More this</th><th>Less this</th></tr>` +
     p.examples.map((e,i)=>`<tr class="editable" data-section="examples" data-index="${i}">
-      <td data-text data-field="more">${esc(e.more)}</td><td class="less" data-text data-field="less">${esc(e.less)}<button class="pencil" title="Tweak">${PENCIL}</button></td></tr>`).join('') +
+      <td data-text data-field="more">${esc(e.more)}</td><td class="foil" data-text data-field="less">${esc(e.less)}<button class="pencil" title="Tweak">${PENCIL}</button></td></tr>`).join('') +
     `</table></div>`;
 
   h += `<div class="psec"><div class="plbl">House Rules</div><div class="rules-list">` +
@@ -285,8 +289,36 @@ function render(){
   refreshPrompt();
 }
 
-/* highlighter: a selection inside a block opens it, focused + lit yellow */
-function selectionInfo(el){
+/* ── the human rail, at rest ──────────────────────────────────── */
+function renderRail(){
+  let h = `<div class="sensecheck">
+      <div class="sc-hed">Tick it or tweak it</div>
+      <div class="sc-body">Anything sound out of place? Highlight it and Dot'll help you sharpen it. Happy as is? You're done.</div>
+    </div>`;
+
+  if(tweaks.length){
+    h += `<div class="tweaks-made" id="tweaksMade">
+        <button class="tm-head" onclick="document.getElementById('tweaksMade').classList.toggle('open')">
+          <span class="tm-count"><span class="tick">✓</span> ${tweaks.length} tweak${tweaks.length>1?'s':''} made</span>
+          <span class="tm-chev">▾</span>
+        </button>
+        <div class="tm-list">` +
+        tweaks.map(t=>`<div class="tw-item"><div class="tw-lbl">${esc(t.label)}</div><div class="tw-why">${esc(t.why)}</div></div>`).join('') +
+        `</div></div>`;
+  }
+
+  h += `<div class="actions">
+      <button class="act ghost" onclick="downloadStub('PDF')">${SVG_PDF} PDF</button>
+      <button class="act solid" onclick="togglePrompt()">${SVG_PROMPT} Prompt</button>
+      <button class="act disabled" onclick="toast('Save lands in v2')">Save <span class="soon">soon</span></button>
+    </div>`;
+
+  document.getElementById('railIdle').innerHTML = h;
+}
+function downloadStub(kind){ toast(kind+' export lives in the real app'); }
+
+/* ── highlighter ──────────────────────────────────────────────── */
+function highlightWithin(el){
   const sel = window.getSelection();
   if(!sel || sel.isCollapsed) return '';
   const txt = sel.toString().trim();
@@ -295,8 +327,6 @@ function selectionInfo(el){
   const node = anc.nodeType === 3 ? anc.parentElement : anc;
   return el.contains(node) ? txt : '';
 }
-const highlightWithin = selectionInfo;
-
 document.addEventListener('mouseup', ()=>{
   if(active) return;
   const sel = window.getSelection();
@@ -308,8 +338,6 @@ document.addEventListener('mouseup', ()=>{
   const el = node && node.closest ? node.closest('.editable') : null;
   if(el){ open(el.dataset.section, +el.dataset.index, txt); }
 });
-
-/* paint the marked words yellow on the card, persistently */
 function litHighlight(section, index, hl){
   if(!hl) return;
   const el = blockEl(section,index);
@@ -317,20 +345,16 @@ function litHighlight(section, index, hl){
   for(const node of el.querySelectorAll('[data-text]')){
     const t = node.textContent;
     const i = t.indexOf(hl);
-    if(i >= 0){
-      node.innerHTML = esc(t.slice(0,i)) + '<mark class="hl">' + esc(hl) + '</mark>' + esc(t.slice(i+hl.length));
-      break;
-    }
+    if(i >= 0){ node.innerHTML = esc(t.slice(0,i))+'<mark class="hl">'+esc(hl)+'</mark>'+esc(t.slice(i+hl.length)); break; }
   }
 }
 
-/* ── open / close ──────────────────────────────────────────────── */
 function blockValue(section,index){ return section==='brand' ? profileData.brand : profileData[section][index]; }
 function blockEl(section,index){ return document.querySelector(`.editable[data-section="${section}"][data-index="${index}"]`); }
 
 function open(section, index, highlight){
   clearActive();
-  active = { section, index, highlight: highlight||'' };
+  active = { section, index, highlight: highlight||'', lastReason:'' };
   history = []; currentProposal = null;
   const el = blockEl(section,index);
   if(el) el.classList.add('active');
@@ -346,10 +370,10 @@ function open(section, index, highlight){
   document.getElementById('dpBody').innerHTML = '';
   addMsg('dot', opener);
   document.getElementById('stage').classList.add('editing');
-  setTimeout(()=>document.getElementById('dpInput').focus(), 320);
+  setTimeout(()=>document.getElementById('dpInput').focus(), 200);
 }
 function subLabel(section,index){
-  if(section==='brand') return 'Brand';
+  if(section==='brand') return 'Brand Voice';
   if(section==='behaviours') return 'Who we are · row '+(index+1);
   if(section==='examples') return 'Examples · row '+(index+1);
   if(section==='houseRules') return profileData.houseRules[index].key;
@@ -361,46 +385,31 @@ function clearActive(){
 function closePanel(){
   document.getElementById('stage').classList.remove('editing');
   active = null; currentProposal = null; history = [];
-  render();   // restore truth, clear any highlight/preview
+  render(); renderRail();
 }
 
-/* ── chat ──────────────────────────────────────────────────────── */
+/* ── chat ─────────────────────────────────────────────────────── */
 function addMsg(who, text, opts={}){
   const body = document.getElementById('dpBody');
   const d = document.createElement('div');
   d.className = 'msg '+who+(opts.pb?' pb':'');
   d.textContent = text;
-  body.appendChild(d);
-  body.scrollTop = body.scrollHeight;
+  body.appendChild(d); body.scrollTop = body.scrollHeight;
 }
-/* the proposed line, shown in the chat with its delta lit + Lock button */
 function addProposal(section, index, prop){
   const body = document.getElementById('dpBody');
   const cur = blockValue(section, index);
   let inner = '';
-  if(section==='brand'){
-    inner = `<span class="pf">${diffWords(cur, typeof prop==='string'?prop:(prop.brand||''))}</span>`;
-  } else if(section==='behaviours'){
-    inner = `<span class="pf"><span class="lbl">We are</span> ${diffWords(cur.we, prop.we||'')}</span>
-             <span class="pf"><span class="lbl">We're not</span> ${diffWords(cur.not, prop.not||'')}</span>`;
-  } else if(section==='examples'){
-    inner = `<span class="pf"><span class="lbl">More</span> ${diffWords(cur.more, prop.more||'')}</span>
-             <span class="pf"><span class="lbl">Less</span> ${diffWords(cur.less, prop.less||'')}</span>`;
-  } else if(section==='houseRules'){
-    inner = `<span class="pf"><b>${diffWords(cur.key, prop.key||cur.key)}</b></span>
-             <span class="pf">${diffWords(cur.rule, prop.rule||'')}</span>`;
-  }
-  const card = document.createElement('div');
-  card.className = 'proposal';
+  if(section==='brand') inner = `<span class="pf">${diffWords(cur, typeof prop==='string'?prop:(prop.brand||''))}</span>`;
+  else if(section==='behaviours') inner = `<span class="pf"><span class="lbl">We are</span> ${diffWords(cur.we, prop.we||'')}</span><span class="pf"><span class="lbl">We're not</span> ${diffWords(cur.not, prop.not||'')}</span>`;
+  else if(section==='examples') inner = `<span class="pf"><span class="lbl">More</span> ${diffWords(cur.more, prop.more||'')}</span><span class="pf"><span class="lbl">Less</span> ${diffWords(cur.less, prop.less||'')}</span>`;
+  else if(section==='houseRules') inner = `<span class="pf"><b>${diffWords(cur.key, prop.key||cur.key)}</b></span><span class="pf">${diffWords(cur.rule, prop.rule||'')}</span>`;
+  const card = document.createElement('div'); card.className='proposal';
   card.innerHTML = `<div class="pl">Proposed</div>${inner}`;
   body.appendChild(card);
-
-  const row = document.createElement('div'); row.className = 'lock-row';
-  const b = document.createElement('button'); b.className = 'lock-btn';
-  b.textContent = '✓ Lock this?';
-  b.onclick = commit;
-  row.appendChild(b); body.appendChild(row);
-  body.scrollTop = body.scrollHeight;
+  const row = document.createElement('div'); row.className='lock-row';
+  const b = document.createElement('button'); b.className='lock-btn'; b.textContent='✓ Lock this?'; b.onclick=commit;
+  row.appendChild(b); body.appendChild(row); body.scrollTop = body.scrollHeight;
 }
 function thinking(on){
   const body = document.getElementById('dpBody');
@@ -409,13 +418,11 @@ function thinking(on){
     t.innerHTML='<span></span><span></span><span></span>'; body.appendChild(t); body.scrollTop=body.scrollHeight; }
   else if(t){ t.remove(); }
 }
-
 async function sendFeedback(){
   const inp = document.getElementById('dpInput');
   const text = inp.value.trim();
   if(!text || !active) return;
-  inp.value='';
-  addMsg('me', text);
+  inp.value=''; addMsg('me', text);
   history.push({role:'user', content:text});
   thinking(true);
   try{
@@ -423,11 +430,10 @@ async function sendFeedback(){
       method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({
         profile: profileData,
-        target: { section: active.section, index: active.index },
+        target:{section:active.section, index:active.index},
         blockValue: blockValue(active.section, active.index),
         highlight: active.highlight || null,
-        opener: active.opener,
-        history
+        opener: active.opener, history
       })
     });
     const data = await res.json();
@@ -435,47 +441,25 @@ async function sendFeedback(){
     if(!data.success){ addMsg('dot', data.error || "Something went sideways. Try again?"); return; }
     history.push({role:'assistant', content:data.message});
     if(data.proposal){
-      currentProposal = data.proposal;
+      currentProposal = data.proposal; active.lastReason = data.message || '';
       if(data.message) addMsg('dot', data.message);
       addProposal(active.section, active.index, data.proposal);
       preview(active.section, active.index, data.proposal);
-    } else {
-      currentProposal = null;
-      restoreBlock(active.section, active.index);
-      addMsg('dot', data.message, {pb:data.pushback});
-    }
-  }catch(err){
-    thinking(false);
-    addMsg('dot', "Couldn't reach the engine — is the API key set? ("+err.message+")");
-  }
+    } else { currentProposal=null; restoreBlock(active.section, active.index); addMsg('dot', data.message, {pb:data.pushback}); }
+  }catch(err){ thinking(false); addMsg('dot', "Couldn't reach the engine — is the API key set? ("+err.message+")"); }
 }
 
-/* ── live preview on the card (DOM only — never the truth), delta lit ─ */
-function setField(el, field, html){
-  const node = el.querySelector(`[data-field="${field}"]`);
-  if(node) node.innerHTML = html;
-}
+/* ── preview on the card (DOM only) ───────────────────────────── */
+function setField(el, field, html){ const n = el.querySelector(`[data-field="${field}"]`); if(n) n.innerHTML = html; }
 function preview(section, index, prop){
-  const el = blockEl(section,index);
-  if(!el) return;
+  const el = blockEl(section,index); if(!el) return;
   el.classList.remove('active'); el.classList.add('preview');
   const cur = blockValue(section,index);
-  if(section==='brand'){
-    setField(el,'brand', diffWords(cur, typeof prop==='string'?prop:(prop.brand||'')));
-  } else if(section==='behaviours'){
-    setField(el,'we', diffWords(cur.we, prop.we||''));
-    setField(el,'not', diffWords(cur.not, prop.not||''));
-    keepPencil(el,'not');
-  } else if(section==='examples'){
-    setField(el,'more', diffWords(cur.more, prop.more||''));
-    setField(el,'less', diffWords(cur.less, prop.less||''));
-    keepPencil(el,'less');
-  } else if(section==='houseRules'){
-    setField(el,'key', diffWords(cur.key, prop.key||cur.key));
-    setField(el,'rule', diffWords(cur.rule, prop.rule||''));
-  }
+  if(section==='brand') setField(el,'brand', diffWords(cur, typeof prop==='string'?prop:(prop.brand||'')));
+  else if(section==='behaviours'){ setField(el,'we', diffWords(cur.we, prop.we||'')); setField(el,'not', diffWords(cur.not, prop.not||'')); keepPencil(el,'not'); }
+  else if(section==='examples'){ setField(el,'more', diffWords(cur.more, prop.more||'')); setField(el,'less', diffWords(cur.less, prop.less||'')); keepPencil(el,'less'); }
+  else if(section==='houseRules'){ setField(el,'key', diffWords(cur.key, prop.key||cur.key)); setField(el,'rule', diffWords(cur.rule, prop.rule||'')); }
 }
-/* the pencil lives inside the second cell; re-add it after we overwrite that cell */
 function keepPencil(el, field){
   const node = el.querySelector(`[data-field="${field}"]`);
   if(node && !node.querySelector('.pencil')){
@@ -485,8 +469,7 @@ function keepPencil(el, field){
   }
 }
 function restoreBlock(section,index){
-  const el = blockEl(section,index);
-  if(!el) return;
+  const el = blockEl(section,index); if(!el) return;
   el.classList.remove('preview'); el.classList.add('active');
   const cur = blockValue(section,index);
   if(section==='brand') setField(el,'brand', esc(cur));
@@ -496,24 +479,27 @@ function restoreBlock(section,index){
   if(active && active.highlight) litHighlight(section,index,active.highlight);
 }
 
-/* ── commit: Lock this writes to the truth ─────────────────────── */
+/* ── commit: Lock writes to truth + logs the tweak ────────────── */
 function commit(){
   if(!active || !currentProposal) return;
   const {section,index} = active;
-  if(section==='brand'){
-    profileData.brand = typeof currentProposal==='string' ? currentProposal : (currentProposal.brand||profileData.brand);
-  } else {
-    profileData[section][index] = currentProposal;
-  }
+  const before = JSON.parse(JSON.stringify(blockValue(section,index)));
+  if(section==='brand') profileData.brand = typeof currentProposal==='string' ? currentProposal : (currentProposal.brand||profileData.brand);
+  else profileData[section][index] = currentProposal;
+
+  tweaks.push({
+    label: subLabel(section,index),
+    why: active.lastReason || 'Tweaked.',
+    before, after: JSON.parse(JSON.stringify(currentProposal))
+  });
+
   currentProposal = null;
   addMsg('dot', "Locked in. Profile and prompt both updated.");
-  render();
-  pulsePrompt();
-  toast('Locked in');
+  render(); pulsePrompt(); toast('Locked in');
   setTimeout(closePanel, 650);
 }
 
-/* ── the second render: voice prompt, from the same object ─────── */
+/* ── second render: the prompt ────────────────────────────────── */
 function buildPromptMd(){
   const p = profileData, bn = p.brandName || 'this brand';
   let md = `You are an experienced copywriter crafting communications for **${bn}**. Your job is to write in their exact voice — not approximately, exactly.\n\n---\n\n`;
@@ -529,18 +515,11 @@ function refreshPrompt(){
   if(t) t.textContent = `YOUR ${(profileData.brandName||'BRAND').toUpperCase()} PROMPT`;
 }
 function togglePrompt(){ document.getElementById('promptDrawer').classList.toggle('open'); refreshPrompt(); }
-function pulsePrompt(){
-  refreshPrompt();
-  const p = document.getElementById('pdPulse'); p.classList.add('on');
-  setTimeout(()=>p.classList.remove('on'), 1400);
-}
-function toast(msg){
-  const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'), 1700);
-}
-function resetProfile(){ profileData = JSON.parse(JSON.stringify(SEED)); active=null; document.getElementById('stage').classList.remove('editing'); render(); toast('Profile reset'); }
+function pulsePrompt(){ refreshPrompt(); }
+function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),1700); }
+function resetProfile(){ profileData = JSON.parse(JSON.stringify(SEED)); active=null; tweaks=[]; document.getElementById('stage').classList.remove('editing'); render(); renderRail(); toast('Profile reset'); }
 
-render();
+render(); renderRail();
 </script>
 </body>
 </html>
