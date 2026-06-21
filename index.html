@@ -60,7 +60,7 @@ body { font-family: 'Inter', sans-serif; background: var(--red); min-height: 100
 .hero-copy { padding-right: 8px; padding-bottom: 8px; flex: 1; order: 1; }
 .hero-tag { font-size: 10px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: var(--white-lo); margin-bottom: 8px; }
 .hero-hed { font-family: 'Bebas Neue', sans-serif; font-size: 48px; letter-spacing: 2px; color: white; line-height: 0.95; margin-bottom: 10px; }
-.hero-hed em { font-style: normal; opacity: 0.35; }
+.hero-hed em { font-style: normal; opacity: 0.6; }
 .hero-sub { font-size: 12px; color: var(--white-mid); line-height: 1.65; font-weight: 300; }
 
 /* DOT OPENING */
@@ -432,7 +432,7 @@ input.sc-range::-webkit-slider-runnable-track { background: transparent; }
     <div class="hero-copy">
       <div class="hero-tag">Find your voice</div>
       <div class="hero-hed">Drop in your brand.<br><em>Draw out your voice.</em></div>
-      <div class="hero-sub">Share guidelines, brand rules and examples you love.</div>
+      <div class="hero-sub">Does your robot sound like every other robot? We can fix that with a decent prompt.</div>
     </div>
     <img src="/images/Dot_Hello.png" class="dot-hero-img" alt="Dot" onerror="this.style.display='none'"/>
   </div>
@@ -474,7 +474,7 @@ input.sc-range::-webkit-slider-runnable-track { background: transparent; }
       <div class="drop-zone" id="dropZone"
         onclick="document.getElementById('fileInput').click()"
         ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
-        <div class="drop-lbl">Drop files here &nbsp;or&nbsp; <u>browse</u></div>
+        <div class="drop-lbl"><u>Drop in</u> your guidelines, brand voice or examples you love.</div>
         <div class="drop-sub">PDF · Word</div>
         <input type="file" id="fileInput" accept=".pdf,.doc,.docx" multiple style="display:none" onchange="handleFileSelect(event)"/>
       </div>
@@ -590,7 +590,7 @@ window.addEventListener('load', async () => {
       document.getElementById('dotOpenText').textContent = data.message;
     }
   } catch {
-    document.getElementById('dotOpenText').textContent = "How you talk is who you are. Drop in an example and let's chat.";
+    document.getElementById('dotOpenText').textContent = "How you talk is who you are, let's dig in...";
   }
 });
 
