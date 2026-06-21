@@ -12,7 +12,7 @@ import json
 import io
 import requests as req
 from bs4 import BeautifulSoup
-from prompts import CONSULT_PROMPT, EXTRACT_PROMPT, CONFIRM_PROMPT, SUMMARISE_PROMPT
+from prompts import CONSULT_PROMPT, EXTRACT_PROMPT, CONFIRM_PROMPT, SUMMARISE_PROMPT, REGEN_SENTENCE_PROMPT
 from revise import revise_bp  # REVISE feature block (tick-it-or-tweak-it)
 
 app = Flask(__name__, static_folder='.', static_url_path='')
@@ -364,6 +364,63 @@ def confirm():
     except Exception as e:
         print(f'[Prompter] Confirm error: {e}')
         return jsonify({'error': str(e)}), 500
+
+@app.route('/api/confirm/regenerate', methods=['POST'])
+def confirm_regenerate():
+    data = request.get_json() or {}
+    files = data.get('files', [])
+    history = data.get('history', [])
+    reject = data.get('reject') or {}
+
+    if not files:
+        return jsonify({'error': 'No files provided'}), 400
+    if not ANTHROPIC_API_KEY:
+        return jsonify({'error': 'API key not configured'}), 500
+
+    try:
+        client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
+
+        file_context = "Brand material:\n\n"
+        for f in files:
+            file_context += f"--- {f['filename']} ---\n{f['text'][:2500]}\n\n"
+
+        convo = ""
+        if history:
+            convo = "\n\nConsultation so far:\n" + "\n".join([
+                f"{'Dot' if h['role']=='assistant' else 'User'}: {h['content']}"
+                for h in history
+            ])
+
+        rejected = (
+            "\n\nThe sentence dial the user rejected (do not repeat it):\n"
+            f"- axis: More {reject.get('noteA', '?')} <-> More {reject.get('noteB', '?')}\n"
+            f"- A: {reject.get('sentenceA', '')}\n"
+            f"- B: {reject.get('sentenceB', '')}"
+        )
+
+        message = client.messages.create(
+            model=MODEL,
+            max_tokens=600,
+            system=REGEN_SENTENCE_PROMPT,
+            messages=[{'role': 'user', 'content': file_context + convo + rejected}]
+        )
+
+        raw = message.content[0].text
+        clean = raw.replace('```json', '').replace('```', '').strip()
+        check = json.loads(clean)
+
+        if check.get('type') != 'sentence':
+            return jsonify({'error': 'Unexpected response shape'}), 500
+
+        return jsonify({'success': True, 'check': check})
+
+    except json.JSONDecodeError as e:
+        print(f'[Prompter] Regenerate JSON error: {e}')
+        return jsonify({'error': 'Could not parse response'}), 500
+    except Exception as e:
+        print(f'[Prompter] Regenerate error: {e}')
+        return jsonify({'error': str(e)}), 500
+
 
 @app.route('/api/health')
 def health():

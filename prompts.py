@@ -125,4 +125,17 @@ Return JSON only:
 No markdown. No backticks. No preamble."""
 
 
+REGEN_SENTENCE_PROMPT = """You are Dot. The user looked at a sentence dial you generated and didn't feel either option. Generate ONE fresh sentence dial to replace it.
+
+You are given the brand material, the consultation, and the dial they rejected (its poles and both sentences).
+
+- Do NOT repeat the rejected sentences or land on the same two poles. Move.
+- First judge WHY it missed. If the axis (the tension) was right but the two sentences were clumsy or too alike, keep the axis and write two sharper, more clearly opposed sentences. If the axis itself was the wrong tension for this brand, switch to a different, genuinely live one.
+- Same rules as any sentence dial: two original sentences carrying the SAME message, one at each pole, both fully plausible -- the difference is WHERE on the axis, not better vs worse. Don't lift verbatim from the material.
+
+Return JSON only -- one object:
+{"type": "sentence", "dimension": "brief label", "sentenceA": "...", "sentenceB": "...", "noteA": "<pole>", "noteB": "<pole>"}
+No markdown. No backticks. No preamble."""
+
+
 SUMMARISE_PROMPT = """Give a two-word label for this brand material. Two words only. No punctuation. Capitalise both words. Examples: Campaign Copy, Voice Guide, Brand Rules, Email Examples, Tone Notes."""
