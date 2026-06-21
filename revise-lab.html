@@ -27,13 +27,19 @@ body{font-family:'Inter',sans-serif;background:var(--red);min-height:100vh;margi
 /* stage: artefact (left) + human rail (right) */
 .stage{display:flex;justify-content:center;align-items:flex-start;gap:16px;padding:32px 24px 60px;}
 .cardwrap{flex:0 1 600px;min-width:0;}
-.rail{flex:0 0 320px;position:sticky;top:24px;max-height:calc(100vh - 48px);display:flex;flex-direction:column;}
+.rail{flex:0 0 320px;position:sticky;top:24px;max-height:calc(100vh - 48px);display:flex;flex-direction:column;gap:16px;}
 
 /* profile card — the artefact, now button-free */
 .profile-zone{background:#fff;border-radius:var(--radius-lg);overflow:hidden;}
-.profile-header{padding:14px 18px;border-bottom:.5px solid var(--card-border);}
+.profile-header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 18px;border-bottom:.5px solid var(--card-border);}
 .profile-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;color:var(--ink);}
 .profile-title span{color:var(--red);}
+/* card view toggle — screen chrome, stripped on PDF export ([data-noexport]) */
+.view-toggle{display:inline-flex;flex:0 0 auto;border:1px solid var(--red);border-radius:var(--radius-pill);overflow:hidden;}
+.vt{background:none;border:none;color:var(--red);font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:5px 12px;cursor:pointer;font-family:'Inter',sans-serif;transition:background .15s,color .15s;}
+.vt.active{background:var(--red);color:#fff;}
+.vt:not(.active):hover{background:rgba(237,28,36,.08);}
+.prompt-view{padding:20px 18px;font-family:ui-monospace,Menlo,monospace;font-size:11px;line-height:1.75;white-space:pre-wrap;color:#111;}
 .psec{padding:12px 18px;border-bottom:.5px solid var(--card-border);}
 .psec:last-of-type{border-bottom:none;}
 .plbl{font-size:8px;font-weight:700;color:var(--red);letter-spacing:2px;text-transform:uppercase;margin-bottom:5px;}
@@ -76,10 +82,26 @@ tr.editable .pencil{top:4px;right:4px;}
 .editable.preview{background:rgba(237,28,36,.05);box-shadow:inset 0 0 0 1px rgba(237,28,36,.4);}
 
 /* ── RAIL: idle (the human's resting column) ─────────────────── */
-.rail-idle{display:flex;flex-direction:column;gap:12px;overflow-y:auto;padding-right:2px;}
-.sensecheck{background:#fff;border-radius:var(--radius-lg);padding:16px 18px;}
-.sc-hed{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;color:var(--red);line-height:1;margin-bottom:8px;}
-.sc-body{font-size:12px;line-height:1.6;color:var(--ink);font-weight:300;}
+.rail-idle{display:flex;flex-direction:column;gap:16px;overflow-y:auto;padding-right:2px;}
+/* sensecheck hero — pulled onto the red, mirroring the welcome page */
+.sc-hero{padding:4px 4px 0;}
+.sc-eyebrow{font-size:11px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:10px;}
+.sc-hed{font-family:'Bebas Neue',sans-serif;font-size:58px;letter-spacing:0;line-height:.82;color:#fff;}
+.sc-hed .tweak{color:rgba(255,255,255,.42);}
+.sc-intro{font-size:13px;line-height:1.5;color:rgba(255,255,255,.85);font-weight:400;margin:14px 4px 0;}
+/* Dot, in a box below — mirrors the welcome bubble (avatar on red, white bubble) */
+.sc-dot{display:flex;gap:10px;align-items:flex-start;}
+.sc-dot-av{flex:0 0 auto;width:34px;height:34px;border-radius:50%;background:#fff;color:var(--red);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue';font-size:17px;letter-spacing:1px;}
+.sc-dot-bubble{flex:1;background:#fff;border-radius:14px;border-top-left-radius:4px;padding:12px 14px;font-size:13px;line-height:1.5;color:var(--ink);font-weight:400;}
+/* single download — takes both faces at once */
+/* persistent footer — the exit, always visible, even mid-tweak */
+.rail-foot{flex:0 0 auto;}
+.gtg{background:var(--card-bg);border-radius:var(--radius-lg);padding:16px 16px 14px;text-align:left;}
+.gtg-hed{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;line-height:1;color:var(--mid);margin-bottom:11px;}
+.dl-btn{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;background:var(--red);color:#fff;border:none;border-radius:var(--radius-pill);padding:11px 18px;font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:background .15s;font-family:inherit;}
+.dl-btn:hover{background:var(--red-dark);}
+.dl-btn svg{width:16px;height:16px;}
+.dl-cap{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--mid);margin-top:9px;}
 .actions{display:flex;flex-direction:column;gap:8px;background:#fff;border-radius:var(--radius-lg);padding:14px 16px;}
 .act{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;border-radius:var(--radius-pill);padding:9px 16px;font-size:11px;font-weight:600;cursor:pointer;transition:all .15s;border:none;}
 .act svg{width:14px;height:14px;flex-shrink:0;}
@@ -115,7 +137,7 @@ tr.editable .pencil{top:4px;right:4px;}
 .dp-x{margin-left:auto;background:none;border:none;color:var(--mid);font-size:18px;cursor:pointer;line-height:1;}
 .dp-x:hover{color:var(--ink);}
 .dp-body{flex:1;overflow-y:auto;padding:14px 16px;display:flex;flex-direction:column;gap:10px;}
-.msg{font-size:12px;line-height:1.6;max-width:88%;padding:9px 12px;border-radius:12px;font-weight:300;}
+.msg{font-size:12px;line-height:1.6;max-width:88%;padding:9px 12px;border-radius:12px;font-weight:300;white-space:pre-line;}
 .msg.dot{background:var(--card-bg);color:var(--ink);align-self:flex-start;border-bottom-left-radius:3px;}
 .msg.dot.pb{background:#fff;outline:1px solid var(--red);}
 .msg.me{background:var(--ink);color:#fff;align-self:flex-end;border-bottom-right-radius:3px;}
@@ -166,6 +188,7 @@ tr.editable .pencil{top:4px;right:4px;}
   <div class="cardwrap"><div class="profile-zone" id="profileZone"></div></div>
 
   <div class="rail" id="rail">
+    <div class="rail-head" id="railHead"></div>
     <div class="rail-idle" id="railIdle"></div>
     <div class="rail-chat" id="railChat">
       <div class="dp-head">
@@ -175,10 +198,11 @@ tr.editable .pencil{top:4px;right:4px;}
       </div>
       <div class="dp-body" id="dpBody"></div>
       <div class="dp-foot">
-        <input class="dp-input" id="dpInput" placeholder="Tell Dot what's off…" onkeydown="if(event.key==='Enter')sendFeedback()">
+        <input class="dp-input" id="dpInput" placeholder="Tell Dot what to tweak…" onkeydown="if(event.key==='Enter')sendFeedback()">
         <button class="dp-send" onclick="sendFeedback()">Send</button>
       </div>
     </div>
+    <div class="rail-foot" id="railFoot"></div>
   </div>
 </div>
 
@@ -191,14 +215,14 @@ tr.editable .pencil{top:4px;right:4px;}
 
 <script>
 const OPENERS = {
-  brand:      p => `This is your Brand — the whole voice in a paragraph. What's not sitting right?`,
-  brandHi:    (p,h) => `You've marked “${h}” in your Brand. What's off about it?`,
-  behaviours: (p,i) => `This is a Who-we-are pair — “${p.behaviours[i].we}” against “${p.behaviours[i].not}”. What would you change?`,
-  behavioursHi:(p,i,h) => `You've marked “${h}”. What's off about it?`,
-  examples:   (p,i) => `This is a More / Less example. What's not landing?`,
-  examplesHi: (p,i,h) => `You've marked “${h}”. What's off about it?`,
-  houseRules: (p,i) => `This is your “${p.houseRules[i].key}” rule. What's off?`,
-  houseRulesHi:(p,i,h) => `You've marked “${h}” in the “${p.houseRules[i].key}” rule. What's off about it?`,
+  brand:      p => `This is your Brand — the whole voice in a paragraph.\n\nWhat do you want to tweak?`,
+  brandHi:    (p,h) => `You've highlighted “${h}” in your Brand.\n\nWhat do you want to tweak?`,
+  behaviours: (p,i) => `This is a Who-we-are pair — “${p.behaviours[i].we}” against “${p.behaviours[i].not}”.\n\nWhat do you want to tweak?`,
+  behavioursHi:(p,i,h) => `You've highlighted “${h}”.\n\nWhat do you want to tweak?`,
+  examples:   (p,i) => `This is a More / Less example.\n\nWhat do you want to tweak?`,
+  examplesHi: (p,i,h) => `You've highlighted “${h}”.\n\nWhat do you want to tweak?`,
+  houseRules: (p,i) => `This is your “${p.houseRules[i].key}” rule.\n\nWhat do you want to tweak?`,
+  houseRulesHi:(p,i,h) => `You've highlighted “${h}” in the “${p.houseRules[i].key}” rule.\n\nWhat do you want to tweak?`,
 };
 
 const SEED = {
@@ -228,11 +252,13 @@ let active = null;
 let history = [];
 let currentProposal = null;
 let tweaks = [];          // in-session tweak log: {label, why, before, after}
+let view = 'profile';     // card face: 'profile' (pretty) | 'prompt' (raw)
 
 const esc = s => (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 const PENCIL = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>`;
 const SVG_PDF = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>`;
 const SVG_PROMPT = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>`;
+const SVG_DL = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>`;
 
 function diffWords(oldS, newS){
   const tok = s => (s||'').split(/(\s+)/);
@@ -253,7 +279,20 @@ function diffWords(oldS, newS){
 /* ── the artefact (card), now button-free ─────────────────────── */
 function render(){
   const p = profileData, bn = p.brandName || 'Brand';
-  let h = `<div class="profile-header"><div class="profile-title">YOUR <span>${esc(bn.toUpperCase())}</span> VOICE</div></div>`;
+  const titleWord = view==='prompt' ? 'PROMPT' : 'VOICE';
+  let h = `<div class="profile-header">
+    <div class="profile-title">YOUR <span>${esc(bn.toUpperCase())}</span> ${titleWord}</div>
+    <div class="view-toggle" data-noexport>
+      <button class="vt ${view==='profile'?'active':''}" onclick="setView('profile')">Profile</button>
+      <button class="vt ${view==='prompt'?'active':''}" onclick="setView('prompt')">Prompt</button>
+    </div>
+  </div>`;
+
+  if(view==='prompt'){
+    h += `<div class="prompt-view">${esc(buildPromptMd())}</div>`;
+    document.getElementById('profileZone').innerHTML = h;
+    return;
+  }
 
   h += `<div class="psec editable" data-section="brand" data-index="0">
     <button class="pencil" title="Tweak">${PENCIL}</button>
@@ -289,11 +328,20 @@ function render(){
   refreshPrompt();
 }
 
-/* ── the human rail, at rest ──────────────────────────────────── */
+/* ── the hero — persistent, stays put while Dot grows ─────────── */
+function renderHead(){
+  document.getElementById('railHead').innerHTML = `<div class="sc-hero">
+      <div class="sc-eyebrow">Quick sensecheck</div>
+      <div class="sc-hed">Tick it.<br><span class="tweak">Or tweak it.</span></div>
+      <div class="sc-intro">Here's our take on your voice.</div>
+    </div>`;
+}
+
+/* ── Dot's section, at rest (becomes the chat when live) ──────── */
 function renderRail(){
-  let h = `<div class="sensecheck">
-      <div class="sc-hed">Tick it or tweak it</div>
-      <div class="sc-body">Anything sound out of place? Highlight it and Dot'll help you sharpen it. Happy as is? You're done.</div>
+  let h = `<div class="sc-dot">
+      <div class="sc-dot-av">D</div>
+      <div class="sc-dot-bubble">See something worth fixing?<br>Just highlight it and let's chat.</div>
     </div>`;
 
   if(tweaks.length){
@@ -307,13 +355,15 @@ function renderRail(){
         `</div></div>`;
   }
 
-  h += `<div class="actions">
-      <button class="act ghost" onclick="downloadStub('PDF')">${SVG_PDF} PDF</button>
-      <button class="act solid" onclick="togglePrompt()">${SVG_PROMPT} Prompt</button>
-      <button class="act disabled" onclick="toast('Save lands in v2')">Save <span class="soon">soon</span></button>
-    </div>`;
-
   document.getElementById('railIdle').innerHTML = h;
+}
+
+/* the exit — persistent footer, survives the chat */
+function renderFoot(){
+  document.getElementById('railFoot').innerHTML = `<div class="gtg">
+      <div class="gtg-hed">Good to go?</div>
+      <button class="dl-btn" onclick="downloadStub('PDF + prompt')">${SVG_DL} Download</button>
+    </div>`;
 }
 function downloadStub(kind){ toast(kind+' export lives in the real app'); }
 
@@ -328,7 +378,6 @@ function highlightWithin(el){
   return el.contains(node) ? txt : '';
 }
 document.addEventListener('mouseup', ()=>{
-  if(active) return;
   const sel = window.getSelection();
   if(!sel || sel.isCollapsed) return;
   const txt = sel.toString().trim();
@@ -336,7 +385,10 @@ document.addEventListener('mouseup', ()=>{
   const anc = sel.getRangeAt(0).commonAncestorContainer;
   const node = anc.nodeType === 3 ? anc.parentElement : anc;
   const el = node && node.closest ? node.closest('.editable') : null;
-  if(el){ open(el.dataset.section, +el.dataset.index, txt); }
+  if(!el) return;
+  // ignore re-selecting the exact same block + highlight; otherwise replace
+  if(active && active.section===el.dataset.section && active.index===+el.dataset.index && active.highlight===txt) return;
+  open(el.dataset.section, +el.dataset.index, txt);
 });
 function litHighlight(section, index, hl){
   if(!hl) return;
@@ -353,6 +405,7 @@ function blockValue(section,index){ return section==='brand' ? profileData.brand
 function blockEl(section,index){ return document.querySelector(`.editable[data-section="${section}"][data-index="${index}"]`); }
 
 function open(section, index, highlight){
+  if(active){ const prev = active; active = null; restoreBlock(prev.section, prev.index); }
   clearActive();
   active = { section, index, highlight: highlight||'', lastReason:'' };
   history = []; currentProposal = null;
@@ -515,11 +568,12 @@ function refreshPrompt(){
   if(t) t.textContent = `YOUR ${(profileData.brandName||'BRAND').toUpperCase()} PROMPT`;
 }
 function togglePrompt(){ document.getElementById('promptDrawer').classList.toggle('open'); refreshPrompt(); }
+function setView(v){ if(view===v) return; view=v; active=null; document.getElementById('stage').classList.remove('editing'); render(); }
 function pulsePrompt(){ refreshPrompt(); }
 function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),1700); }
 function resetProfile(){ profileData = JSON.parse(JSON.stringify(SEED)); active=null; tweaks=[]; document.getElementById('stage').classList.remove('editing'); render(); renderRail(); toast('Profile reset'); }
 
-render(); renderRail();
+render(); renderRail(); renderHead(); renderFoot();
 </script>
 </body>
 </html>
