@@ -19,6 +19,9 @@ app = Flask(__name__, static_folder='.', static_url_path='')
 CORS(app)
 app.register_blueprint(revise_bp)  # adds /api/revise; touches no existing route
 
+from pipeline import pipeline_bp  # NEW pipeline (SORT->CALIBRATE->SHAPE); off the live path
+app.register_blueprint(pipeline_bp)  # adds /api/pipeline/*; touches no existing route
+
 ANTHROPIC_API_KEY = os.environ.get('ANTHROPIC_API_KEY')
 
 # One source of truth for the model. claude-sonnet-4-20250514 retired 15 Jun 2026.
