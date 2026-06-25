@@ -77,6 +77,10 @@ def _dump_profile(profile):
     lines.append(f"BRAND NAME: {bn}\n")
     lines.append("BRAND:\n" + (profile.get('brand', '') or '').strip() + "\n")
 
+    descriptors = profile.get('descriptors', []) or []
+    if descriptors:
+        lines.append("THREE WORDS (the voice brief): " + ", ".join(str(d) for d in descriptors) + "\n")
+
     behaviours = profile.get('behaviours', []) or []
     if behaviours:
         lines.append("WHO WE ARE (we are / we're not):")
@@ -106,6 +110,7 @@ _SHAPES = {
     'behaviours': '{"we": "...", "not": "..."} — both sides, your change applied, the rest unchanged.',
     'examples': '{"more": "...", "less": "..."} — both lines, your change applied, the rest unchanged.',
     'houseRules': '{"key": "...", "rule": "..."} — the name and the rule, your change applied, the rest unchanged.',
+    'descriptors': 'a JSON array of exactly 3 single words — the three-word voice brief — with the flagged word swapped and the other two left exactly as they are. proposal must be that array, e.g. ["opinionated", "warm", "unbothered"].',
 }
 
 
@@ -130,6 +135,9 @@ def build_revise_context(profile, target, block_value, highlight=None, opener=No
     parts.append("")
     parts.append("--- THE SHAPE TO RETURN ---")
     parts.append(f"When you offer a replacement, \"proposal\" must be: {shape}")
+    if section == 'descriptors':
+        parts.append("")
+        parts.append("THESE ARE THE THREE WORDS — the voice brief, not prose. Single words. All three must be true of the brand, and at least one must be ownable: a word the brand's nearest neighbour could not honestly claim. Swap the flagged word for a sharper single word and leave the other two alone — unless your change leaves the set with nothing ownable, in which case say so before proposing. Always return exactly three.")
     if opener:
         parts.append("")
         parts.append(f"(You opened the chat by saying: \"{opener}\")")

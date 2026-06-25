@@ -248,7 +248,12 @@ body { font-family: 'Inter', sans-serif; background: var(--red); min-height: 100
 .vt { background: none; border: none; color: var(--red); font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; padding: 5px 12px; cursor: pointer; font-family: 'Inter', sans-serif; transition: background .15s, color .15s; }
 .vt.active { background: var(--red); color: #fff; }
 .vt:not(.active):hover { background: rgba(237,28,36,.08); }
-.prompt-view { padding: 20px 18px; font-family: ui-monospace, Menlo, monospace; font-size: 11px; line-height: 1.75; white-space: pre-wrap; color: #111; }
+.prompt-view { padding: 20px 18px; font-family: ui-monospace, Menlo, monospace; font-size: 11px; line-height: 1.75; white-space: normal; color: #111; }
+.prompt-view .pv-fixed { color: #777; }
+.prompt-view .pv-rule { color: #ccc; margin: 6px 0; }
+.prompt-view .pv-h { color: var(--red); font-weight: 700; margin: 14px 0 4px; }
+.prompt-view .pv-blk { position: relative; padding: 3px 28px 3px 6px; border-radius: 6px; margin: 2px 0; }
+.prompt-view .pv-blk .pencil { top: 4px; right: 6px; }
 
 /* fixed table layout so word-diffs wrap predictably */
 #reviseCard .ptable { table-layout: fixed; }
@@ -258,7 +263,9 @@ body { font-family: 'Inter', sans-serif; background: var(--red); min-height: 100
 .footer-row { display: flex; align-items: center; gap: 12px; }
 
 /* highlighter (yellow) + delta (brand red) */
-mark.hl { background: var(--yellow); color: var(--ink); border-radius: 2px; padding: 0 1px; }
+#reviseCard ::selection { background: var(--yellow); color: var(--ink); }
+#reviseCard ::-moz-selection { background: var(--yellow); color: var(--ink); }
+mark.hl { background: var(--yellow); color: var(--ink); border-radius: 2px; padding: .08em .18em; box-shadow: 0 0 0 1px var(--yellow); box-decoration-break: clone; -webkit-box-decoration-break: clone; }
 mark.changed { background: var(--delta); color: var(--ink); border-radius: 2px; padding: 0 1px; box-shadow: inset 0 -1px 0 rgba(237,28,36,.45); }
 
 /* editable blocks */
@@ -274,6 +281,8 @@ tr.editable .pencil { top: 4px; right: 4px; }
 .rule-item.editable .pencil { top: 0; right: 0; }
 .editable.active { background: rgba(237,28,36,.05); box-shadow: inset 0 0 0 1px rgba(237,28,36,.3); }
 .editable.preview { background: rgba(237,28,36,.05); box-shadow: inset 0 0 0 1px rgba(237,28,36,.4); }
+.desc-line { border-radius: 3px; }
+.desc-line.active, .desc-line.preview { background: rgba(237,28,36,.07); box-shadow: 0 0 0 2px rgba(237,28,36,.07); }
 
 /* ── RAIL: idle (the human's resting column) ── */
 .rail-idle { display: flex; flex-direction: column; gap: 16px; overflow-y: auto; padding-right: 2px; }
@@ -325,7 +334,7 @@ tr.editable .pencil { top: 4px; right: 4px; }
 .msg { font-size: 12px; line-height: 1.6; max-width: 88%; padding: 9px 12px; border-radius: 12px; font-weight: 300; white-space: pre-line; }
 .msg.dot { background: var(--card-bg); color: var(--ink); align-self: flex-start; border-bottom-left-radius: 3px; }
 .msg.dot.pb { background: #fff; outline: 1px solid var(--red); }
-.msg.me { background: var(--ink); color: #fff; align-self: flex-end; border-bottom-right-radius: 3px; }
+.msg.me { background: var(--red); color: #fff; align-self: flex-end; border-bottom-right-radius: 3px; }
 .proposal { align-self: flex-start; max-width: 92%; background: #fff; border: 1px solid var(--red); border-radius: 12px; border-bottom-left-radius: 3px; padding: 10px 12px; font-size: 12px; line-height: 1.6; color: var(--ink); }
 .proposal .pl { font-size: 8px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--red); margin-bottom: 5px; }
 .proposal .pf { display: block; margin-top: 4px; }
@@ -341,8 +350,8 @@ tr.editable .pencil { top: 4px; right: 4px; }
 .dp-foot { display: flex; gap: 8px; padding: 12px 14px; border-top: .5px solid var(--card-border); }
 .dp-input { flex: 1; border: .5px solid var(--card-border); border-radius: 20px; padding: 9px 14px; font-size: 12px; outline: none; font-family: inherit; }
 .dp-input:focus { border-color: var(--red); }
-.dp-send { background: var(--ink); color: #fff; border: none; border-radius: 20px; padding: 9px 16px; font-size: 11px; font-weight: 700; cursor: pointer; }
-.dp-send:hover { background: var(--red); }
+.dp-send { background: var(--red); color: #fff; border: none; border-radius: 20px; padding: 9px 16px; font-size: 11px; font-weight: 700; cursor: pointer; }
+.dp-send:hover { background: var(--red-dark); }
 
 .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--ink); color: #fff; padding: 11px 20px; border-radius: var(--radius-pill); font-size: 12px; font-weight: 600; opacity: 0; transition: all .3s; z-index: 40; pointer-events: none; }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
@@ -1122,6 +1131,8 @@ const OPENERS = {
   examplesHi:  (p,i,h) => `You've highlighted “${h}”.\n\nWhat do you want to tweak?`,
   houseRules:  (p,i) => `This is your “${p.houseRules[i].key}” rule.\n\nWhat do you want to tweak?`,
   houseRulesHi:(p,i,h) => `You've highlighted “${h}” in the “${p.houseRules[i].key}” rule.\n\nWhat do you want to tweak?`,
+  descriptors:  (p,i) => `These are your three words — the voice brief that runs through the prompt.\n\nWhat do you want to tweak?`,
+  descriptorsHi:(p,i,h) => `You've highlighted “${h}”.\n\nWant a different word?`,
 };
 
 /* reveal entry point — builds card + rail, then renders both */
@@ -1172,16 +1183,16 @@ function reviseRender() {
   </div>`;
 
   if (reviseView === 'prompt') {
-    h += `<div class="prompt-view">${esc(buildPromptMd())}</div>`;
+    h += buildPromptBlocksHtml(p);
     document.getElementById('reviseCard').innerHTML = h;
+    bindEditablePencils();
     return;
   }
 
-  const threeW = esc(threeWordSentence(p));
   h += `<div class="psec editable" data-section="brand" data-index="0">
     <button class="pencil" title="Tweak">${PENCIL}</button>
     <div class="plbl">Brand</div>
-    <div class="pbody"><span data-text data-field="brand">${esc(p.brand)}</span>${threeW}</div></div>`;
+    <div class="pbody"><span data-text data-field="brand">${esc(p.brand)}</span>${descLineHtml(p)}</div></div>`;
 
   h += `<div class="psec"><div class="plbl">Who we are</div><table class="ptable">
     <tr><th>We are</th><th>We're not</th></tr>` +
@@ -1204,8 +1215,15 @@ function reviseRender() {
   h += `<div class="psec footer-row"><span class="footer-note">Remember, robots are good. But keep a human in the loop.</span></div>`;
 
   document.getElementById('reviseCard').innerHTML = h;
+  bindEditablePencils();
+}
+
+function bindEditablePencils() {
   document.querySelectorAll('#reviseCard .editable').forEach(el=>{
-    el.querySelector('.pencil').addEventListener('click', ev=>{
+    const pen = el.querySelector('.pencil');
+    if (!pen) return;
+    pen.addEventListener('mousedown', ev=>ev.preventDefault());  // don't let the click collapse the user's highlight
+    pen.addEventListener('click', ev=>{
       ev.stopPropagation();
       openTweak(el.dataset.section, +el.dataset.index, highlightWithin(el));
     });
@@ -1277,6 +1295,61 @@ function diffWords(oldS, newS) {
   return out;
 }
 
+/* ── descriptors — the three words, individually tweakable ── */
+function descInner(bn, words) {
+  const w = (words||[]).map((x,i)=>`<span class="desc-w" data-text data-di="${i}">${esc(String(x).toLowerCase())}</span>`);
+  if (!w.length) return '';
+  const list = w.length > 1 ? w.slice(0,-1).join(', ') + ' and ' + w[w.length-1] : w[0];
+  return `${esc(bn)} is ${list}.`;
+}
+function descLineHtml(p) {
+  if (!p.descriptors || !p.descriptors.length) return '';
+  const bn = p.brandName || 'The brand';
+  return ` <span class="desc-line" data-section="descriptors" data-index="0">${descInner(bn, p.descriptors)}</span>`;
+}
+function descDiff(oldArr, newArr) {
+  const bn = (profileData.brandName || 'The brand');
+  const parts = (newArr||[]).map((nw,i)=>diffWords(String((oldArr||[])[i]||'').toLowerCase(), String(nw).toLowerCase()));
+  if (!parts.length) return '';
+  const list = parts.length > 1 ? parts.slice(0,-1).join(', ') + ' and ' + parts[parts.length-1] : parts[0];
+  return `${esc(bn)} is ${list}.`;
+}
+/* prompt-face descriptor rendering — "Think, a, b, c." (no brand-name scaffold) */
+function descPromptInner(words) {
+  return (words||[]).map((x,i)=>`<span class="desc-w" data-text data-di="${i}">${esc(String(x).toLowerCase())}</span>`).join(', ');
+}
+function descDiffPrompt(oldArr, newArr) {
+  return (newArr||[]).map((nw,i)=>diffWords(String((oldArr||[])[i]||'').toLowerCase(), String(nw).toLowerCase())).join(', ');
+}
+
+/* The Prompt face — same editable blocks as the Profile, laid out as a prompt.
+   Framing lines are fixed (template, not voice); every voice block is wired to
+   the same profileData, so editing either face writes to one place. */
+function buildPromptBlocksHtml(p) {
+  const bn = p.brandName || 'this brand';
+  const P = `<button class="pencil" title="Tweak">${PENCIL}</button>`;
+  let h = `<div class="prompt-view">`;
+  let intro = `You are crafting communications for <b>${esc(bn)}</b>. Your job is to write in their voice.`;
+  if (p.descriptors && p.descriptors.length)
+    intro += ` Think, <span class="desc-line" data-section="descriptors" data-index="0">${descPromptInner(p.descriptors)}</span>.`;
+  h += `<div class="pv-fixed">${intro}</div><div class="pv-rule">———</div>`;
+
+  h += `<div class="pv-h">## Brand</div>
+    <div class="editable pv-blk" data-section="brand" data-index="0">${P}<span data-text data-field="brand">${esc(p.brand)}</span></div>`;
+
+  h += `<div class="pv-h">## Who we are</div>` +
+    p.behaviours.map((b,i)=>`<div class="editable pv-blk" data-section="behaviours" data-index="${i}">- <b>Are:</b> <span data-text data-field="we">${esc(b.we)}</span><br>&nbsp;&nbsp;<b>Are not:</b> <span class="less" data-text data-field="not">${esc(b.not)}</span>${P}</div>`).join('');
+
+  h += `<div class="pv-h">## Write more like this</div>` +
+    p.examples.map((e,i)=>`<div class="editable pv-blk" data-section="examples" data-index="${i}">- ✓ <span data-text data-field="more">${esc(e.more)}</span><br>&nbsp;&nbsp;✗ <span class="less" data-text data-field="less">${esc(e.less)}</span>${P}</div>`).join('');
+
+  h += `<div class="pv-h">## House rules</div>` +
+    p.houseRules.map((r,i)=>`<div class="rule-item editable pv-blk" data-section="houseRules" data-index="${i}">- <b><span data-text data-field="key">${esc(r.key)}</span>:</b> <span data-text data-field="rule">${esc(r.rule)}</span>${P}</div>`).join('');
+
+  h += `<div class="pv-rule">———</div><div class="pv-fixed">Now write like this. Every time. No exceptions.</div></div>`;
+  return h;
+}
+
 /* ── highlighter ── */
 function highlightWithin(el) {
   const sel = window.getSelection();
@@ -1285,6 +1358,7 @@ function highlightWithin(el) {
   if (!txt) return '';
   const anc = sel.getRangeAt(0).commonAncestorContainer;
   const node = anc.nodeType === 3 ? anc.parentElement : anc;
+  if (node && node.closest && node.closest('.desc-line')) return '';  // descriptors route themselves
   return el.contains(node) ? txt : '';
 }
 function onCardMouseup() {
@@ -1294,6 +1368,12 @@ function onCardMouseup() {
   if (!txt) return;
   const anc = sel.getRangeAt(0).commonAncestorContainer;
   const node = anc.nodeType === 3 ? anc.parentElement : anc;
+  const desc = node && node.closest ? node.closest('#reviseCard .desc-line') : null;
+  if (desc) {
+    if (reviseActive && reviseActive.section==='descriptors' && reviseActive.highlight===txt) return;
+    openTweak('descriptors', 0, txt);
+    return;
+  }
   const el = node && node.closest ? node.closest('#reviseCard .editable') : null;
   if (!el) return;
   if (reviseActive && reviseActive.section===el.dataset.section && reviseActive.index===+el.dataset.index && reviseActive.highlight===txt) return;
@@ -1310,8 +1390,8 @@ function litHighlight(section, index, hl) {
   }
 }
 
-function blockValue(section,index) { return section==='brand' ? profileData.brand : profileData[section][index]; }
-function blockEl(section,index) { return document.querySelector(`#reviseCard .editable[data-section="${section}"][data-index="${index}"]`); }
+function blockValue(section,index) { return section==='brand' ? profileData.brand : section==='descriptors' ? profileData.descriptors : profileData[section][index]; }
+function blockEl(section,index) { return document.querySelector(`#reviseCard [data-section="${section}"][data-index="${index}"]`); }
 
 function openTweak(section, index, highlight) {
   if (reviseActive) { const prev = reviseActive; reviseActive = null; restoreBlock(prev.section, prev.index); }
@@ -1339,10 +1419,11 @@ function subLabel(section,index) {
   if (section==='behaviours') return 'Who we are · row '+(index+1);
   if (section==='examples') return 'Examples · row '+(index+1);
   if (section==='houseRules') return profileData.houseRules[index].key;
+  if (section==='descriptors') return 'The three words';
   return section;
 }
 function clearActive() {
-  document.querySelectorAll('#reviseCard .editable.active, #reviseCard .editable.preview').forEach(e=>e.classList.remove('active','preview'));
+  document.querySelectorAll('#reviseCard .editable.active, #reviseCard .editable.preview, #reviseCard .desc-line.active, #reviseCard .desc-line.preview').forEach(e=>e.classList.remove('active','preview'));
 }
 function closePanel() {
   document.getElementById('reviseStage').classList.remove('editing');
@@ -1366,6 +1447,7 @@ function addProposal(section, index, prop) {
   else if (section==='behaviours') inner = `<span class="pf"><span class="lbl">We are</span> ${diffWords(cur.we, prop.we||'')}</span><span class="pf"><span class="lbl">We're not</span> ${diffWords(cur.not, prop.not||'')}</span>`;
   else if (section==='examples') inner = `<span class="pf"><span class="lbl">More</span> ${diffWords(cur.more, prop.more||'')}</span><span class="pf"><span class="lbl">Less</span> ${diffWords(cur.less, prop.less||'')}</span>`;
   else if (section==='houseRules') inner = `<span class="pf"><b>${diffWords(cur.key, prop.key||cur.key)}</b></span><span class="pf">${diffWords(cur.rule, prop.rule||'')}</span>`;
+  else if (section==='descriptors') inner = `<span class="pf">${descDiff(cur, prop)}</span>`;
   const card = document.createElement('div'); card.className='proposal';
   card.innerHTML = `<div class="pl">Proposed</div>${inner}`;
   body.appendChild(card);
@@ -1421,6 +1503,7 @@ function preview(section, index, prop) {
   else if (section==='behaviours') { setField(el,'we', diffWords(cur.we, prop.we||'')); setField(el,'not', diffWords(cur.not, prop.not||'')); keepPencil(el,'not'); }
   else if (section==='examples') { setField(el,'more', diffWords(cur.more, prop.more||'')); setField(el,'less', diffWords(cur.less, prop.less||'')); keepPencil(el,'less'); }
   else if (section==='houseRules') { setField(el,'key', diffWords(cur.key, prop.key||cur.key)); setField(el,'rule', diffWords(cur.rule, prop.rule||'')); }
+  else if (section==='descriptors') { el.innerHTML = reviseView==='prompt' ? descDiffPrompt(cur, prop) : descDiff(cur, prop); }
 }
 function keepPencil(el, field) {
   const node = el.querySelector(`[data-field="${field}"]`);
@@ -1438,6 +1521,7 @@ function restoreBlock(section,index) {
   else if (section==='behaviours') { setField(el,'we',esc(cur.we)); setField(el,'not',esc(cur.not)); keepPencil(el,'not'); }
   else if (section==='examples') { setField(el,'more',esc(cur.more)); setField(el,'less',esc(cur.less)); keepPencil(el,'less'); }
   else if (section==='houseRules') { setField(el,'key',esc(cur.key)); setField(el,'rule',esc(cur.rule)); }
+  else if (section==='descriptors') { el.innerHTML = reviseView==='prompt' ? descPromptInner(cur) : descInner(profileData.brandName||'The brand', cur); }
   if (reviseActive && reviseActive.highlight) litHighlight(section,index,reviseActive.highlight);
 }
 
@@ -1447,6 +1531,7 @@ function reviseCommit() {
   const {section,index} = reviseActive;
   const before = JSON.parse(JSON.stringify(blockValue(section,index)));
   if (section==='brand') profileData.brand = typeof reviseProposal==='string' ? reviseProposal : (reviseProposal.brand||profileData.brand);
+  else if (section==='descriptors') profileData.descriptors = Array.isArray(reviseProposal) ? reviseProposal : profileData.descriptors;
   else profileData[section][index] = reviseProposal;
 
   reviseTweaks.push({
