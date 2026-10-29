@@ -559,7 +559,8 @@ def opening():
     })
 
 
-# The only files the public can have: the page, the favicon, the pictures.
+# The only files the public can have: the page, its styles and scripts,
+# the favicon, the pictures.
 _HERE = os.path.dirname(os.path.abspath(__file__))
 
 
@@ -571,6 +572,13 @@ def serve_index():
 @app.route('/favicon.ico')
 def serve_favicon():
     return send_from_directory(_HERE, 'favicon.ico')
+
+
+@app.route('/static/<path:name>')
+def serve_static_file(name):
+    # The page's styles and scripts. send_from_directory refuses anything
+    # that climbs out of static/.
+    return send_from_directory(os.path.join(_HERE, 'static'), name)
 
 
 @app.route('/images/<path:name>')

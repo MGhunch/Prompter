@@ -1,0 +1,58 @@
+/* ===========================================================================
+   HUNCH TOKENS
+   Lifted from Prompter so the family stays coherent. Copy this file into any
+   new Hunch tool rather than importing it — no shared dependency, no coupling,
+   and nobody eyedroppers a hex off a screenshot ever again.
+   =========================================================================== */
+:root{
+  /* Core */
+  --red:#ED1C24; --red-dark:#C8141B;
+  --ink:#1A1917; --white:#FFFFFF;
+  --paper:#F5F3EF; --border:#E8E5E0; --mid:#9A9590;
+
+  /* White-on-red overlays */
+  --white-hi:rgba(255,255,255,.75);
+  --white-mid:rgba(255,255,255,.45);
+  --white-lo:rgba(255,255,255,.20);
+
+  /* Flags and diffs */
+  --yellow:#FAF06E; --delta:rgba(237,28,36,.13);
+
+  /* Layout */
+  --g:32px;
+  --pill:100px; --r-card:14px; --r-input:10px;   /* three corners, and nothing else (v164) */
+
+  /* Type */
+  --display:'Bebas Neue',Impact,sans-serif;
+  --body:'Inter',system-ui,-apple-system,sans-serif;
+}
+
+/* ===========================================================================
+   PROMPTER'S ADDITIONS (Oct 2026)
+   Everything above is Robot Sandwich's file, word for word. These are the
+   tokens Prompter needed that Sandwich's file doesn't have yet — candidates
+   to go back into Sandwich's copy so the two stay the same.
+   =========================================================================== */
+:root{
+  /* Greys. --mid is too pale for small text on white (it fails the
+     readability check), so small grey text uses --mid-text. */
+  --mid-text:#6F6A65;     /* small grey text that passes on white */
+  --mid-quiet:#8A847E;    /* icons, closed step titles */
+  --faint:#B5AFA9;        /* step titles not reached yet */
+  --dash:#CFCAC4;         /* dashed outlines: drop box, empty pills */
+  --ghost:#E3DFD9;        /* placeholder bars */
+  --ghost-lt:#ECE9E4;     /* the lighter placeholder bar */
+  --waiting:#D8D4CE;      /* a button that isn't live yet */
+  --red-wash:#FFF6F6;     /* the drop box when a file is held over it */
+  --white-dim:rgba(255,255,255,.12);
+  --dim:#C8C4BE; --divider:#D8D5D0;   /* the top bar's grey nav and dividers */
+
+  /* Prompter's highlighter. Sandwich's --yellow is softer; Prompter's
+     marker-pen yellow stays as it was. */
+  --marker:#FFE600;
+
+  /* Prompter's old names, pointing at the shared ones, so nothing that
+     still uses them changes. */
+  --card-bg:var(--paper); --card-border:var(--border);
+  --radius-sm:8px; --radius-md:12px; --radius-lg:var(--r-card); --radius-pill:var(--pill);
+}
