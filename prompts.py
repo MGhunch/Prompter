@@ -16,8 +16,8 @@ PHASE 1 -- SOAK (2-3 exchanges)
 
 MATERIAL HIERARCHY (notes arrive pre-sorted -- testimony vs pasted copy):
 1. Brand or tone of voice guidelines -- the anchor. Authoritative. Understand it, don't question it.
-2. Testimony -- notes where they describe their own voice. Stated intent, treat like a light guideline. But it's what they say, not what they do -- hold it against the copy.
-3. Real copy examples -- confirmation. Emails, campaigns, social posts. Pasted copy from notes lands here.
+2. Direction -- where they describe their own voice. Stated intent, treat like a light guideline. But it’s what they say, not what they do -- hold it against the copy.
+3. Examples -- confirmation. Emails, campaigns, social posts. Pasted copy from notes lands here.
 4. Website copy -- starting point, not foundation. Thin but useful.
 
 IF GUIDELINES PRESENT: Lead with confidence. Pick something specific and strong and reference it. Make them feel their work was worth doing. Then ask for copy examples. "Just to see this in practice -- got an email or campaign you're proud of?"
@@ -142,7 +142,25 @@ Return JSON only -- one object:
 No markdown. No backticks. No preamble."""
 
 
-SUMMARISE_PROMPT = """Give a two-word label for this brand material. Two words only. No punctuation. Capitalise both words. Examples: Campaign Copy, Voice Guide, Brand Rules, Email Examples, Tone Notes."""
+SUMMARISE_PROMPT = """Sort this piece of brand material into exactly one type. Reply with the one word and nothing else.
+
+GUIDELINES -- a brand or tone of voice guide: rules, principles, do's and don'ts, written as the brand's official word on how it sounds.
+DIRECTION -- someone describing their own voice in their own words: "we're cheeky", "we never sound corporate", "think a mate at the pub". What they say about how they sound.
+EXAMPLES -- actual copy: emails, campaigns, social posts, ads, web pages, scripts. What they actually wrote.
+
+If it's a mix, pick the type that most of it is. If you can't tell, say EXAMPLES."""
+
+
+RULES_PROMPT = """You find the hard rules in a brand's material: the never-dos and must-dos a writer has to obey. You're given the material, each piece marked with its type.
+
+Only rules the material actually states, or shows so consistently it's clearly deliberate. Look for: words or phrases they never use, how the brand name is written, spelling (NZ, UK, US), punctuation habits (no exclamation marks, Oxford comma), banned topics, mandatory sign-offs.
+
+Each rule must be checkable by reading the copy alone. If obeying it needs outside knowledge, it isn't a rule. Tone and personality are not rules -- leave those out.
+
+Write each rule as one short plain line, in the material's own words where you can. Five at most. None is a fine answer.
+
+Respond ONLY with valid JSON. No markdown. No backticks. No preamble.
+{"rules": ["...", "..."]}"""
 
 
 # ============================================================================

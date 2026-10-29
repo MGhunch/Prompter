@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Prompter — Find your brand voice</title>
+<title>Prompter</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@500&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -544,12 +544,180 @@ input.sc-range::-webkit-slider-runnable-track { background: transparent; }
 
 .btn-ghost { background: none; border: none; font-size: 12px; color: var(--mid); cursor: pointer; font-weight: 500; padding: 0; transition: color 0.15s; }
 .btn-ghost:hover { color: var(--ink); }
+
+/* =====================================================================
+   WELCOME + FEED IT — Robot Sandwich's layout (Oct 2026). Sandwich's
+   tokens, type and furniture: white cards on red, Bebas for the big
+   words, Oswald for tile titles, one open stop at a time.
+   ===================================================================== */
+.main.feed { max-width: 1240px; }
+
+/* WELCOME */
+.pw { flex: 1; display: none; flex-direction: column; align-items: center; padding: 48px var(--g) 64px; text-align: center; }
+.pw.on { display: flex; }
+.pw-bot { width: min(58vw, 250px); height: auto; animation: pwPop .45s cubic-bezier(.2,1.4,.4,1) both; }
+.pw-namewrap { position: relative; display: inline-block; font-size: clamp(56px, 11vw, 104px); margin-top: 6px; }
+.pw-name { font-family: 'Bebas Neue', Impact, sans-serif; font-weight: 400; font-size: 1em; line-height: .95; color: #fff; letter-spacing: .01em; }
+.pw-sign { position: absolute; left: 100%; top: .08em; width: .78em; margin-left: .06em; transform-origin: 50% 0; animation: pwSwing 1.6s ease-out .3s both; }
+.pw-sign svg { width: 100%; height: auto; display: block; }
+.pw-tiles { margin-top: clamp(40px, 6vw, 58px); width: 100%; max-width: 420px; display: flex; flex-direction: column; gap: 10px; }
+.pw-tile { background: #fff; border: none; border-radius: var(--radius-lg); padding: 18px 20px; display: flex; align-items: center; justify-content: space-between; gap: 14px; text-align: left; cursor: pointer; font: inherit; color: var(--ink); transition: transform .15s; }
+.pw-tile:hover { transform: translateY(-2px); }
+.pw-tile:focus-visible, .fr-card-top:focus-visible, .fr button:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+.pw-tile-t { display: block; font-family: 'Oswald', 'Bebas Neue', sans-serif; font-weight: 500; font-size: 19px; letter-spacing: .06em; }
+.pw-tile-d { display: block; font-size: 13px; color: #6F6A65; margin-top: 2px; }
+.pw-go { width: 30px; height: 30px; border-radius: 50%; background: var(--red); color: #fff; display: grid; place-items: center; font-size: 15px; flex: none; }
+.pw-hiw { max-width: 520px; }
+.pw-hiw-stand { font-size: 17px; line-height: 1.5; color: var(--ink); margin-bottom: 18px; }
+.pw-hiw-rooms { display: flex; flex-direction: column; gap: 14px; margin-bottom: 24px; }
+.pw-hiw-room { display: flex; gap: 14px; align-items: flex-start; }
+.pw-hiw-room h3 { font-family: 'Bebas Neue', Impact, sans-serif; font-weight: 400; font-size: 24px; line-height: 1; }
+.pw-hiw-room p { font-size: 14px; color: var(--ink); line-height: 1.5; }
+.pw-ic { width: 36px; height: 36px; border-radius: 50%; background: var(--red); display: grid; place-items: center; flex: none; }
+.pw-ic svg { width: 18px; height: 18px; }
+@keyframes pwPop { from { transform: scale(.6); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@keyframes pwSwing { 0% { transform: rotate(-14deg); } 30% { transform: rotate(9deg); } 55% { transform: rotate(-5deg); } 80% { transform: rotate(2deg); } 100% { transform: rotate(0); } }
+@media (prefers-reduced-motion: reduce) { .pw-bot, .pw-sign { animation: none; } }
+
+/* FEED IT */
+.fr { display: flex; flex-direction: column; gap: 36px; padding-top: 40px; }
+.fr-head { display: flex; flex-direction: column; gap: 10px; }
+.fr-nav { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+.fr-step { font-family: 'Bebas Neue', Impact, sans-serif; font-size: clamp(44px, 7vw, 92px); line-height: .9; letter-spacing: .5px; color: #fff; opacity: .4; }
+.fr-step.on { opacity: 1; }
+.fr-sep { width: 3px; height: clamp(32px, 5vw, 62px); background: rgba(255,255,255,.4); }
+.fr-line { color: #fff; font-size: clamp(17px, 1.7vw, 21px); line-height: 1.35; }
+
+.fr-grid { display: grid; grid-template-columns: 380px minmax(0, 1fr); gap: 72px; align-items: start; }
+.fr-col { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.fr-lbl { color: rgba(255,255,255,.85); font-size: 13px; font-weight: 700; letter-spacing: 4px; }
+.fr-lbl-in { padding-left: 70px; }
+.fr-k { font-size: 10px; font-weight: 700; letter-spacing: 2px; color: #6F6A65; }
+.fr-small { font-size: 12px; color: #6F6A65; }
+.fr-hide { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+
+/* YOUR VOICE card */
+.fr-voice { background: #fff; border-radius: var(--radius-lg); padding: 24px; display: flex; flex-direction: column; gap: 14px; }
+.fr-big { display: flex; flex-direction: column; gap: 14px; padding: 4px 4px 18px; border-bottom: 1px solid var(--card-border); }
+.fr-big-top { display: flex; align-items: center; gap: 12px; }
+.fr-face { width: 44px; height: 44px; border-radius: 50%; background: var(--red); display: grid; place-items: center; flex: none; }
+.fr-face svg { width: 30px; height: 28px; }
+.fr-big-line { font-family: 'Bebas Neue', Impact, sans-serif; font-size: 38px; line-height: 1; color: #B5AFA9; }
+.fr-tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.fr-tile { background: var(--card-bg); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.fr-tile i { display: block; height: 8px; border-radius: 4px; background: #E3DFD9; }
+.fr-tile i.lt { background: #ECE9E4; }
+.fr-pills { display: flex; gap: 5px; }
+.fr-pills i { flex: 1; height: 18px; border-radius: 100px; background: none; border: 1.5px dashed #CFCAC4; }
+.fr-cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+.fr-ml { display: grid; grid-template-columns: 10px minmax(0, 1fr); gap: 6px; align-items: center; }
+.fr-ml b { font-size: 12px; color: #8A847E; line-height: 8px; }
+.fr-ml b.plus { color: var(--red); }
+.fr-rows { display: flex; flex-direction: column; gap: 6px; }
+.fr-k-row { display: flex; justify-content: space-between; align-items: center; }
+.fr-k-row svg { width: 14px; height: 14px; color: #8A847E; }
+.fr-prompt { display: flex; align-items: center; gap: 14px; background: var(--ink); color: #fff; border-radius: 10px; padding: 16px 18px; }
+.fr-prompt svg { width: 22px; height: 22px; flex: none; }
+.fr-prompt-t { font-family: 'Bebas Neue', Impact, sans-serif; font-size: 26px; line-height: 1; }
+.fr-prompt-d { font-size: 13px; color: rgba(255,255,255,.75); }
+
+/* The stops */
+.fr-stop { display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: 18px; align-items: start; }
+.fr-num { width: 52px; height: 52px; border-radius: 50%; background: #fff; display: grid; place-items: center; font-family: 'Bebas Neue', Impact, sans-serif; font-size: 28px; color: var(--ink); margin-top: 12px; }
+.fr-stop.open .fr-num { color: var(--red); }
+.fr-stop.done .fr-num { color: var(--red); }
+.fr-card { background: #fff; border-radius: var(--radius-lg); min-width: 0; }
+.fr-card-top { width: 100%; background: none; border: none; cursor: pointer; text-align: left; font: inherit; color: inherit; padding: 20px 26px; display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+.fr-card-top > span:first-child { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.fr-card-t { font-family: 'Bebas Neue', Impact, sans-serif; font-size: 36px; line-height: 1; color: #8A847E; }
+.fr-stop.open .fr-card-t { color: var(--red); font-size: 44px; }
+.fr-card-t-row { display: inline-flex; align-items: center; gap: 10px; }
+.fr-card-t-row svg { width: 22px; height: 22px; }
+.fr-card-d { font-size: 15px; color: #6F6A65; }
+.fr-stop.open .fr-card-d { color: var(--ink); }
+.fr-chev { width: 20px; height: 20px; color: #8A847E; flex: none; transition: transform .2s; }
+.fr-stop.open .fr-chev { transform: rotate(180deg); color: var(--red); }
+.fr-count { margin-left: auto; font-size: 12px; font-weight: 700; letter-spacing: 1.5px; color: #6F6A65; white-space: nowrap; }
+.fr-body { display: none; padding: 0 26px 24px; flex-direction: column; gap: 14px; }
+.fr-stop.open .fr-body { display: flex; }
+
+/* DUMP IT */
+.fr-dump { border: 1.5px dashed #CFCAC4; border-radius: 10px; padding: 16px 18px; display: flex; flex-direction: column; gap: 10px; transition: border-color .15s, background .15s; }
+.fr-dump.drag-over { border-color: var(--red); background: #FFF6F6; }
+.fr-dump textarea { border: none; resize: vertical; font: inherit; font-size: 15px; color: var(--ink); outline: none; background: transparent; min-height: 52px; }
+.fr-dump-foot { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+.fr-dump-btns { display: flex; gap: 8px; }
+.fr-ghost { border: 1.5px solid var(--ink); border-radius: 100px; background: #fff; padding: 8px 16px; font: inherit; font-size: 13px; font-weight: 600; color: var(--ink); cursor: pointer; }
+.fr-ghost:hover { background: var(--card-bg); }
+.fr-red { border: none; border-radius: 100px; background: var(--red); color: #fff; padding: 8px 18px; font-family: 'Bebas Neue', Impact, sans-serif; font-size: 18px; letter-spacing: 1px; cursor: pointer; }
+.fr-red:hover { background: var(--red-dark); }
+.fr-red:disabled { opacity: .5; cursor: default; }
+.fr-note { font-size: 13px; color: var(--red-dark); min-height: 0; }
+.fr-note:empty { display: none; }
+.fr-files { gap: 8px; }
+.fr-file { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 12px 10px 14px; background: var(--card-bg); border-radius: 10px; }
+.fr-file-n { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 500; min-width: 0; }
+.fr-file-n span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fr-file-n svg { width: 18px; height: 18px; flex: none; color: #6F6A65; }
+.fr-file-r { display: flex; align-items: center; gap: 8px; flex: none; }
+.fr-pile { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; color: #6F6A65; }
+.fr-type { font-size: 11px; font-weight: 700; letter-spacing: 1px; padding: 4px 10px; border-radius: 100px; background: var(--ink); color: #fff; }
+.fr-type.shown { background: none; border: 1.5px solid var(--red); color: var(--red-dark); padding: 2.5px 8.5px; }
+.fr-type.wait { background: none; color: #8A847E; border: 1.5px dashed #CFCAC4; padding: 2.5px 8.5px; }
+.fr-x { width: 26px; height: 26px; border: none; border-radius: 50%; background: none; color: #8A847E; cursor: pointer; font-size: 18px; line-height: 1; }
+.fr-x:hover { background: #fff; color: var(--ink); }
+
+/* BOUNCE IT — the chat, in a white card */
+.fr-dot { width: 40px; height: 40px; flex: none; }
+.fr .dot-opening { display: flex; gap: 12px; align-items: flex-start; }
+.fr .dot-open-bubble { background: var(--card-bg); border-radius: 4px 14px 14px 14px; padding: 12px 16px; flex: 1; }
+.fr .dot-open-text, .fr .dot-msg-text { font-size: 15px; font-weight: 400; line-height: 1.5; }
+.fr .consult-zone { margin-top: 0; }
+.fr .dot-row { align-items: flex-start; }
+.fr .dot-bubble { background: var(--card-bg); border-radius: 4px 14px 14px 14px; }
+.fr .history-collapsed { color: #6F6A65; }
+.fr .history-collapsed:hover { color: var(--ink); }
+.fr .history-dot-msg { background: var(--card-bg); color: var(--ink); font-size: 13px; }
+.fr .history-user-msg { background: var(--red); color: #fff; font-size: 13px; }
+.fr .reply-input { border: 1.5px solid var(--card-border); font-size: 15px; padding: 12px 18px; border-radius: 100px; }
+.fr .reply-input:focus { border-color: var(--ink); }
+.fr .reply-send { background: var(--red); color: #fff; font-size: 13px; padding: 12px 20px; border-radius: 100px; }
+.fr .reply-send:hover { background: var(--red-dark); }
+
+/* SET THE RULES */
+.fr-rules { display: flex; flex-direction: column; gap: 8px; }
+.fr-rules:empty { display: none; }
+.fr-rule { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 12px 10px 14px; background: var(--card-bg); border-radius: 10px; font-size: 14px; }
+.fr-rule small { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; color: #6F6A65; margin-left: 8px; }
+.fr-rule-add { display: flex; gap: 10px; align-items: center; }
+.fr-rule-add input { flex: 1; height: 46px; border: 1.5px solid var(--card-border); border-radius: 100px; padding: 0 18px; font: inherit; font-size: 15px; color: var(--ink); }
+.fr-rule-add input:focus { outline: none; border-color: var(--ink); }
+.fr-round { width: 46px; height: 46px; border: none; border-radius: 50%; background: var(--red); display: grid; place-items: center; cursor: pointer; flex: none; }
+.fr-round svg { width: 18px; height: 18px; }
+.fr-round:hover { background: var(--red-dark); }
+
+/* ON TO SHAPE IT */
+.fr-go { margin: 6px 0 0 70px; flex-direction: column; align-items: stretch; gap: 8px; }
+.fr-go .go-btn { width: 100%; height: 68px; border-radius: 100px; font-size: 30px; letter-spacing: 1.5px; }
+.fr-go .error-msg { text-align: left; color: #fff; font-size: 14px; font-weight: 500; }
+
+@media (max-width: 960px) {
+  .fr-grid { grid-template-columns: minmax(0, 1fr); gap: 36px; }
+  .fr-lbl-in, .fr-go { padding-left: 0; margin-left: 0; }
+  .fr-stop { grid-template-columns: minmax(0, 1fr); }
+  .fr-num { display: none; }
+}
+@media (max-width: 480px) {
+  .fr-card-top { padding: 16px 18px; }
+  .fr-body { padding: 0 18px 18px; }
+  .fr-file-r .fr-pile { display: none; }
+}
 </style>
 </head>
 <body>
 
 <div class="topbar">
-  <img src="/images/ai2-logo.png" class="hai-logo" alt="hai2" title="Back to start" onclick="startAgain()" onerror="this.style.display='none'"/>
+  <img src="/images/ai2-logo.png" class="hai-logo" alt="hai2" title="Back to start" onclick="startAgain();welcomeShow(true)" onerror="this.style.display='none'"/>
   <div class="suite-nav">
     <span class="suite-item active" title="Back to start" onclick="startAgain()">Prompter</span>
     <span class="suite-div">|</span>
@@ -568,115 +736,189 @@ input.sc-range::-webkit-slider-runnable-track { background: transparent; }
   </div>
 </div>
 
-<div class="main" id="mainPage">
-
-  <div class="hero" id="hero">
-    <div class="hero-copy">
-      <div class="hero-tag">Lock your voice</div>
-      <div class="hero-hed">Drop in your brand.<br><em>Draw out your voice.</em></div>
-      <div class="hero-sub">Does your robot sound like every other robot? We can fix that.</div>
-    </div>
-    <img src="/images/Dot_Hello.png" class="dot-hero-img" alt="Dot" onerror="this.style.display='none'"/>
+<!-- WELCOME — the shopfront, Robot Sandwich style. Every [bracketed] line is
+     a placeholder for Michael's words. START hides it; the logo brings it back. -->
+<section class="pw" id="welcome">
+  <img class="pw-bot" src="/images/Dot_Hello.png" alt="Dot the robot, saying hello" onerror="this.style.display='none'"/>
+  <div class="pw-namewrap">
+    <h1 class="pw-name">PROMPTER</h1>
+    <span class="pw-sign" aria-label="Open" role="img"><svg viewBox="0 0 120 66" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M30 0v12M90 0v12" stroke-width="3"/><circle cx="30" cy="14" r="3.5" fill="#ED1C24"/><circle cx="90" cy="14" r="3.5" fill="#ED1C24"/><rect x="6" y="18" width="108" height="45" rx="9" fill="#ED1C24"/><text x="60" y="54" text-anchor="middle" font-family="Bebas Neue,Impact,sans-serif" font-size="38" fill="#fff" stroke="none" textLength="76" lengthAdjust="spacingAndGlyphs">OPEN</text></svg></span>
   </div>
+  <div class="pw-tiles">
+    <button class="pw-tile" type="button" onclick="welcomeStart()">
+      <span><span class="pw-tile-t">[START]</span><span class="pw-tile-d">[Craft a prompt that makes your robot sound like you.]</span></span>
+      <span class="pw-go" aria-hidden="true">&rarr;</span>
+    </button>
+    <button class="pw-tile" type="button" onclick="openHiw()">
+      <span><span class="pw-tile-t">[HOW IT WORKS]</span><span class="pw-tile-d">[The whole thing in one card]</span></span>
+      <span class="pw-go" aria-hidden="true">&rarr;</span>
+    </button>
+  </div>
+</section>
 
-  <!-- INPUT ZONE -->
-  <div class="input-zone" id="inputZone">
-    <div class="icon-row">
-      <div class="icon-btn active" id="btn-uploads" onclick="uploadsTabClick()">
-        <div class="icircle">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 16V8M8 12l4-4 4 4"/>
-            <rect x="3" y="19" width="18" height="2.5" rx="1.2" fill="white" stroke="none"/>
-          </svg>
+<!-- HOW IT WORKS -->
+<div class="suite-modal-overlay" id="hiwModal" onclick="if(event.target===this)closeHiw()">
+  <div class="suite-modal pw-hiw" role="dialog" aria-modal="true" aria-label="How it works">
+    <button class="suite-modal-x" onclick="closeHiw()" aria-label="Close">&times;</button>
+    <div class="suite-modal-hed">[HOW IT WORKS]</div>
+    <p class="pw-hiw-stand">[One line on what Prompter is for.]</p>
+    <div class="pw-hiw-rooms">
+      <div class="pw-hiw-room"><span class="pw-ic"><svg viewBox="0 0 20 20" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v9"/><path d="M6.5 8.5 10 12l3.5-3.5"/><path d="M4 14v2.5h12V14"/></svg></span>
+        <div><h3>FEED IT</h3><p>[Dump it. Bounce it. Set the rules.]</p></div></div>
+      <div class="pw-hiw-room"><span class="pw-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h4M16 12h4M12 4v4M12 16v4"/><circle cx="12" cy="12" r="3"/></svg></span>
+        <div><h3>SHAPE IT</h3><p>[Work with the robot to refine.]</p></div></div>
+      <div class="pw-hiw-room"><span class="pw-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l4-1 11-11-3-3L5 16z"/><path d="M13 8l3 3"/></svg></span>
+        <div><h3>FIX IT</h3><p>[Tidy up details.]</p></div></div>
+    </div>
+    <button class="suite-modal-cta" onclick="closeHiw();welcomeStart()">[START]</button>
+  </div>
+</div>
+
+<div class="main feed" id="mainPage">
+
+  <!-- FEED IT — the front page, in Robot Sandwich's layout. Every [bracketed]
+       line is a placeholder for Michael's words. The ids inside are the ones
+       the rest of the page already drives, so the chat, the sliders and the
+       profile carry on as before. -->
+  <div class="fr" id="feedRoom">
+
+    <!-- the journey is the headline -->
+    <div class="fr-head" id="hero">
+      <div class="fr-nav" aria-label="The journey">
+        <span class="fr-step on">FEED IT</span><i class="fr-sep" aria-hidden="true"></i>
+        <span class="fr-step">SHAPE IT</span><i class="fr-sep" aria-hidden="true"></i>
+        <span class="fr-step">FIX IT</span>
+      </div>
+      <p class="fr-line">Craft a prompt that makes your robot sound like you.</p>
+    </div>
+
+    <div class="fr-grid">
+
+      <!-- LEFT: YOUR VOICE — where we're aiming, top line only -->
+      <div class="fr-col">
+        <div class="fr-lbl">YOUR VOICE</div>
+        <div class="fr-voice">
+          <div class="fr-big">
+            <div class="fr-big-top">
+              <span class="fr-face" aria-hidden="true"><svg viewBox="0 0 34 32" fill="none"><line x1="17" y1="4" x2="17" y2="8.5" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="17" cy="3.5" r="1.8" fill="#fff"/><rect x="6" y="8" width="22" height="16" rx="5" fill="#fff"/><circle cx="13" cy="16" r="2.2" fill="#ED1C24"/><circle cx="21" cy="16" r="2.2" fill="#ED1C24"/><rect x="11" y="26" width="12" height="3.4" rx="1.7" fill="#fff"/></svg></span>
+              <span class="fr-k">THE BIG IDEA</span>
+            </div>
+            <div class="fr-big-line">[THE ONE IDEA YOUR VOICE RUNS ON]</div>
+          </div>
+          <div class="fr-tiles">
+            <div class="fr-tile"><span class="fr-k">THREE WORDS</span>
+              <div class="fr-pills"><i></i><i></i><i></i></div></div>
+            <div class="fr-tile"><span class="fr-k">WE ARE / NOT</span>
+              <div class="fr-cols"><i></i><i class="lt"></i><i style="width:70%"></i><i class="lt" style="width:60%"></i></div></div>
+            <div class="fr-tile"><span class="fr-k">MORE / LESS</span>
+              <div class="fr-ml"><b class="plus">+</b><i style="width:85%"></i><b>–</b><i class="lt" style="width:65%"></i></div></div>
+            <div class="fr-tile"><span class="fr-k fr-k-row">THE RULES <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span>
+              <div class="fr-rows"><i style="width:80%"></i><i style="width:55%"></i></div></div>
+          </div>
+          <div class="fr-prompt">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5M13.5 4l-3 16"/></svg>
+            <div><div class="fr-prompt-t">= YOUR PROMPT</div><div class="fr-prompt-d">[Ready to paste into any robot]</div></div>
+          </div>
         </div>
-        <span class="ilbl">Uploads</span>
       </div>
-      <div class="icon-btn" id="btn-weblinks" onclick="switchTab('weblinks')">
-        <div class="icircle">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="9"/>
-            <path d="M12 3c-2.5 3-2.5 15 0 18M12 3c2.5 3 2.5 15 0 18"/>
-            <path d="M3 12h18"/>
-          </svg>
+
+      <!-- RIGHT: YOUR STUFF — three stops, one open at a time -->
+      <div class="fr-col">
+        <div class="fr-lbl fr-lbl-in">YOUR STUFF</div>
+
+        <!-- 1 DUMP IT -->
+        <div class="fr-stop open" id="stop1">
+          <div class="fr-num">1</div>
+          <div class="fr-card">
+            <button class="fr-card-top" type="button" onclick="frOpen(1)" aria-expanded="true">
+              <span><span class="fr-card-t">DUMP IT</span><span class="fr-card-d" id="stop1Sum">[Guidelines, emails, your website, notes. Whatever you've got.]</span></span>
+              <svg class="fr-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            <div class="fr-body" id="inputZone">
+              <div class="fr-dump" id="dropZone"
+                ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
+                <label class="fr-k" for="dumpText">[DROP FILES, PASTE A LINK OR PASTE NOTES]</label>
+                <textarea id="dumpText" rows="3" placeholder="[Paste anything here]"
+                  onkeydown="if(event.key==='Enter'&&(event.metaKey||event.ctrlKey))addFromBox()"></textarea>
+                <div class="fr-dump-foot">
+                  <span class="fr-small">PDF · Word · links · notes</span>
+                  <span class="fr-dump-btns">
+                    <button class="fr-ghost" type="button" onclick="document.getElementById('fileInput').click()">[Browse files]</button>
+                    <button class="fr-red" type="button" id="dumpAdd" onclick="addFromBox()">[ADD]</button>
+                  </span>
+                </div>
+                <input type="file" id="fileInput" accept=".pdf,.doc,.docx" multiple style="display:none" onchange="handleFileSelect(event)"/>
+              </div>
+              <div class="fr-note" id="dumpNote" aria-live="polite"></div>
+              <!-- the old link and notes inputs, kept hidden: fetchWeblink() and
+                   addNotes() still read them, and the box fills whichever fits -->
+              <input type="hidden" id="weblinkInput"/><button type="button" id="weblinkBtn" hidden></button>
+              <textarea id="notesInput" hidden></textarea>
+              <div class="file-list fr-files" id="fileList"></div>
+            </div>
+          </div>
         </div>
-        <span class="ilbl">Weblinks</span>
-      </div>
-      <div class="icon-btn" id="btn-notes" onclick="switchTab('notes')">
-        <div class="icircle">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M4 6h16M4 11h16M4 16h10"/>
-            <path d="M16 18l2-2 3 3-2 2-3-3z" fill="white" stroke="white" stroke-width="0.5"/>
-          </svg>
+
+        <!-- 2 BOUNCE IT: Dot's chat -->
+        <div class="fr-stop" id="stop2">
+          <div class="fr-num">2</div>
+          <div class="fr-card">
+            <button class="fr-card-top" type="button" onclick="frOpen(2)" aria-expanded="false">
+              <span><span class="fr-card-t">BOUNCE IT</span><span class="fr-card-d">[Quick chat about how you sound.]</span></span>
+              <span class="fr-count" id="bounceCount"></span>
+              <svg class="fr-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            <div class="fr-body">
+              <div class="dot-opening" id="dotOpening">
+                <img src="/images/Robot.png" class="fr-dot" alt="Dot" onerror="this.style.display='none'"/>
+                <div class="dot-open-bubble"><div class="dot-open-text" id="dotOpenText">...</div></div>
+              </div>
+              <div class="consult-zone" id="consultZone" style="display:none;">
+                <div class="history-collapsed" id="historyToggle" style="display:none;" onclick="toggleHistory()">
+                  <span class="arrow">↑</span>
+                  <span id="historyLabel">stuff we've covered ^</span>
+                </div>
+                <div class="history-full" id="historyFull"></div>
+                <div class="dot-row">
+                  <img src="/images/Robot.png" class="fr-dot" alt="Dot" onerror="this.style.display='none'"/>
+                  <div class="dot-bubble" id="dotBubble">
+                    <div class="dot-thinking" id="dotThinking"><span></span><span></span><span></span></div>
+                    <div class="dot-msg-text" id="dotMsgText" style="display:none;"></div>
+                  </div>
+                </div>
+                <div id="responseArea"></div>
+              </div>
+            </div>
+          </div>
         </div>
-        <span class="ilbl">Notes</span>
+
+        <!-- 3 SET THE RULES -->
+        <div class="fr-stop" id="stop3">
+          <div class="fr-num">3</div>
+          <div class="fr-card">
+            <button class="fr-card-top" type="button" onclick="frOpen(3)" aria-expanded="false">
+              <span><span class="fr-card-t fr-card-t-row">SET THE RULES <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span><span class="fr-card-d" id="stop3Sum">[Words you never use. How you write your name.]</span></span>
+              <svg class="fr-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            <div class="fr-body">
+              <div class="fr-rules" id="rulesList"></div>
+              <div class="fr-rule-add">
+                <label class="fr-hide" for="ruleInput">[Add a rule]</label>
+                <input id="ruleInput" type="text" placeholder="[Add a rule of your own]" onkeydown="if(event.key==='Enter')addRule()"/>
+                <button class="fr-round" type="button" aria-label="Add rule" onclick="addRule()">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ON TO SHAPE IT -->
+        <div class="go-wrap fr-go" id="goWrap" style="display:none;">
+          <div class="error-msg" id="errorMsg"></div>
+          <button class="go-btn" id="goBtn" onclick="goButtonPressed()" disabled>[ON TO SHAPE IT]</button>
+        </div>
       </div>
-    </div>
-
-    <div class="tab-panel active" id="tab-uploads">
-      <div class="drop-zone" id="dropZone"
-        onclick="document.getElementById('fileInput').click()"
-        ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
-        <div class="drop-lbl"><u>Drop in</u> your guidelines, brand voice or examples you love.</div>
-        <div class="drop-sub">PDF · Word</div>
-        <input type="file" id="fileInput" accept=".pdf,.doc,.docx" multiple style="display:none" onchange="handleFileSelect(event)"/>
-      </div>
-    </div>
-    <div class="tab-panel" id="tab-weblinks">
-      <div class="weblink-row">
-        <input class="weblink-input" type="text" id="weblinkInput" placeholder="https://yourbrand.com/about" onkeydown="if(event.key==='Enter') fetchWeblink()"/>
-        <button class="weblink-btn" id="weblinkBtn" onclick="fetchWeblink()">Fetch</button>
-      </div>
-      <div class="weblink-note">Dot will read the page and pull out the copy.</div>
-    </div>
-    <div class="tab-panel" id="tab-notes">
-      <textarea class="notes-textarea" id="notesInput" placeholder="Paste anything — copy you love, words you hate, a brief, a rant."></textarea>
-      <button class="notes-add-btn" onclick="addNotes()">Add these notes</button>
-    </div>
-
-    <div class="file-list" id="fileList"></div>
-  </div>
-
-  <!-- DOT OPENS FIRST -->
-  <div class="dot-opening" id="dotOpening">
-    <img src="/images/Dot_White.png" class="dot-open-img" alt="Dot" onerror="this.style.display='none'"/>
-    <div class="dot-open-bubble">
-      <div class="dot-open-text" id="dotOpenText">...</div>
-    </div>
-  </div>
-
-  <!-- CONSULTATION ZONE -->
-  <div class="consult-zone" id="consultZone" style="display:none;">
-
-    <!-- Collapsed history toggle -->
-    <div class="history-collapsed" id="historyToggle" style="display:none;" onclick="toggleHistory()">
-      <span class="arrow" style="color:white;font-size:13px;">↑</span>
-      <span id="historyLabel">stuff we've covered ^</span>
-    </div>
-
-    <!-- Full history (hidden by default) -->
-    <div class="history-full" id="historyFull"></div>
-
-    <!-- Current Dot message -->
-    <div class="dot-row">
-      <img src="/images/Dot_White.png" class="dot-small-img" alt="Dot" onerror="this.style.display='none'"/>
-      <div class="dot-bubble" id="dotBubble">
-        <div class="dot-thinking" id="dotThinking"><span></span><span></span><span></span></div>
-        <div class="dot-msg-text" id="dotMsgText" style="display:none;"></div>
-      </div>
-    </div>
-
-    <!-- Response area -->
-    <div id="responseArea"></div>
-
-  </div>
-
-  <!-- CONFIRM ZONE (retired — kept as empty anchor) -->
-
-  <!-- LET'S GO -->
-  <div class="go-wrap" id="goWrap" style="display:none;">
-    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;width:100%;">
-      <div class="error-msg" id="errorMsg"></div>
-      <button class="go-btn" id="goBtn" onclick="goButtonPressed()" disabled>LET'S GO</button>
     </div>
   </div>
 
@@ -724,6 +966,132 @@ let notesCounter = 0;
 let dotReady = false;
 let exchangeCount = 0;
 let historyOpen = false;
+
+/* ---------- WELCOME + FEED IT (Oct 2026) ----------
+   New interface words live here, in brackets until Michael writes them. */
+const WORDS = {
+  dumpSum:      (n, st, sh) => `[${n} in: ${st} stated, ${sh} shown]`,
+  sorting:      '[SORTING…]',
+  bounceCount:  n => `[${n} OF 3]`,
+  rulesReading: '[Reading your stuff for rules…]',
+  ruleFound:    '[FOUND]',
+  rulesSum:     n => `[${n} rule${n === 1 ? '' : 's'} set]`,
+};
+
+// The four kinds of material, under the two piles.
+const PILE = { GUIDELINES: 'STATED', DIRECTION: 'STATED', EXAMPLES: 'SHOWN', WEBSITE: 'SHOWN' };
+
+// What the robot gets: each item's name, text and type.
+function materialPayload() {
+  return uploadedFiles.map(f => ({ filename: f.filename, text: f.text, label: f.label || '' }));
+}
+
+function welcomeShow(on) {
+  document.getElementById('welcome').classList.toggle('on', on);
+  document.getElementById('mainPage').style.display = on ? 'none' : 'flex';
+  document.getElementById('pageFooter').style.display = on ? 'none' : 'block';
+}
+function welcomeStart() { welcomeShow(false); window.scrollTo(0, 0); }
+function openHiw() { document.getElementById('hiwModal').classList.add('active'); }
+function closeHiw() { document.getElementById('hiwModal').classList.remove('active'); }
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeHiw(); });
+
+// One stop open at a time.
+function frOpen(n) {
+  [1, 2, 3].forEach(i => {
+    const stop = document.getElementById('stop' + i);
+    stop.classList.toggle('open', i === n);
+    stop.querySelector('.fr-card-top').setAttribute('aria-expanded', i === n ? 'true' : 'false');
+  });
+  if (n === 3) rulesFirstLook();
+}
+
+function frSay(msg) { document.getElementById('dumpNote').textContent = msg || ''; }
+
+// DUMP IT: one box. A lone web address is fetched; anything else is notes.
+function looksLikeLink(t) {
+  return !/\s/.test(t) && /^(https?:\/\/)?[\w-]+(\.[\w-]+)+(\/\S*)?$/i.test(t);
+}
+async function addFromBox() {
+  const box = document.getElementById('dumpText');
+  const text = box.value.trim();
+  if (!text) return;
+  frSay('');
+  const btn = document.getElementById('dumpAdd');
+  btn.disabled = true;
+  if (looksLikeLink(text)) {
+    document.getElementById('weblinkInput').value = text;
+    await fetchWeblink();
+    if (!document.getElementById('weblinkInput').value) box.value = '';
+  } else {
+    document.getElementById('notesInput').value = text;
+    box.value = '';
+    await addNotes();
+  }
+  btn.disabled = false;
+}
+
+// Ask the light robot what type an item is. Unsure means EXAMPLES.
+async function labelItem(item) {
+  try {
+    const res = await fetch('/api/summarise', {
+      method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ text: item.text.slice(0, 500) })
+    });
+    const data = await res.json();
+    item.label = (data.success && PILE[data.label]) ? data.label : 'EXAMPLES';
+  } catch { item.label = 'EXAMPLES'; }
+}
+
+function chatReplies() {
+  return consultHistory.filter(h => h.role === 'user'
+    && !String(h.content).startsWith('More material just landed')).length;
+}
+function updateBounceCount() {
+  const n = chatReplies();
+  document.getElementById('bounceCount').textContent = consultHistory.length ? WORDS.bounceCount(n) : '';
+}
+
+// SET THE RULES: the robot suggests, the person keeps, drops or adds.
+let houseRules = [];        // [{text, found}]
+let rulesLooked = false;
+async function rulesFirstLook() {
+  if (rulesLooked || !uploadedFiles.length) { renderRules(); return; }
+  rulesLooked = true;
+  document.getElementById('rulesList').innerHTML = `<div class="fr-small">${escHtml(WORDS.rulesReading)}</div>`;
+  try {
+    const res = await fetch('/api/rules', {
+      method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ files: materialPayload() })
+    });
+    const data = await res.json();
+    if (data.success) {
+      (data.rules || []).forEach(t => {
+        if (!houseRules.find(r => r.text.toLowerCase() === t.toLowerCase())) houseRules.push({ text: t, found: true });
+      });
+    }
+  } catch { /* no suggestions is fine: they can still add their own */ }
+  renderRules();
+}
+function renderRules() {
+  document.getElementById('rulesList').innerHTML = houseRules.map((r, i) =>
+    `<div class="fr-rule"><span>${escHtml(r.text)}${r.found ? `<small>${escHtml(WORDS.ruleFound)}</small>` : ''}</span>` +
+    `<button class="fr-x" type="button" aria-label="Remove rule" onclick="removeRule(${i})">&times;</button></div>`).join('');
+  const sum = document.getElementById('stop3Sum');
+  if (!sum.dataset.empty) sum.dataset.empty = sum.textContent;
+  sum.textContent = houseRules.length ? WORDS.rulesSum(houseRules.length) : sum.dataset.empty;
+}
+function addRule() {
+  const input = document.getElementById('ruleInput');
+  const text = input.value.trim();
+  if (!text) return;
+  if (!houseRules.find(r => r.text.toLowerCase() === text.toLowerCase())) houseRules.push({ text, found: false });
+  input.value = '';
+  renderRules();
+}
+function removeRule(i) { houseRules.splice(i, 1); renderRules(); }
+
+window.addEventListener('DOMContentLoaded', () => welcomeShow(true));
 
 // Load opening message on page load
 window.addEventListener('load', async () => {
@@ -778,20 +1146,8 @@ function suiteModalAction() {
 
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSuiteModal(); });
 
-// TABS
-function switchTab(name) {
-  ['uploads','weblinks','notes'].forEach(t => {
-    document.getElementById('tab-' + t).classList.toggle('active', t === name);
-    document.getElementById('btn-' + t).classList.toggle('active', t === name);
-  });
-}
-
-// Tapping the Uploads circle should feel like "add a file": switch to the tab
-// and open the browser box, the same dialog the dropzone triggers.
-function uploadsTabClick() {
-  switchTab('uploads');
-  document.getElementById('fileInput').click();
-}
+// TABS — gone with the one box (Oct 2026). Kept as a no-op for old callers.
+function switchTab() {}
 
 // FILE HANDLING
 function handleDragOver(e) { e.preventDefault(); document.getElementById('dropZone').classList.add('drag-over'); }
@@ -807,7 +1163,7 @@ function limitLine(data) {
 
 async function uploadFiles(files) {
   const allowed = files.filter(f => /\.(pdf|docx?)$/i.test(f.name));
-  if (allowed.length < files.length) showError("I can't read that one. Try a PDF or Word doc.");
+  if (allowed.length < files.length) frSay("I can't read that one. Try a PDF or Word doc.");
   if (!allowed.length) return;
   for (const file of allowed) {
     if (uploadedFiles.find(f => f.filename === file.name)) continue;
@@ -816,9 +1172,14 @@ async function uploadFiles(files) {
     try {
       const res = await fetch('/api/upload', { method: 'POST', body: formData });
       const data = await res.json();
-      if (data.success) uploadedFiles.push({ filename: data.filename, text: data.text, size: file.size });
-      else showError(data.error || 'Something went wrong.');
-    } catch { showError('Doh, I dropped that on the way. Try again.'); }
+      if (data.success) {
+        const item = { filename: data.filename, text: data.text, size: file.size };
+        uploadedFiles.push(item);
+        renderFileList();
+        await labelItem(item);
+      }
+      else frSay(data.error || 'Something went wrong.');
+    } catch { frSay('Doh, I dropped that on the way. Try again.'); }
   }
   afterFilesChanged();
 }
@@ -833,11 +1194,11 @@ async function fetchWeblink() {
     const res = await fetch('/api/fetch', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({url}) });
     const data = await res.json();
     if (data.success) {
-      if (!uploadedFiles.find(f => f.filename === data.filename)) uploadedFiles.push({ filename: data.filename, text: data.text, size: data.text.length, kind: 'web' });
+      if (!uploadedFiles.find(f => f.filename === data.filename)) uploadedFiles.push({ filename: data.filename, text: data.text, size: data.text.length, kind: 'web', label: 'WEBSITE' });
       input.value = '';
       afterFilesChanged();
-    } else showDotMessage(limitLine(data) || "Can't find any words in that file.");
-  } catch { showDotMessage("Couldn't read that page. Can you paste it instead?"); }
+    } else frSay(limitLine(data) || "Can't find any words in that file.");
+  } catch { frSay("Couldn't read that page. Can you paste it instead?"); }
   btn.disabled = false; btn.textContent = 'Fetch';
 }
 
@@ -850,7 +1211,7 @@ async function addNotes() {
   if (btn) { btn.disabled = true; btn.textContent = '...'; }
 
   // Get a two-word label from Claude
-  let label = 'Your notes';
+  let label = 'EXAMPLES';
   try {
     const res = await fetch('/api/summarise', {
       method: 'POST',
@@ -858,7 +1219,7 @@ async function addNotes() {
       body: JSON.stringify({ text })
     });
     const data = await res.json();
-    if (data.success && data.label) label = data.label;
+    if (data.success && PILE[data.label]) label = data.label;
   } catch { /* fallback label is fine */ }
 
   uploadedFiles.push({ filename: `Notes ${notesCounter}`, text, size: text.length, label });
@@ -877,11 +1238,15 @@ function removeFile(filename) {
     consultHistory = []; dotReady = false; exchangeCount = 0;
     invalidateSenseCheckPrefetch();
     resetHistoryUI();
+    document.getElementById('dotOpening').style.display = 'flex';
+    updateBounceCount();
+    frOpen(1);
   }
 }
 
 function afterFilesChanged() {
   invalidateSenseCheckPrefetch();  // material changed — warmed checks no longer match
+  rulesLooked = false;             // new material may hold new rules
   renderFileList();
   if (uploadedFiles.length > 0 && consultHistory.length === 0) {
     startConsultation();
@@ -916,34 +1281,37 @@ function showSoaking() {
   bubble.style.animation = 'fadeUp 0.3s ease';
 }
 
+const FR_ICON = {
+  pdf: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5"/><path d="M10 14h5M10 17h5"/></svg>',
+  doc: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5"/><path d="M10 12h6M10 15h6M10 18h4"/></svg>',
+  web: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>',
+  note: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 5h14M5 10h14M5 15h9"/></svg>',
+};
+
 function renderFileList() {
   const list = document.getElementById('fileList');
-  if (!uploadedFiles.length) { list.innerHTML = ''; return; }
-  list.innerHTML = uploadedFiles.map(f => {
-    const size = f.size < 1024*1024 ? Math.round(f.size/1024) + ' KB' : (f.size/1024/1024).toFixed(1) + ' MB';
-    const label = f.label ? `<div class="file-label">${escHtml(f.label)}</div>` : '';
-    const safeName = f.filename.replace(/'/g, "\\'");
-    const webIcon = f.kind === 'web'
-      ? `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--mid);flex-shrink:0;"><circle cx="12" cy="12" r="9"/><path d="M12 3c-2.5 3-2.5 15 0 18M12 3c2.5 3 2.5 15 0 18"/><path d="M3 12h18"/></svg>`
-      : '';
-    return `<div class="file-row">
-      <span class="file-tick" id="ftick-${CSS.escape(f.filename)}">✓</span>
-      ${webIcon}
-      <div class="file-info">
-        <span class="file-name">${escHtml(f.filename)}</span>
-        ${label}
-      </div>
-      <span class="file-size">${size}</span>
-      <button class="file-x" onclick="removeFile('${safeName}')">&times;</button>
-    </div>`;
+  const n = uploadedFiles.length;
+  const stated = uploadedFiles.filter(f => PILE[f.label] === 'STATED').length;
+  const shown = uploadedFiles.filter(f => PILE[f.label] === 'SHOWN').length;
+  const sum = document.getElementById('stop1Sum');
+  if (!sum.dataset.empty) sum.dataset.empty = sum.textContent;
+  sum.textContent = n ? WORDS.dumpSum(n, stated, shown) : sum.dataset.empty;
+  document.getElementById('stop1').classList.toggle('done', n > 0);
+  if (!n) { list.innerHTML = ''; return; }
+  list.innerHTML = uploadedFiles.map((f, i) => {
+    const icon = f.kind === 'web' ? FR_ICON.web
+      : /\.pdf$/i.test(f.filename) ? FR_ICON.pdf
+      : /\.docx?$/i.test(f.filename) ? FR_ICON.doc : FR_ICON.note;
+    const type = PILE[f.label] ? f.label : '';
+    const pile = type ? PILE[type] : '';
+    const tag = type
+      ? `<span class="fr-pile">${pile}</span><span class="fr-type ${pile === 'SHOWN' ? 'shown' : ''}">${type}</span>`
+      : `<span class="fr-type wait">${escHtml(WORDS.sorting)}</span>`;
+    return `<div class="fr-file"><span class="fr-file-n">${icon}<span>${escHtml(f.filename)}</span></span>` +
+      `<span class="fr-file-r">${tag}<button class="fr-x" type="button" aria-label="Remove ${escHtml(f.filename)}" onclick="removeFileAt(${i})">&times;</button></span></div>`;
   }).join('');
-  setTimeout(() => {
-    uploadedFiles.forEach(f => {
-      const tick = document.getElementById('ftick-' + CSS.escape(f.filename));
-      if (tick) tick.classList.add('show');
-    });
-  }, 400);
 }
+function removeFileAt(i) { const f = uploadedFiles[i]; if (f) removeFile(f.filename); }
 
 function updateGoBtn() {
   document.getElementById('goBtn').disabled = false;
@@ -952,6 +1320,7 @@ function updateGoBtn() {
 
 // CONSULTATION
 async function startConsultation() {
+  frOpen(2);
   // Hide the opening bubble — Dot is now in the consult zone
   document.getElementById('dotOpening').style.display = 'none';
   document.getElementById('consultZone').style.display = 'flex';
@@ -968,7 +1337,7 @@ async function runConsult() {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify({
-        files: uploadedFiles.map(f => ({filename: f.filename, text: f.text})),
+        files: materialPayload(),
         history: consultHistory
       })
     });
@@ -981,6 +1350,7 @@ async function runConsult() {
 
     consultHistory.push({ role: 'assistant', content: data.message });
     showDotMessage(data.message);
+    updateBounceCount();
     dotReady = data.ready;
     invalidateSenseCheckPrefetch();  // conversation just changed — any warmed checks are stale
 
@@ -1548,7 +1918,12 @@ function startAgain() {
   document.getElementById('pageFooter').style.display = 'block';
   resetHistoryUI();
   showError('');
-  switchTab('uploads');
+  document.getElementById('feedRoom').style.display = 'flex';
+  document.getElementById('mainPage').classList.add('feed');
+  houseRules = []; rulesLooked = false; renderRules();
+  frSay(''); document.getElementById('dumpText').value = '';
+  updateBounceCount(); renderFileList();
+  frOpen(1);
 }
 
 // HELPERS
@@ -1687,7 +2062,7 @@ async function requestSenseChecks() {
     method: 'POST',
     headers: {'Content-Type':'application/json'},
     body: JSON.stringify({
-      files: uploadedFiles.map(f => ({filename: f.filename, text: f.text})),
+      files: materialPayload(),
       history: consultHistory
     })
   });
@@ -1969,7 +2344,7 @@ async function regenerateSentence() {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify({
-        files: uploadedFiles.map(f => ({filename: f.filename, text: f.text})),
+        files: materialPayload(),
         history: consultHistory,
         reject: {
           dimension: rejected.dimension,
@@ -2009,9 +2384,10 @@ async function runExtractWithCalibration() {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify({
-        files: uploadedFiles.map(f => ({filename: f.filename, text: f.text})),
+        files: materialPayload(),
         history: consultHistory,
-        calibration: confirmResults
+        calibration: confirmResults,
+        rules: houseRules.map(r => r.text)
       })
     });
     const data = await res.json();
@@ -2028,6 +2404,8 @@ async function runExtractWithCalibration() {
     document.getElementById('inputZone').style.display = 'none';
     document.getElementById('consultZone').style.display = 'none';
     document.getElementById('goWrap').style.display = 'none';
+    document.getElementById('feedRoom').style.display = 'none';
+    document.getElementById('mainPage').classList.remove('feed');
     document.getElementById('profileZone').style.display = 'block';
   } catch {
     if (stepTimer) { clearInterval(stepTimer); stepTimer = null; }

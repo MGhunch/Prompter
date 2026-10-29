@@ -50,7 +50,7 @@ NZ = ZoneInfo('Pacific/Auckland')
 # Which routes count as what. Anything under /api/ not listed costs nothing.
 ROBOT_ROUTES = {
     '/api/consult', '/api/confirm', '/api/confirm/regenerate', '/api/extract',
-    '/api/summarise', '/api/revise',
+    '/api/summarise', '/api/revise', '/api/rules',
     '/api/pipeline/sort', '/api/pipeline/calibrate',
     '/api/pipeline/shape', '/api/pipeline/run',
 }

@@ -11,7 +11,7 @@ import json
 import io
 import requests as req
 from bs4 import BeautifulSoup
-from prompts import CONSULT_PROMPT, EXTRACT_PROMPT, CONFIRM_PROMPT, SUMMARISE_PROMPT, REGEN_SENTENCE_PROMPT
+from prompts import CONSULT_PROMPT, EXTRACT_PROMPT, CONFIRM_PROMPT, SUMMARISE_PROMPT, REGEN_SENTENCE_PROMPT, RULES_PROMPT
 from revise import revise_bp  # REVISE feature block (tick-it-or-tweak-it)
 import guard  # caps, daily ceiling, safe URL fetch
 
@@ -179,6 +179,26 @@ def extract_json_object(text):
         return None
 
 
+# The four kinds of material, under the two piles. The page sends each item's
+# type with its text, so the robot knows what it's reading instead of guessing.
+MATERIAL_TYPES = {'GUIDELINES': 'STATED', 'DIRECTION': 'STATED',
+                  'EXAMPLES': 'SHOWN', 'WEBSITE': 'SHOWN'}
+
+
+def material_label(f):
+    """'GUIDELINES (STATED)' for a typed item, '' for an untyped one."""
+    t = str(f.get('label') or '').strip().upper()
+    return f"{t} ({MATERIAL_TYPES[t]})" if t in MATERIAL_TYPES else ''
+
+
+def material_block(f, limit=None):
+    """One item, headed with its name and type, for the robot to read."""
+    label = material_label(f)
+    head = f"--- {f['filename']}{' [' + label + ']' if label else ''} ---"
+    text = f['text'] if limit is None else f['text'][:limit]
+    return f"{head}\n{text}"
+
+
 @app.route('/api/consult', methods=['POST'])
 def consult():
     data = request.get_json() or {}
@@ -196,7 +216,7 @@ def consult():
         # Build file context
         file_context = "Brand material provided:\n\n"
         for f in files:
-            file_context += f"--- {f['filename']} ---\n{f['text'][:3000]}\n\n"
+            file_context += material_block(f, 3000) + "\n\n"
 
         system = CONSULT_PROMPT + "\n\n" + file_context
 
@@ -282,7 +302,7 @@ def extract():
         client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
 
         calibration = data.get('calibration', [])
-        labelled = [f"--- SOURCE: {f['filename']} ---\n{f['text']}" for f in files]
+        labelled = ["--- SOURCE: " + material_block(f)[4:] for f in files]
         user_content = "\n\n".join(labelled)
 
         if history:
@@ -334,6 +354,17 @@ def extract():
                     + "\n".join(cal_lines)
                 )
 
+        # The person's own rules, from SET THE RULES. Theirs, so they go in
+        # exactly as written.
+        rules = [str(r).strip() for r in (data.get('rules') or []) if str(r).strip()][:12]
+        if rules:
+            user_content += (
+                "\n\n--- HOUSE RULES THE USER SET (each one goes into houseRules "
+                "word for word: don't reword, merge or drop them; add others only "
+                "if the material clearly states them) ---\n"
+                + "\n".join(f"- {r}" for r in rules)
+            )
+
         response = client.messages.create(
             model=MODEL,
             max_tokens=3000,
@@ -372,7 +403,7 @@ def confirm():
 
         file_context = "Brand material:\n\n"
         for f in files:
-            file_context += f"--- {f['filename']} ---\n{f['text'][:2500]}\n\n"
+            file_context += material_block(f, 2500) + "\n\n"
 
         convo = ""
         if history:
@@ -418,7 +449,7 @@ def confirm_regenerate():
 
         file_context = "Brand material:\n\n"
         for f in files:
-            file_context += f"--- {f['filename']} ---\n{f['text'][:2500]}\n\n"
+            file_context += material_block(f, 2500) + "\n\n"
 
         convo = ""
         if history:
@@ -468,9 +499,9 @@ def summarise():
     data = request.get_json() or {}
     text = (data.get('text') or '').strip()[:500]
     if not text:
-        return jsonify({'success': True, 'label': 'Notes'})
+        return jsonify({'success': True, 'label': 'EXAMPLES'})
     if not ANTHROPIC_API_KEY:
-        return jsonify({'success': True, 'label': 'Notes'})
+        return jsonify({'success': True, 'label': 'EXAMPLES'})
     try:
         client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
         message = client.messages.create(
@@ -479,11 +510,45 @@ def summarise():
             system=SUMMARISE_PROMPT,
             messages=[{'role': 'user', 'content': text}]
         )
-        label = message.content[0].text.strip()
+        word = (message.content[0].text or '').strip().upper().strip('.')
+        # Only the three types a robot can tell from the text. Anything else,
+        # or a wobble, is treated as copy -- shaky material is evidence, never
+        # promoted to what the brand says it is.
+        label = word if word in ('GUIDELINES', 'DIRECTION', 'EXAMPLES') else 'EXAMPLES'
         return jsonify({'success': True, 'label': label})
     except Exception as e:
         print(f'[Prompter] Summarise error: {e}')
-        return jsonify({'success': True, 'label': 'Notes'})
+        return jsonify({'success': True, 'label': 'EXAMPLES'})
+
+
+@app.route('/api/rules', methods=['POST'])
+def suggest_rules():
+    """SET THE RULES: the robot suggests the hard rules it can find. The
+    person keeps, drops or adds. Guidelines and Direction are read first,
+    because that's where rules are written down."""
+    data = request.get_json() or {}
+    files = data.get('files', [])
+    if not files:
+        return jsonify({'success': True, 'rules': []})
+    if not ANTHROPIC_API_KEY:
+        return jsonify({'error': 'API key not configured'}), 500
+    try:
+        stated_first = sorted(files, key=lambda f: 0 if MATERIAL_TYPES.get(
+            str(f.get('label') or '').upper()) == 'STATED' else 1)
+        content = "\n\n".join(material_block(f, 4000) for f in stated_first)
+        client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
+        message = client.messages.create(
+            model=MODEL_LIGHT,
+            max_tokens=400,
+            system=RULES_PROMPT,
+            messages=[{'role': 'user', 'content': content}]
+        )
+        result = extract_json_object(message.content[0].text) or {}
+        rules = [str(r).strip() for r in (result.get('rules') or []) if str(r).strip()][:5]
+        return jsonify({'success': True, 'rules': rules})
+    except Exception as e:
+        print(f'[Prompter] Rules error: {e}')
+        return jsonify({'error': 'Something went wrong.'}), 500
 
 
 @app.route('/api/opening', methods=['GET'])
