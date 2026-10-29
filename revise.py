@@ -81,10 +81,12 @@ def revise():
         if not messages or messages[0]['role'] != 'user':
             messages.insert(0, {'role': 'user', 'content': 'Help me tweak this block.'})
 
+        # Same block, same profile, every turn of a tweak -- cache it.
         response = client.messages.create(
             model=MODEL,
             max_tokens=900,
-            system=system,
+            system=[{'type': 'text', 'text': system,
+                     'cache_control': {'type': 'ephemeral'}}],
             messages=messages
         )
 

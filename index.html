@@ -799,8 +799,15 @@ function handleDragLeave() { document.getElementById('dropZone').classList.remov
 function handleDrop(e) { e.preventDefault(); document.getElementById('dropZone').classList.remove('drag-over'); uploadFiles(Array.from(e.dataTransfer.files)); }
 function handleFileSelect(e) { uploadFiles(Array.from(e.target.files)); e.target.value = ''; }
 
+// The server's guard (guard.py) sends a code with its own words for the
+// hourly cap, the daily close and too-much-material. Show those as sent.
+function limitLine(data) {
+  return (data && data.code && data.error) ? data.error : null;
+}
+
 async function uploadFiles(files) {
   const allowed = files.filter(f => /\.(pdf|docx?)$/i.test(f.name));
+  if (allowed.length < files.length) showError("I can't read that one. Try a PDF or Word doc.");
   if (!allowed.length) return;
   for (const file of allowed) {
     if (uploadedFiles.find(f => f.filename === file.name)) continue;
@@ -810,8 +817,8 @@ async function uploadFiles(files) {
       const res = await fetch('/api/upload', { method: 'POST', body: formData });
       const data = await res.json();
       if (data.success) uploadedFiles.push({ filename: data.filename, text: data.text, size: file.size });
-      else showError(data.error || 'Upload failed');
-    } catch { showError('Upload failed — try again.'); }
+      else showError(data.error || 'Something went wrong.');
+    } catch { showError('Doh, I dropped that on the way. Try again.'); }
   }
   afterFilesChanged();
 }
@@ -829,8 +836,8 @@ async function fetchWeblink() {
       if (!uploadedFiles.find(f => f.filename === data.filename)) uploadedFiles.push({ filename: data.filename, text: data.text, size: data.text.length, kind: 'web' });
       input.value = '';
       afterFilesChanged();
-    } else showDotMessage("Couldn't pull much off that page — paste the copy or drop a PDF and we're away.");
-  } catch { showDotMessage("Couldn't reach that page — paste the copy or drop a PDF instead."); }
+    } else showDotMessage(limitLine(data) || "Can't find any words in that file.");
+  } catch { showDotMessage("Couldn't read that page. Can you paste it instead?"); }
   btn.disabled = false; btn.textContent = 'Fetch';
 }
 
@@ -966,7 +973,11 @@ async function runConsult() {
       })
     });
     const data = await res.json();
-    if (!data.success) throw new Error(data.error);
+    if (!data.success) {
+      showDotMessage(limitLine(data) || "Hmm, that one didn't come through. Give it another go?");
+      renderResponseArea();
+      return;
+    }
 
     consultHistory.push({ role: 'assistant', content: data.message });
     showDotMessage(data.message);
@@ -1482,7 +1493,7 @@ async function sendFeedback() {
     });
     const data = await res.json();
     thinking(false);
-    if (!data.success) { addMsg('dot', data.error || "Something went sideways. Try again?"); return; }
+    if (!data.success) { addMsg('dot', limitLine(data) || "Something's up. Please let us know."); return; }
     reviseHistory.push({role:'assistant', content:data.message});
     if (data.proposal) {
       reviseProposal = data.proposal; reviseActive.lastReason = data.message || '';
@@ -1490,7 +1501,7 @@ async function sendFeedback() {
       addProposal(reviseActive.section, reviseActive.index, data.proposal);
       preview(reviseActive.section, reviseActive.index, data.proposal);
     } else { reviseProposal=null; restoreBlock(reviseActive.section, reviseActive.index); addMsg('dot', data.message, {pb:data.pushback}); }
-  } catch (err) { thinking(false); addMsg('dot', "Couldn't reach the engine — is the API key set? ("+err.message+")"); }
+  } catch (err) { thinking(false); addMsg('dot', "Can't find the robot. Please try again."); }
 }
 
 /* ── preview on the card (DOM only) ── */
@@ -1724,7 +1735,11 @@ async function requestSenseChecks() {
     })
   });
   const data = await res.json();
-  if (!data.success || !data.checks || !data.checks.length) throw new Error('No checks');
+  if (!data.success || !data.checks || !data.checks.length) {
+    const err = new Error('No checks');
+    err.line = limitLine(data);
+    throw err;
+  }
   return data.checks;
 }
 
@@ -1792,10 +1807,12 @@ async function fetchSenseChecks() {
     confirmResults = [];
     currentCheck = 0;
     renderSenseCheck(0);
-  } catch {
-    // If confirm fails, skip straight to theatre
+  } catch (e) {
+    // The sliders are the heart of it -- never skip them. Say so, and let
+    // them press Let's go again.
     hideSenseCheckScreen();
-    runExtractWithCalibration();
+    showError((e && e.line) || "Something's glitchy, please try again.");
+    document.getElementById('goBtn').disabled = false;
   } finally {
     senseCheckPrefetch = null;  // consumed — re-warmed on the next ready
   }
@@ -2028,6 +2045,7 @@ async function runExtractWithCalibration() {
   document.getElementById('pageFooter').style.display = 'none';
   document.getElementById('thinkingScreen').classList.add('active');
   const stepsDone = animateSteps();
+  let line = null;
 
   try {
     const res = await fetch('/api/extract', {
@@ -2040,7 +2058,7 @@ async function runExtractWithCalibration() {
       })
     });
     const data = await res.json();
-    if (!data.success) throw new Error(data.error);
+    if (!data.success) { line = limitLine(data); throw new Error(data.error); }
     profileData = data.profile;
     renderProfileZone(profileData);
 
@@ -2059,7 +2077,7 @@ async function runExtractWithCalibration() {
     document.getElementById('thinkingScreen').classList.remove('active');
     document.getElementById('mainPage').style.display = 'flex';
     document.getElementById('pageFooter').style.display = 'block';
-    showError('Something went wrong. Try again.');
+    showError(line || 'Something went wrong. Please try again.');
     document.getElementById('goBtn').disabled = false;
   }
 }

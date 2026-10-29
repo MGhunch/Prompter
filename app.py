@@ -4,8 +4,7 @@ Single-stage consultation model.
 Dot reads material, asks targeted questions, builds profile through conversation.
 """
 
-from flask import Flask, jsonify, request, send_from_directory
-from flask_cors import CORS
+from flask import Flask, jsonify, request, send_from_directory, abort
 import anthropic
 import os
 import json
@@ -14,9 +13,15 @@ import requests as req
 from bs4 import BeautifulSoup
 from prompts import CONSULT_PROMPT, EXTRACT_PROMPT, CONFIRM_PROMPT, SUMMARISE_PROMPT, REGEN_SENTENCE_PROMPT
 from revise import revise_bp  # REVISE feature block (tick-it-or-tweak-it)
+import guard  # caps, daily ceiling, safe URL fetch
 
-app = Flask(__name__, static_folder='.', static_url_path='')
-CORS(app)
+# No automatic static folder: Flask would otherwise serve every file in the
+# repo, prompts and code included. The page and its pictures are served by
+# the two routes at the bottom, and nothing else.
+# No CORS either: the page is served from this same app, so it never needs it,
+# and leaving it on let any website call the API on our bill.
+app = Flask(__name__, static_folder=None)
+guard.install(app)
 app.register_blueprint(revise_bp)  # adds /api/revise; touches no existing route
 
 from pipeline import pipeline_bp  # NEW pipeline (SORT->CALIBRATE->SHAPE); off the live path
@@ -27,6 +32,19 @@ ANTHROPIC_API_KEY = os.environ.get('ANTHROPIC_API_KEY')
 # One source of truth for the model. claude-sonnet-4-20250514 retired 15 Jun 2026.
 # Override per-environment with PROMPTER_MODEL if needed.
 MODEL = os.environ.get('PROMPTER_MODEL', 'claude-sonnet-4-6')
+# Light jobs (the two-word file label) don't need Sonnet.
+MODEL_LIGHT = os.environ.get('PROMPTER_MODEL_LIGHT', 'claude-haiku-4-5-20251001')
+
+# Dot gets this many replies from the user, then her next message is her last
+# and she hands over to the sense-check. Keeps the chat short and the bill small.
+CONSULT_MAX_REPLIES = int(os.environ.get('PROMPTER_CONSULT_MAX_REPLIES', 3))
+CONSULT_LAST_TURN = (
+    "\n\nTHIS IS YOUR LAST MESSAGE. You've had your questions. Wrap up in one or "
+    "two sentences and hand over to the sense-check. Set \"ready\" to true."
+)
+# The front end injects this as a user turn when new files land. It isn't a
+# reply from the person, so it doesn't count toward the cap.
+_MATERIAL_NUDGE = 'More material just landed.'
 
 
 def _order_blocks(blocks, page_width):
@@ -82,9 +100,8 @@ def extract_text_from_docx(file_bytes):
 
 def extract_text_from_url(url):
     headers = {'User-Agent': 'Mozilla/5.0 (compatible; Prompter/1.0)'}
-    resp = req.get(url, headers=headers, timeout=12)
-    resp.raise_for_status()
-    soup = BeautifulSoup(resp.text, 'lxml')
+    _, body = guard.safe_get(url, headers=headers, timeout=12)
+    soup = BeautifulSoup(body, 'lxml')
     for tag in soup(['script','style','nav','footer','header','aside','form','iframe']):
         tag.decompose()
     blocks = []
@@ -98,7 +115,7 @@ def extract_text_from_url(url):
 @app.route('/api/upload', methods=['POST'])
 def upload():
     if 'file' not in request.files:
-        return jsonify({'error': 'No file provided'}), 400
+        return jsonify({'error': 'Can you upload examples first?'}), 400
     file = request.files['file']
     filename = file.filename or 'unknown'
     file_bytes = file.read()
@@ -109,13 +126,13 @@ def upload():
         elif ext in ('docx', 'doc'):
             text = extract_text_from_docx(file_bytes)
         else:
-            return jsonify({'error': f'Unsupported file type: {ext}'}), 400
+            return jsonify({'error': "I can't read that one. Try a PDF or Word doc."}), 400
         if not text.strip():
-            return jsonify({'error': 'Could not extract text from file'}), 400
+            return jsonify({'error': "Can't find any words in that file."}), 400
         return jsonify({'success': True, 'filename': filename, 'text': text})
     except Exception as e:
         print(f'[Prompter] Upload error: {e}')
-        return jsonify({'error': str(e)}), 500
+        return jsonify({'error': 'Something went wrong.'}), 500
 
 
 @app.route('/api/fetch', methods=['POST'])
@@ -134,6 +151,8 @@ def fetch_url():
         domain = urlparse(url).netloc.replace('www.', '')
         filename = f'{domain} (website)'
         return jsonify({'success': True, 'filename': filename, 'text': text})
+    except guard.UnsafeURL as e:
+        return jsonify({'error': str(e)}), 400
     except req.exceptions.Timeout:
         return jsonify({'error': 'That URL timed out.'}), 400
     except req.exceptions.RequestException as e:
@@ -181,6 +200,11 @@ def consult():
 
         system = CONSULT_PROMPT + "\n\n" + file_context
 
+        replies = sum(1 for h in history
+                      if h.get('role') == 'user'
+                      and not str(h.get('content', '')).startswith(_MATERIAL_NUDGE))
+        last_turn = replies >= CONSULT_MAX_REPLIES
+
         # Build message history. Dot's turns are stored by the frontend as her
         # plain message string, not the JSON she emits. Replaying that as-is
         # drops the model out of JSON mode from turn two on (it mirrors the prose
@@ -201,10 +225,19 @@ def consult():
         if not messages or messages[0]['role'] != 'user':
             messages.insert(0, {'role': 'user', 'content': 'Please read the material and start.'})
 
+        # The prompt + material is identical on every turn of the chat, so
+        # it's cached: turn two onward reads it at a fraction of the price.
+        # The last-turn line goes in a second, uncached block so adding it
+        # doesn't break the cache.
+        system_blocks = [{'type': 'text', 'text': system,
+                          'cache_control': {'type': 'ephemeral'}}]
+        if last_turn:
+            system_blocks.append({'type': 'text', 'text': CONSULT_LAST_TURN})
+
         response = client.messages.create(
             model=MODEL,
             max_tokens=600,
-            system=system,
+            system=system_blocks,
             messages=messages
         )
 
@@ -220,13 +253,13 @@ def consult():
             return jsonify({
                 'success': True,
                 'message': raw or "Hmm, that one didn't come through. Give it another go?",
-                'ready': False
+                'ready': last_turn
             })
 
         return jsonify({
             'success': True,
             'message': result.get('message', ''),
-            'ready': result.get('ready', False)
+            'ready': bool(result.get('ready', False)) or last_turn
         })
 
     except Exception as e:
@@ -441,7 +474,7 @@ def summarise():
     try:
         client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
         message = client.messages.create(
-            model=MODEL,
+            model=MODEL_LIGHT,
             max_tokens=20,
             system=SUMMARISE_PROMPT,
             messages=[{'role': 'user', 'content': text}]
@@ -461,14 +494,24 @@ def opening():
     })
 
 
+# The only files the public can have: the page, the favicon, the pictures.
+_HERE = os.path.dirname(os.path.abspath(__file__))
+
+
 @app.route('/')
 def serve_index():
-    return send_from_directory('.', 'index.html')
+    return send_from_directory(_HERE, 'index.html')
 
 
-@app.route('/<path:path>')
-def serve_static(path):
-    return send_from_directory('.', path)
+@app.route('/favicon.ico')
+def serve_favicon():
+    return send_from_directory(_HERE, 'favicon.ico')
+
+
+@app.route('/images/<path:name>')
+def serve_image(name):
+    # send_from_directory refuses anything that climbs out of images/.
+    return send_from_directory(os.path.join(_HERE, 'images'), name)
 
 
 if __name__ == '__main__':
