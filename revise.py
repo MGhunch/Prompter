@@ -6,8 +6,6 @@ Wire-up in app.py is two lines:
     from revise import revise_bp
     app.register_blueprint(revise_bp)
 
-The lab page (revise-lab.html) is served automatically by app.py's existing
-static catch-all, so there's no page route to add.
 """
 
 from flask import Blueprint, jsonify, request

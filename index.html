@@ -1072,51 +1072,8 @@ function resetHistoryUI() {
   exchangeCount = 0; historyOpen = false;
 }
 
-// EXTRACT
-async function runExtract_DISABLED() {
-  if (!uploadedFiles.length) return;
-  showError('');
-  document.getElementById('mainPage').style.display = 'none';
-  document.getElementById('pageFooter').style.display = 'none';
-  document.getElementById('thinkingScreen').classList.add('active');
-  animateSteps();
-
-  try {
-    const res = await fetch('/api/extract', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({
-        files: uploadedFiles.map(f => ({filename: f.filename, text: f.text})),
-        history: consultHistory
-      })
-    });
-    const data = await res.json();
-    if (!data.success) throw new Error(data.error);
-    profileData = data.profile;
-
-    document.getElementById('thinkingScreen').classList.remove('active');
-    document.getElementById('mainPage').style.display = 'flex';
-    document.getElementById('pageFooter').style.display = 'block';
-    document.getElementById('hero').style.display = 'none';
-    document.getElementById('dotOpening').style.display = 'none';
-    document.getElementById('inputZone').style.display = 'none';
-    document.getElementById('consultZone').style.display = 'none';
-    document.getElementById('goWrap').style.display = 'none';
-
-    renderProfileZone(profileData);
-    document.getElementById('profileZone').style.display = 'block';
-
-  } catch {
-    document.getElementById('thinkingScreen').classList.remove('active');
-    document.getElementById('mainPage').style.display = 'flex';
-    document.getElementById('pageFooter').style.display = 'block';
-    showError('Something went wrong. Try again.');
-    document.getElementById('goBtn').disabled = false;
-  }
-}
-
 /* ═══════════════════════════════════════════════════════════════
-   REVISE — tick-it-or-tweak-it. Ported from revise-lab.html.
+   REVISE — tick-it-or-tweak-it.
    Reuses live profileData / escHtml / threeWordSentence /
    buildPromptMd / downloadPdf / downloadMd. State is namespaced
    (revise*) and the two browser-global footguns are renamed
