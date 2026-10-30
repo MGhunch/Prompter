@@ -1,4 +1,4 @@
-/* Prompter — feed.js. FEED IT: the welcome, the three stops, files, labels, Dot's chat, the rules.
+/* Prompter — feed.js. FEED IT: the welcome, the landing pad, files, labels, Dot's chat, the rules.
    Plain scripts sharing one page; index.html loads them in order:
    words, helpers, feed, fix, shape. */
 let uploadedFiles = [];
@@ -12,7 +12,7 @@ let historyOpen = false;
 /* ---------- WELCOME + FEED IT (Oct 2026) ---------- */
 
 // The four kinds of material, under the two piles.
-const PILE = { GUIDELINES: 'STATED', DIRECTION: 'STATED', EXAMPLES: 'SHOWN', WEBSITE: 'SHOWN' };
+const PILE = { GUIDELINES: 'STATED', NOTES: 'STATED', EXAMPLES: 'SHOWN', WEBSITE: 'SHOWN' };
 
 // What the robot gets: each item's name, text and type.
 function materialPayload() {
@@ -41,39 +41,28 @@ function openHiw() { document.getElementById('hiwModal').classList.add('active')
 function closeHiw() { document.getElementById('hiwModal').classList.remove('active'); }
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeHiw(); });
 
-// One stop open at a time.
-function frOpen(n) {
-  [1, 2, 3].forEach(i => {
-    const stop = document.getElementById('stop' + i);
-    stop.classList.toggle('open', i === n);
-    stop.querySelector('.fr-card-top').setAttribute('aria-expanded', i === n ? 'true' : 'false');
-  });
-  if (n === 3) rulesFirstLook();
-}
+// The three stops are gone (Oct 2026): it's one card now. Kept as a no-op.
+function frOpen() {}
 
 function frSay(msg) { document.getElementById('dumpNote').textContent = msg || ''; }
 
-// DUMP IT: one box. A lone web address is fetched; anything else is notes.
+// One box. A lone web address is fetched. A long paste, or anything typed
+// before the chat has started, is notes. Everything else is a reply to Dot.
 function looksLikeLink(t) {
   return !/\s/.test(t) && /^(https?:\/\/)?[\w-]+(\.[\w-]+)+(\/\S*)?$/i.test(t);
 }
-async function addFromBox() {
-  const box = document.getElementById('dumpText');
-  const text = box.value.trim();
-  if (!text) return;
+function looksLikeNotes(t) {
+  return consultHistory.length === 0 || t.length > 400 || /\n/.test(t);
+}
+async function addMaterialText(text) {
   frSay('');
-  const btn = document.getElementById('dumpAdd');
-  btn.disabled = true;
   if (looksLikeLink(text)) {
     document.getElementById('weblinkInput').value = text;
     await fetchWeblink();
-    if (!document.getElementById('weblinkInput').value) box.value = '';
   } else {
     document.getElementById('notesInput').value = text;
-    box.value = '';
     await addNotes();
   }
-  btn.disabled = false;
 }
 
 // Ask the light robot what type an item is. Unsure means EXAMPLES.
@@ -88,68 +77,31 @@ async function labelItem(item) {
   } catch { item.label = 'EXAMPLES'; }
 }
 
-function chatReplies() {
-  return consultHistory.filter(h => h.role === 'user'
-    && !String(h.content).startsWith('More material just landed')).length;
-}
-function updateBounceCount() {
-  const n = chatReplies();
-  document.getElementById('bounceCount').textContent = consultHistory.length ? WORDS.bounceCount(n) : '';
-}
+function updateBounceCount() {}
 
-// SET THE RULES: the robot suggests, the person keeps, drops or adds.
+// THE RULES: a quiet robot reads the material for hard rules whenever
+// material lands. Dot is handed what it found and raises it in the chat;
+// her reply carries the current list, so houseRules is always hers.
 let houseRules = [];        // [{text, found}]
+let rulesFound = [];        // what the rules robot read, for Dot
 let rulesLooked = false;
 async function rulesFirstLook() {
-  if (rulesLooked || !uploadedFiles.length) { renderRules(); return; }
+  if (rulesLooked || !uploadedFiles.length) return;
   rulesLooked = true;
-  document.getElementById('rulesList').innerHTML = `<div class="fr-small">${escHtml(WORDS.rulesReading)}</div>`;
   try {
     const res = await fetch('/api/rules', {
       method: 'POST', headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({ files: materialPayload() })
     });
     const data = await res.json();
-    if (data.success) {
-      (data.rules || []).forEach(t => {
-        if (!houseRules.find(r => r.text.toLowerCase() === t.toLowerCase())) houseRules.push({ text: t, found: true });
-      });
-    }
-  } catch { /* no suggestions is fine: they can still add their own */ }
-  renderRules();
+    if (data.success) rulesFound = data.rules || [];
+  } catch { /* nothing found is fine: Dot just asks */ }
 }
-function renderRules() {
-  document.getElementById('rulesList').innerHTML = houseRules.map((r, i) =>
-    `<div class="fr-rule"><span>${escHtml(r.text)}${r.found ? `<small>${escHtml(WORDS.ruleFound)}</small>` : ''}</span>` +
-    `<button class="b-quiet x" type="button" aria-label="Remove rule" onclick="removeRule(${i})">&times;</button></div>`).join('');
-  const sum = document.getElementById('stop3Sum');
-  if (!sum.dataset.empty) sum.dataset.empty = sum.textContent;
-  sum.textContent = houseRules.length ? WORDS.rulesSum(houseRules.length) : sum.dataset.empty;
-}
-function addRule() {
-  const input = document.getElementById('ruleInput');
-  const text = input.value.trim();
-  if (!text) return;
-  if (!houseRules.find(r => r.text.toLowerCase() === text.toLowerCase())) houseRules.push({ text, found: false });
-  input.value = '';
-  renderRules();
-}
-function removeRule(i) { houseRules.splice(i, 1); renderRules(); }
+function renderRules() {}
 
 window.addEventListener('DOMContentLoaded', () => welcomeShow(true));
 
-// Load opening message on page load
-window.addEventListener('load', async () => {
-  try {
-    const res = await fetch('/api/opening');
-    const data = await res.json();
-    if (data.success) {
-      document.getElementById('dotOpenText').textContent = data.message;
-    }
-  } catch {
-    document.getElementById('dotOpenText').textContent = "How you talk is who you are. Let's craft a prompt so you sound like you.";
-  }
-});
+// Dot's opener is on the page itself: "Drop in what you've got. I'll have a look."
 
 // SUITE TEASER MODALS (Slicer / Wrangler — not yet built)
 const SUITE_TEASERS = {
@@ -278,20 +230,20 @@ function removeFile(filename) {
   renderFileList();
   if (!uploadedFiles.length) {
     document.getElementById('consultZone').style.display = 'none';
-    document.getElementById('goWrap').style.display = 'none';
     document.getElementById('goBtn').disabled = true;
-    consultHistory = []; dotReady = false; exchangeCount = 0;
+    document.getElementById('goBtn').classList.remove('ready');
+    consultHistory = []; dotReady = false; exchangeCount = 0; argued = false;
+    houseRules = []; rulesFound = []; rulesLooked = false;
     invalidateSenseCheckPrefetch();
     resetHistoryUI();
     document.getElementById('dotOpening').style.display = 'flex';
-    updateBounceCount();
-    frOpen(1);
   }
 }
 
 function afterFilesChanged() {
   invalidateSenseCheckPrefetch();  // material changed — warmed checks no longer match
   rulesLooked = false;             // new material may hold new rules
+  rulesFirstLook();                // the quiet robot reads while Dot talks
   renderFileList();
   if (uploadedFiles.length > 0 && consultHistory.length === 0) {
     startConsultation();
@@ -336,21 +288,15 @@ const FR_ICON = {
 function renderFileList() {
   const list = document.getElementById('fileList');
   const n = uploadedFiles.length;
-  const stated = uploadedFiles.filter(f => PILE[f.label] === 'STATED').length;
-  const shown = uploadedFiles.filter(f => PILE[f.label] === 'SHOWN').length;
-  const sum = document.getElementById('stop1Sum');
-  if (!sum.dataset.empty) sum.dataset.empty = sum.textContent;
-  sum.textContent = n ? WORDS.dumpSum(n, stated, shown) : sum.dataset.empty;
-  document.getElementById('stop1').classList.toggle('done', n > 0);
+  document.getElementById('filesWrap').hidden = !n;
   if (!n) { list.innerHTML = ''; return; }
   list.innerHTML = uploadedFiles.map((f, i) => {
     const icon = f.kind === 'web' ? FR_ICON.web
       : /\.pdf$/i.test(f.filename) ? FR_ICON.pdf
       : /\.docx?$/i.test(f.filename) ? FR_ICON.doc : FR_ICON.note;
     const type = PILE[f.label] ? f.label : '';
-    const pile = type ? PILE[type] : '';
     const tag = type
-      ? `<span class="fr-pile">${pile}</span><span class="fr-type ${pile === 'SHOWN' ? 'shown' : ''}">${type}</span>`
+      ? `<span class="fr-type">${type}</span>`
       : `<span class="fr-type wait">${escHtml(WORDS.sorting)}</span>`;
     return `<div class="fr-file"><span class="fr-file-n">${icon}<span>${escHtml(f.filename)}</span></span>` +
       `<span class="fr-file-r">${tag}<button class="b-quiet x" type="button" aria-label="Remove ${escHtml(f.filename)}" onclick="removeFileAt(${i})">&times;</button></span></div>`;
@@ -360,56 +306,66 @@ function removeFileAt(i) { const f = uploadedFiles[i]; if (f) removeFile(f.filen
 
 function updateGoBtn() {
   document.getElementById('goBtn').disabled = false;
-  document.getElementById('goWrap').style.display = 'flex';
 }
+
+// OKAY, LET'S PLAY. Live the whole way. If Dot hasn't said she's ready, the
+// first press gives her one message to argue it's thin; the next press goes.
+let argued = false;
+async function letsPlay() {
+  if (dotReady || argued || !uploadedFiles.length) { goButtonPressed(); return; }
+  argued = true;
+  consultHistory.push({ role: 'user', content: PUSHBACK_NUDGE });
+  await runConsult({ pushback: true });
+}
+const PUSHBACK_NUDGE = "I've hit the button. Let's play.";
 
 // CONSULTATION
 async function startConsultation() {
-  frOpen(2);
   // Hide the opening bubble — Dot is now in the consult zone
   document.getElementById('dotOpening').style.display = 'none';
   document.getElementById('consultZone').style.display = 'flex';
-  document.getElementById('goWrap').style.display = 'flex';
   updateGoBtn();
   showDotThinking();
   await runConsult();
 }
 
-async function runConsult() {
+async function runConsult(opts) {
   showDotThinking();
+  setReplyBusy(true);
   try {
     const res = await fetch('/api/consult', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify({
         files: materialPayload(),
-        history: consultHistory
+        history: consultHistory,
+        rules_found: rulesFound,
+        rules: houseRules.map(r => r.text),
+        pushback: !!(opts && opts.pushback)
       })
     });
     const data = await res.json();
     if (!data.success) {
       showDotMessage(limitLine(data) || "Hmm, that one didn't come through. Give it another go?");
-      renderResponseArea();
       return;
     }
 
     consultHistory.push({ role: 'assistant', content: data.message });
     showDotMessage(data.message);
-    updateBounceCount();
+    if (Array.isArray(data.rules)) houseRules = data.rules.map(t => ({ text: t, found: true }));
     dotReady = data.ready;
     invalidateSenseCheckPrefetch();  // conversation just changed — any warmed checks are stale
 
     if (dotReady) {
       document.getElementById('goBtn').classList.add('ready');
-      document.getElementById('responseArea').innerHTML = '';
-      prefetchSenseChecks();  // warm the confirm call now, so it's ready by the time they hit Let's Go
+      prefetchSenseChecks();  // warm the confirm call now, so it's ready by the time they hit the button
     } else {
       document.getElementById('goBtn').classList.remove('ready');
-      renderResponseArea();
     }
   } catch {
     showDotMessage("Hmm, that one didn't come through. Give it another go?");
-    renderResponseArea();
+  } finally {
+    setReplyBusy(false);
   }
 }
 
@@ -430,29 +386,32 @@ function showDotMessage(text) {
   bubble.style.animation = 'fadeUp 0.3s ease';
 }
 
-function renderResponseArea() {
-  const area = document.getElementById('responseArea');
-  area.innerHTML = `<div class="reply-row">
-    <input class="reply-input" type="text" id="replyInput" placeholder="Type your reply..." />
-    <button class="reply-send" id="replySend">Send</button>
-  </div>`;
-  const input = document.getElementById('replyInput');
+// The reply box is always there. Busy while Dot thinks.
+function renderResponseArea() {}
+function setReplyBusy(on) {
   const send = document.getElementById('replySend');
-  input.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) submitResponse(); });
-  send.addEventListener('click', submitResponse);
-  setTimeout(() => input.focus(), 100);
+  if (send) send.disabled = on;
+  if (!on) { const input = document.getElementById('replyInput'); if (input) input.focus(); }
 }
 
+// One box: a link or notes becomes material, anything else is a reply to Dot.
 async function submitResponse() {
   const input = document.getElementById('replyInput');
-  const userReply = input ? input.value.trim() : '';
-  if (!userReply) return;
+  const text = input ? input.value.trim() : '';
+  if (!text) return;
+  input.value = '';
+
+  if (looksLikeLink(text) || looksLikeNotes(text)) {
+    setReplyBusy(true);
+    await addMaterialText(text);
+    setReplyBusy(false);
+    return;
+  }
 
   const dotMsg = document.getElementById('dotMsgText').textContent;
-  consultHistory.push({ role: 'user', content: userReply });
+  consultHistory.push({ role: 'user', content: text });
   exchangeCount++;
-  archiveExchange(dotMsg, userReply);
-  document.getElementById('responseArea').innerHTML = '';
+  archiveExchange(dotMsg, text);
   await runConsult();
 }
 

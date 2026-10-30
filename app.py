@@ -36,15 +36,25 @@ MODEL = os.environ.get('PROMPTER_MODEL', 'claude-sonnet-4-6')
 MODEL_LIGHT = os.environ.get('PROMPTER_MODEL_LIGHT', 'claude-haiku-4-5-20251001')
 
 # Dot gets this many replies from the user, then her next message is her last
-# and she hands over to the sense-check. Keeps the chat short and the bill small.
-CONSULT_MAX_REPLIES = int(os.environ.get('PROMPTER_CONSULT_MAX_REPLIES', 3))
+# and she hands over. Keeps the chat from running away and the bill small.
+CONSULT_MAX_REPLIES = int(os.environ.get('PROMPTER_CONSULT_MAX_REPLIES', 10))
 CONSULT_LAST_TURN = (
     "\n\nTHIS IS YOUR LAST MESSAGE. You've had your questions. Wrap up in one or "
-    "two sentences and hand over to the sense-check. Set \"ready\" to true."
+    "two sentences: that's plenty, let's play. Set \"ready\" to true."
 )
-# The front end injects this as a user turn when new files land. It isn't a
-# reply from the person, so it doesn't count toward the cap.
+# The person pressed OKAY, LET'S PLAY before you said ready. One message.
+CONSULT_PUSHBACK = (
+    "\n\nTHEY'VE HIT THE BUTTON. This is your one chance to argue, and only if "
+    "what you've got is genuinely thin. If it is: say so plainly in one or two "
+    "sentences and name the single thing that would help most. No question "
+    "needed; they can go anyway. If what you've got is enough: say so, and set "
+    "\"ready\" to true."
+)
+# The front end injects these as user turns: one when new files land, one
+# when the button is pressed early. Neither is a reply from the person, so
+# neither counts toward the cap.
 _MATERIAL_NUDGE = 'More material just landed.'
+_PUSHBACK_NUDGE = "I've hit the button."
 
 
 def _order_blocks(blocks, page_width):
@@ -181,7 +191,7 @@ def extract_json_object(text):
 
 # The four kinds of material, under the two piles. The page sends each item's
 # type with its text, so the robot knows what it's reading instead of guessing.
-MATERIAL_TYPES = {'GUIDELINES': 'STATED', 'DIRECTION': 'STATED',
+MATERIAL_TYPES = {'GUIDELINES': 'STATED', 'NOTES': 'STATED',
                   'EXAMPLES': 'SHOWN', 'WEBSITE': 'SHOWN'}
 
 
@@ -222,8 +232,19 @@ def consult():
 
         replies = sum(1 for h in history
                       if h.get('role') == 'user'
-                      and not str(h.get('content', '')).startswith(_MATERIAL_NUDGE))
+                      and not str(h.get('content', '')).startswith(_MATERIAL_NUDGE)
+                      and not str(h.get('content', '')).startswith(_PUSHBACK_NUDGE))
         last_turn = replies >= CONSULT_MAX_REPLIES
+        pushback = bool(data.get('pushback'))
+
+        # What the rules robot found, and the rules list as it stands. These
+        # change as material lands, so they ride in an uncached block.
+        rules_found = [str(r).strip() for r in (data.get('rules_found') or []) if str(r).strip()][:8]
+        rules_now = [str(r).strip() for r in (data.get('rules') or []) if str(r).strip()][:12]
+        rules_block = "\n\nRULES THE RULES ROBOT FOUND IN THE MATERIAL (raise these when you get to rules; don't invent more):\n"
+        rules_block += "\n".join(f"- {r}" for r in rules_found) if rules_found else "- none found yet"
+        rules_block += "\n\nTHE RULES LIST AS IT STANDS (return the full, updated list in \"rules\" every message):\n"
+        rules_block += "\n".join(f"- {r}" for r in rules_now) if rules_now else "- empty"
 
         # Build message history. Dot's turns are stored by the frontend as her
         # plain message string, not the JSON she emits. Replaying that as-is
@@ -235,7 +256,7 @@ def consult():
             role = h.get('role')
             content = h.get('content', '')
             if role == 'assistant' and extract_json_object(content) is None:
-                content = json.dumps({'message': content, 'ready': False})
+                content = json.dumps({'message': content, 'ready': False, 'rules': rules_now})
             messages.append({'role': role, 'content': content})
 
         # Anthropic requires the first message to be from the user. After the
@@ -250,13 +271,16 @@ def consult():
         # The last-turn line goes in a second, uncached block so adding it
         # doesn't break the cache.
         system_blocks = [{'type': 'text', 'text': system,
-                          'cache_control': {'type': 'ephemeral'}}]
-        if last_turn:
+                          'cache_control': {'type': 'ephemeral'}},
+                         {'type': 'text', 'text': rules_block}]
+        if pushback:
+            system_blocks.append({'type': 'text', 'text': CONSULT_PUSHBACK})
+        elif last_turn:
             system_blocks.append({'type': 'text', 'text': CONSULT_LAST_TURN})
 
         response = client.messages.create(
             model=MODEL,
-            max_tokens=600,
+            max_tokens=800,
             system=system_blocks,
             messages=messages
         )
@@ -273,13 +297,20 @@ def consult():
             return jsonify({
                 'success': True,
                 'message': raw or "Hmm, that one didn't come through. Give it another go?",
-                'ready': last_turn
+                'ready': last_turn,
+                'rules': rules_now
             })
+
+        rules_out = result.get('rules')
+        if not isinstance(rules_out, list):
+            rules_out = rules_now
+        rules_out = [str(r).strip() for r in rules_out if str(r).strip()][:12]
 
         return jsonify({
             'success': True,
             'message': result.get('message', ''),
-            'ready': bool(result.get('ready', False)) or last_turn
+            'ready': bool(result.get('ready', False)) or last_turn,
+            'rules': rules_out
         })
 
     except Exception as e:
@@ -514,7 +545,7 @@ def summarise():
         # Only the three types a robot can tell from the text. Anything else,
         # or a wobble, is treated as copy -- shaky material is evidence, never
         # promoted to what the brand says it is.
-        label = word if word in ('GUIDELINES', 'DIRECTION', 'EXAMPLES') else 'EXAMPLES'
+        label = word if word in ('GUIDELINES', 'NOTES', 'EXAMPLES') else 'EXAMPLES'
         return jsonify({'success': True, 'label': label})
     except Exception as e:
         print(f'[Prompter] Summarise error: {e}')
@@ -523,8 +554,8 @@ def summarise():
 
 @app.route('/api/rules', methods=['POST'])
 def suggest_rules():
-    """SET THE RULES: the robot suggests the hard rules it can find. The
-    person keeps, drops or adds. Guidelines and Direction are read first,
+    """THE RULES: the quiet robot finds the hard rules it can, and
+    Dot voices what it finds. Guidelines and Notes are read first,
     because that's where rules are written down."""
     data = request.get_json() or {}
     files = data.get('files', [])

@@ -479,9 +479,9 @@ function startAgain() {
   showError('');
   document.getElementById('feedRoom').style.display = 'flex';
   document.getElementById('mainPage').classList.add('feed');
-  houseRules = []; rulesLooked = false; renderRules();
-  frSay(''); document.getElementById('dumpText').value = '';
-  updateBounceCount(); renderFileList();
-  frOpen(1);
+  houseRules = []; rulesFound = []; rulesLooked = false; argued = false;
+  frSay(''); document.getElementById('replyInput').value = '';
+  document.getElementById('goWrap').style.display = 'flex';
+  renderFileList();
 }
 

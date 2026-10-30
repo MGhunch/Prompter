@@ -9,7 +9,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <link rel="stylesheet" href="/static/tokens.css?v=1">
 <link rel="stylesheet" href="/static/hunchtools.css?v=1">
-<link rel="stylesheet" href="/static/prompter.css?v=3">
+<link rel="stylesheet" href="/static/prompter.css?v=4">
 </head>
 <body>
 
@@ -61,7 +61,7 @@
     <p class="pw-hiw-stand">[One line on what Prompter is for.]</p>
     <div class="pw-hiw-rooms">
       <div class="pw-hiw-room"><span class="pw-ic"><svg viewBox="0 0 20 20" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v9"/><path d="M6.5 8.5 10 12l3.5-3.5"/><path d="M4 14v2.5h12V14"/></svg></span>
-        <div><h3>FEED IT</h3><p>[Dump it. Bounce it. Set the rules.]</p></div></div>
+        <div><h3>FEED IT</h3><p>[Drop in your stuff. Chat with Dot.]</p></div></div>
       <div class="pw-hiw-room"><span class="pw-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h4M16 12h4M12 4v4M12 16v4"/><circle cx="12" cy="12" r="3"/></svg></span>
         <div><h3>SHAPE IT</h3><p>[Work with the robot to refine.]</p></div></div>
       <div class="pw-hiw-room"><span class="pw-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l4-1 11-11-3-3L5 16z"/><path d="M13 8l3 3"/></svg></span>
@@ -134,101 +134,68 @@
         </div>
       </div>
 
-      <!-- RIGHT: YOUR STUFF — three stops, one open at a time -->
+      <!-- RIGHT: YOUR STUFF — one card. The landing pad on top, your files
+           under it, then Dot runs the rest as one chat. No stops, no numbers. -->
       <div class="fr-col">
-        <div class="room-lbl fr-lbl-in">YOUR STUFF</div>
+        <div class="room-lbl">YOUR STUFF</div>
 
-        <!-- 1 DUMP IT -->
-        <div class="fr-stop open" id="stop1">
-          <div class="fr-num">1</div>
-          <div class="fr-card">
-            <button class="fr-card-top" type="button" onclick="frOpen(1)" aria-expanded="true">
-              <span><span class="fr-card-t">DUMP IT</span><span class="fr-card-d" id="stop1Sum">Guidelines, emails, weblinks, notes. Whatever you've got.</span></span>
-              <svg class="fr-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
-            </button>
-            <div class="fr-body" id="inputZone">
-              <div class="fr-dump" id="dropZone"
-                ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
-                <label class="fr-k" for="dumpText">[DROP FILES, PASTE A LINK OR PASTE NOTES]</label>
-                <textarea id="dumpText" rows="3" placeholder="[Paste anything here]"
-                  onkeydown="if(event.key==='Enter'&&(event.metaKey||event.ctrlKey))addFromBox()"></textarea>
-                <div class="fr-dump-foot">
-                  <span class="fr-small">PDF · Word · links · notes</span>
-                  <span class="fr-dump-btns">
-                    <button class="b-main second" type="button" onclick="document.getElementById('fileInput').click()">[Browse files]</button>
-                    <button class="b-main" type="button" id="dumpAdd" onclick="addFromBox()">[ADD]</button>
-                  </span>
-                </div>
-                <input type="file" id="fileInput" accept=".pdf,.doc,.docx" multiple style="display:none" onchange="handleFileSelect(event)"/>
-              </div>
-              <div class="fr-note" id="dumpNote" aria-live="polite"></div>
-              <!-- the old link and notes inputs, kept hidden: fetchWeblink() and
-                   addNotes() still read them, and the box fills whichever fits -->
-              <input type="hidden" id="weblinkInput"/><button type="button" id="weblinkBtn" hidden></button>
-              <textarea id="notesInput" hidden></textarea>
-              <div class="file-list fr-files" id="fileList"></div>
-            </div>
+        <div class="fr-one" id="inputZone">
+
+          <!-- the landing pad: always on top, takes files, links and notes -->
+          <label class="fr-pad" id="dropZone" for="fileInput"
+            ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12"/><path d="M6 10l6 6 6-6"/><path d="M4 20h16"/></svg>
+            <span>Drop stuff here</span>
+            <input type="file" id="fileInput" class="fr-hide" accept=".pdf,.doc,.docx" multiple onchange="handleFileSelect(event)"/>
+          </label>
+          <div class="fr-note" id="dumpNote" aria-live="polite"></div>
+          <!-- the old link and notes inputs, kept hidden: fetchWeblink() and
+               addNotes() still read them; the reply box feeds whichever fits -->
+          <input type="hidden" id="weblinkInput"/><button type="button" id="weblinkBtn" hidden></button>
+          <textarea id="notesInput" hidden></textarea>
+
+          <!-- your files -->
+          <div class="fr-files-wrap" id="filesWrap" hidden>
+            <div class="fr-k">YOUR FILES</div>
+            <div class="file-list fr-files" id="fileList"></div>
           </div>
-        </div>
 
-        <!-- 2 BOUNCE IT: Dot's chat -->
-        <div class="fr-stop" id="stop2">
-          <div class="fr-num">2</div>
-          <div class="fr-card">
-            <button class="fr-card-top" type="button" onclick="frOpen(2)" aria-expanded="false">
-              <span><span class="fr-card-t">BOUNCE IT</span><span class="fr-card-d">What makes you sound like you?</span></span>
-              <span class="fr-count" id="bounceCount"></span>
-              <svg class="fr-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
-            </button>
-            <div class="fr-body">
-              <div class="dot-opening" id="dotOpening">
+          <!-- the chat: Dot runs FEED IT from here -->
+          <div class="fr-chat">
+            <div class="dot-opening" id="dotOpening">
+              <span class="fr-face fr-face-chat" role="img" aria-label="Dot"><svg viewBox="0 0 34 32" fill="none" aria-hidden="true"><line x1="17" y1="4" x2="17" y2="8.5" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="17" cy="3.5" r="1.8" fill="#fff"/><rect x="6" y="8" width="22" height="16" rx="5" fill="#fff"/><circle cx="13" cy="16" r="2.2" fill="#ED1C24"/><circle cx="21" cy="16" r="2.2" fill="#ED1C24"/><rect x="11" y="26" width="12" height="3.4" rx="1.7" fill="#fff"/></svg></span>
+              <div class="dot-open-bubble"><div class="dot-open-text" id="dotOpenText">Drop in what you've got. I'll have a look.</div></div>
+            </div>
+            <div class="consult-zone" id="consultZone" style="display:none;">
+              <div class="history-collapsed" id="historyToggle" style="display:none;" onclick="toggleHistory()">
+                <span class="arrow">↑</span>
+                <span id="historyLabel">stuff we've covered ^</span>
+              </div>
+              <div class="history-full" id="historyFull"></div>
+              <div class="dot-row">
                 <span class="fr-face fr-face-chat" role="img" aria-label="Dot"><svg viewBox="0 0 34 32" fill="none" aria-hidden="true"><line x1="17" y1="4" x2="17" y2="8.5" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="17" cy="3.5" r="1.8" fill="#fff"/><rect x="6" y="8" width="22" height="16" rx="5" fill="#fff"/><circle cx="13" cy="16" r="2.2" fill="#ED1C24"/><circle cx="21" cy="16" r="2.2" fill="#ED1C24"/><rect x="11" y="26" width="12" height="3.4" rx="1.7" fill="#fff"/></svg></span>
-                <div class="dot-open-bubble"><div class="dot-open-text" id="dotOpenText">...</div></div>
-              </div>
-              <div class="consult-zone" id="consultZone" style="display:none;">
-                <div class="history-collapsed" id="historyToggle" style="display:none;" onclick="toggleHistory()">
-                  <span class="arrow">↑</span>
-                  <span id="historyLabel">stuff we've covered ^</span>
+                <div class="dot-bubble" id="dotBubble">
+                  <div class="dot-thinking" id="dotThinking"><span></span><span></span><span></span></div>
+                  <div class="dot-msg-text" id="dotMsgText" style="display:none;"></div>
                 </div>
-                <div class="history-full" id="historyFull"></div>
-                <div class="dot-row">
-                  <span class="fr-face fr-face-chat" role="img" aria-label="Dot"><svg viewBox="0 0 34 32" fill="none" aria-hidden="true"><line x1="17" y1="4" x2="17" y2="8.5" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="17" cy="3.5" r="1.8" fill="#fff"/><rect x="6" y="8" width="22" height="16" rx="5" fill="#fff"/><circle cx="13" cy="16" r="2.2" fill="#ED1C24"/><circle cx="21" cy="16" r="2.2" fill="#ED1C24"/><rect x="11" y="26" width="12" height="3.4" rx="1.7" fill="#fff"/></svg></span>
-                  <div class="dot-bubble" id="dotBubble">
-                    <div class="dot-thinking" id="dotThinking"><span></span><span></span><span></span></div>
-                    <div class="dot-msg-text" id="dotMsgText" style="display:none;"></div>
-                  </div>
-                </div>
-                <div id="responseArea"></div>
               </div>
+              <div id="responseArea"></div>
             </div>
+          </div>
+
+          <!-- one reply box: a reply to Dot, a link, or pasted notes -->
+          <div class="reply-row fr-reply">
+            <label class="fr-hide" for="replyInput">[Your reply, a link, or notes]</label>
+            <input class="reply-input" type="text" id="replyInput" placeholder="[Your take, a link, or paste some notes]"
+              onkeydown="if(event.key==='Enter'&&!event.shiftKey)submitResponse()"/>
+            <button class="reply-send" type="button" id="replySend" onclick="submitResponse()">Send</button>
           </div>
         </div>
 
-        <!-- 3 SET THE RULES -->
-        <div class="fr-stop" id="stop3">
-          <div class="fr-num">3</div>
-          <div class="fr-card">
-            <button class="fr-card-top" type="button" onclick="frOpen(3)" aria-expanded="false">
-              <span><span class="fr-card-t fr-card-t-row">SET THE RULES <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span><span class="fr-card-d" id="stop3Sum">Which capitals where and why?</span></span>
-              <svg class="fr-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
-            </button>
-            <div class="fr-body">
-              <div class="fr-rules" id="rulesList"></div>
-              <div class="fr-rule-add">
-                <label class="fr-hide" for="ruleInput">[Add a rule]</label>
-                <input id="ruleInput" type="text" placeholder="[Add a rule of your own]" onkeydown="if(event.key==='Enter')addRule()"/>
-                <button class="b-round" type="button" aria-label="Add rule" onclick="addRule()">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- ON TO SHAPE IT -->
-        <div class="go-wrap fr-go" id="goWrap" style="display:none;">
+        <!-- OKAY, LET'S PLAY -->
+        <div class="go-wrap fr-go" id="goWrap">
           <div class="error-msg" id="errorMsg"></div>
-          <button class="go-btn" id="goBtn" onclick="goButtonPressed()" disabled>[ON TO SHAPE IT]</button>
+          <button class="go-btn" id="goBtn" onclick="letsPlay()" disabled>OKAY, LET'S PLAY</button>
         </div>
       </div>
     </div>
@@ -270,10 +237,10 @@
 
 <div class="toast" id="toast"></div>
 
-<script src="/static/js/words.js?v=1"></script>
+<script src="/static/js/words.js?v=2"></script>
 <script src="/static/js/helpers.js?v=1"></script>
-<script src="/static/js/feed.js?v=1"></script>
+<script src="/static/js/feed.js?v=2"></script>
 <script src="/static/js/fix.js?v=1"></script>
-<script src="/static/js/shape.js?v=1"></script>
+<script src="/static/js/shape.js?v=2"></script>
 </body>
 </html>
